@@ -26,7 +26,7 @@ object Launcher {
     private const val GITHUB_URL =
         "https://github.com/ohmae/code-reader/"
 
-    private fun openUri(context: Context, uri: String): Boolean = runCatching {
+    fun openUri(context: Context, uri: String): Boolean = runCatching {
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uri))
         intent.addCategory(Intent.CATEGORY_BROWSABLE)
         context.startActivity(intent)
@@ -73,9 +73,13 @@ object Launcher {
 
     fun shareThisApp(context: Activity) {
         val url = "https://play.google.com/store/apps/details?id=$PACKAGE_NAME"
+        shareText(context, url)
+    }
+
+    fun shareText(context: Activity, text: String) {
         ShareCompat.IntentBuilder
             .from(context)
-            .setText(url)
+            .setText(text)
             .setType("text/plain")
             .startChooser()
     }

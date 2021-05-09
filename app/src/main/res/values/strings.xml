@@ -5,7 +5,9 @@
     <string name="app_info">App info</string>
     <string name="dialog_permission_title">Please allow permission</string>
     <string name="dialog_camera_permission_message">Couldn\'t access to camera.\nPlease allow permission from \"App Info\", to code scan</string>
+
     <string name="toast_permission_required">Camera permissions are required. If you do not give permission, this app will not work.</string>
+    <string name="toast_copy_to_clipboard">Copy to clipboard</string>
 
     <string name="options_menu_license">Open source licenses</string>
     <string name="options_menu_source_code">Source code</string>
@@ -18,6 +20,9 @@
     <string name="type_place_holder">type: </string>
     <string name="format">format: %1$s</string>
     <string name="type">type: %1$s</string>
+    <string name="action_copy">copy</string>
+    <string name="action_open">open</string>
+    <string name="action_share">share</string>
 
     <string name="preference_category_info">Info</string>
     <string name="preference_title_version">Version</string>

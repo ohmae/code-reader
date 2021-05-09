@@ -8,6 +8,8 @@
 package net.mm2d.codereader
 
 import android.annotation.SuppressLint
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -16,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
+import androidx.core.content.getSystemService
 import com.google.mlkit.vision.barcode.Barcode
 import com.google.mlkit.vision.barcode.BarcodeScanner
 import com.google.mlkit.vision.barcode.BarcodeScanning
@@ -35,15 +38,30 @@ class MainActivity : AppCompatActivity() {
     private lateinit var workerExecutor: ExecutorService
     private lateinit var scanner: BarcodeScanner
     private var started: Boolean = false
-    private val launcher = registerForActivityResult(
+    private val launcher = registerForActivityResult(/**/
         CameraPermission.RequestContract(), ::onPermissionResult
     )
+    private var detectedType: String = ""
+    private var detectedString: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
+        binding.openButton.setOnClickListener {
+            Launcher.openUri(this, detectedString)
+        }
+        binding.copyButton.setOnClickListener {
+            getSystemService<ClipboardManager>()?.let {
+                it.setPrimaryClip(ClipData.newPlainText(detectedType, detectedString))
+                Toast.makeText(this, R.string.toast_copy_to_clipboard, Toast.LENGTH_SHORT).show()
+            }
+        }
+        binding.shareButton.setOnClickListener {
+            Launcher.shareText(this, detectedString)
+        }
+
         workerExecutor = Executors.newSingleThreadExecutor()
         scanner = BarcodeScanning.getClient()
         if (CameraPermission.hasPermission(this)) {
@@ -121,9 +139,14 @@ class MainActivity : AppCompatActivity() {
 
     private fun onDetectCode(codes: List<Barcode>) {
         codes.getOrNull(0)?.let {
+            detectedString = it.rawValue ?: ""
+            detectedType = it.typeString()
             binding.resultText.text = it.rawValue
-            binding.resultType.text = getString(R.string.type, it.typeString())
+            binding.resultType.text = getString(R.string.type, detectedType)
             binding.resultFormat.text = getString(R.string.format, it.formatString())
+            binding.openButton.isEnabled = it.valueType == Barcode.TYPE_URL
+            binding.copyButton.isEnabled = true
+            binding.shareButton.isEnabled = true
         }
     }
 
