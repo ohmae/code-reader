@@ -25,6 +25,7 @@ import net.mm2d.codereader.extension.formatString
 import net.mm2d.codereader.extension.typeString
 import net.mm2d.codereader.permission.CameraPermission
 import net.mm2d.codereader.permission.PermissionDialog
+import net.mm2d.codereader.util.Launcher
 import timber.log.Timber
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -147,14 +148,19 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_main, menu)
+        menuInflater.inflate(R.menu.main, menu)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.action_settings -> true
-            else -> super.onOptionsItemSelected(item)
+        when (item.itemId) {
+            R.id.license -> LicenseActivity.start(this)
+            R.id.source_code -> Launcher.openSourceCode(this)
+            R.id.privacy_policy -> Launcher.openPrivacyPolicy(this)
+            R.id.share_this_app -> Launcher.shareThisApp(this)
+            R.id.play_store -> Launcher.openGooglePlay(this)
+            else -> return super.onOptionsItemSelected(item)
         }
+        return true
     }
 }

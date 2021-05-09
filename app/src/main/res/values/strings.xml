@@ -7,7 +7,13 @@
     <string name="dialog_camera_permission_message">Couldn\'t access to camera.\nPlease allow permission from \"App Info\", to code scan</string>
     <string name="toast_permission_required">Camera permissions are required. If you do not give permission, this app will not work.</string>
 
-    <string name="action_settings">Settings</string>
+    <string name="options_menu_license">Open source licenses</string>
+    <string name="options_menu_source_code">Source code</string>
+    <string name="options_menu_privacy_policy">Privacy policy</string>
+    <string name="options_menu_play_store">Google Play store</string>
+    <string name="options_menu_share_this_app">Share this app</string>
+    <string name="options_menu_settings">Settings</string>
+
     <string name="format_place_holder">format: </string>
     <string name="type_place_holder">type: </string>
     <string name="format">format: %1$s</string>

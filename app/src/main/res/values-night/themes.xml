@@ -17,11 +17,11 @@
     </style>
 
     <style name="Theme.CodeReader.AppBarOverlay" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar">
-        <item name="colorPrimary">@color/white</item>
+        <item name="colorPrimary">@color/black</item>
     </style>
 
     <style name="Theme.CodeReader.PopupOverlay" parent="ThemeOverlay.MaterialComponents.Dark">
-        <item name="colorSurface">@color/white</item>
+        <item name="colorSurface">@color/black</item>
     </style>
 
     <style name="Theme.CodeReader.Dialog" parent="Theme.MaterialComponents.DayNight.Dialog.Alert">
