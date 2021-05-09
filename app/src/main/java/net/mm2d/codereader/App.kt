@@ -10,11 +10,13 @@ package net.mm2d.codereader
 import android.app.Application
 import android.os.StrictMode
 import androidx.appcompat.app.AppCompatDelegate
+import net.mm2d.codereader.setting.Settings
 
 open class App : Application() {
     override fun onCreate() {
         super.onCreate()
         initializeOverrideWhenDebug()
+        Settings.initialize(this)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
     }
 
