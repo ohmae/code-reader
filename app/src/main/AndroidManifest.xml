@@ -6,6 +6,7 @@
     >
 
     <uses-feature android:name="android.hardware.camera.any" />
+
     <uses-permission android:name="android.permission.CAMERA" />
 
     <queries>
@@ -43,6 +44,10 @@
             />
         <activity
             android:name=".LicenseActivity"
+            android:theme="@style/Theme.CodeReader.NoActionBar"
+            />
+        <activity
+            android:name=".SettingsActivity"
             android:theme="@style/Theme.CodeReader.NoActionBar"
             />
     </application>

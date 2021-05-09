@@ -19,4 +19,7 @@
     <string name="format">format: %1$s</string>
     <string name="type">type: %1$s</string>
 
+    <string name="preference_category_info">Info</string>
+    <string name="preference_title_version">Version</string>
+
 </resources>
