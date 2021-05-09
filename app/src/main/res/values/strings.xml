@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">CodeReader</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="app_info">App info</string>
+    <string name="dialog_permission_title">Please allow permission</string>
+    <string name="dialog_camera_permission_message">Couldn\'t access to camera.\nPlease allow permission from \"App Info\", to code scan</string>
+    <string name="toast_permission_required">Camera permissions are required. If you do not give permission, this app will not work.</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="format_place_holder">format: </string>
+    <string name="type_place_holder">type: </string>
+    <string name="format">format: %1$s</string>
+    <string name="type">type: %1$s</string>
+
+</resources>
