@@ -15,7 +15,9 @@ object Maintainer {
 
     fun maintain(preferences: Preferences<Main>) {
         Main.values().checkSuffix()
-        if (preferences.readInt(Main.APP_VERSION_AT_LAST_LAUNCHED_INT, 0) != BuildConfig.VERSION_CODE) {
+        if (preferences.readInt(Main.APP_VERSION_AT_LAST_LAUNCHED_INT, 0)
+            != BuildConfig.VERSION_CODE
+        ) {
             preferences.writeInt(Main.APP_VERSION_AT_LAST_LAUNCHED_INT, BuildConfig.VERSION_CODE)
         }
         val settingsVersion = preferences.readInt(Main.PREFERENCES_VERSION_INT, 0)

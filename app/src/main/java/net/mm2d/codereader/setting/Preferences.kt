@@ -17,7 +17,9 @@ class Preferences<K>(
         K : Key {
     private val dataStore: SharedPreferenceDataStore =
         SharedPreferenceDataStore(
-            context.getSharedPreferences(BuildConfig.APPLICATION_ID + "." + name, Context.MODE_PRIVATE)
+            context.getSharedPreferences(
+                BuildConfig.APPLICATION_ID + "." + name, Context.MODE_PRIVATE
+            )
         )
 
     fun remove(key: K): Unit =

@@ -31,8 +31,8 @@ class PermissionDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val context = requireContext()
         return AlertDialog.Builder(context)
-            .setTitle(R.string.dialog_permission_title)
-            .setMessage(R.string.dialog_camera_permission_message)
+            .setTitle(R.string.dialog_title_permission)
+            .setMessage(R.string.dialog_message_camera_permission)
             .setPositiveButton(R.string.app_info) { _, _ ->
                 startAppInfo(context)
                 (context as? OnPositiveClickListener)?.onPositiveClick()

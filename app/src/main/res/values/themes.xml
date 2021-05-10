@@ -7,6 +7,8 @@
         <item name="colorSecondary">@color/orange_a700</item>
         <item name="colorSecondaryVariant">@color/orange_a100</item>
         <item name="colorOnSecondary">@color/white</item>
+        <item name="background">@color/white</item>
+
         <item name="android:statusBarColor">@color/white</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:windowBackground">@color/white</item>

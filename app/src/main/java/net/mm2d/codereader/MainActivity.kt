@@ -7,9 +7,8 @@
 
 package net.mm2d.codereader
 
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
-import android.content.ClipData
-import android.content.ClipboardManager
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -17,8 +16,10 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import androidx.core.content.getSystemService
+import androidx.core.view.updateLayoutParams
+import androidx.recyclerview.widget.DividerItemDecoration
 import com.google.mlkit.vision.barcode.Barcode
 import com.google.mlkit.vision.barcode.BarcodeScanner
 import com.google.mlkit.vision.barcode.BarcodeScanning
@@ -28,6 +29,9 @@ import net.mm2d.codereader.extension.formatString
 import net.mm2d.codereader.extension.typeString
 import net.mm2d.codereader.permission.CameraPermission
 import net.mm2d.codereader.permission.PermissionDialog
+import net.mm2d.codereader.result.ScanResult
+import net.mm2d.codereader.result.ScanResultAdapter
+import net.mm2d.codereader.result.ScanResultDialog
 import net.mm2d.codereader.util.Launcher
 import timber.log.Timber
 import java.util.concurrent.ExecutorService
@@ -38,30 +42,23 @@ class MainActivity : AppCompatActivity() {
     private lateinit var workerExecutor: ExecutorService
     private lateinit var scanner: BarcodeScanner
     private var started: Boolean = false
-    private val launcher = registerForActivityResult(/**/
+    private val launcher = registerForActivityResult(
         CameraPermission.RequestContract(), ::onPermissionResult
     )
-    private var detectedType: String = ""
-    private var detectedString: String = ""
+    private lateinit var adapter: ScanResultAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
-        binding.openButton.setOnClickListener {
-            Launcher.openUri(this, detectedString)
+        adapter = ScanResultAdapter(this) {
+            ScanResultDialog.show(this, it)
         }
-        binding.copyButton.setOnClickListener {
-            getSystemService<ClipboardManager>()?.let {
-                it.setPrimaryClip(ClipData.newPlainText(detectedType, detectedString))
-                Toast.makeText(this, R.string.toast_copy_to_clipboard, Toast.LENGTH_SHORT).show()
-            }
-        }
-        binding.shareButton.setOnClickListener {
-            Launcher.shareText(this, detectedString)
-        }
-
+        binding.resultList.adapter = adapter
+        binding.resultList.addItemDecoration(
+            DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
+        )
         workerExecutor = Executors.newSingleThreadExecutor()
         scanner = BarcodeScanning.getClient()
         if (CameraPermission.hasPermission(this)) {
@@ -138,16 +135,31 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onDetectCode(codes: List<Barcode>) {
-        codes.getOrNull(0)?.let {
-            detectedString = it.rawValue ?: ""
-            detectedType = it.typeString()
-            binding.resultText.text = it.rawValue
-            binding.resultType.text = getString(R.string.type, detectedType)
-            binding.resultFormat.text = getString(R.string.format, it.formatString())
-            binding.openButton.isEnabled = it.valueType == Barcode.TYPE_URL
-            binding.copyButton.isEnabled = true
-            binding.shareButton.isEnabled = true
+        codes.forEach {
+            val value = it.rawValue ?: return@forEach
+            val result = ScanResult(
+                value = value,
+                type = it.typeString(),
+                format = it.formatString(),
+                isUrl = it.valueType == Barcode.TYPE_URL
+            )
+            if (!adapter.add(result)) return@forEach
+            binding.resultList.scrollToPosition(adapter.itemCount - 1)
+            if (adapter.itemCount == 2) {
+                expandList()
+            }
         }
+    }
+
+    private fun expandList() {
+        ValueAnimator.ofInt(binding.dummy.height, 0)
+            .also {
+                it.addUpdateListener {
+                    binding.dummy.updateLayoutParams<ConstraintLayout.LayoutParams> {
+                        height = it.animatedValue as Int
+                    }
+                }
+            }.start()
     }
 
     private class CodeAnalyzer(

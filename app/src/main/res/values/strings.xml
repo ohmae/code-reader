@@ -3,8 +3,9 @@
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="app_info">App info</string>
-    <string name="dialog_permission_title">Please allow permission</string>
-    <string name="dialog_camera_permission_message">Couldn\'t access to camera.\nPlease allow permission from \"App Info\", to code scan</string>
+    <string name="dialog_title_permission">Please allow permission</string>
+    <string name="dialog_message_camera_permission">Couldn\'t access to camera.\nPlease allow permission from \"App Info\", to code scan</string>
+    <string name="dialog_title_select_action">Select action</string>
 
     <string name="toast_permission_required">Camera permissions are required. If you do not give permission, this app will not work.</string>
     <string name="toast_copy_to_clipboard">Copy to clipboard</string>
