@@ -3,7 +3,7 @@
 
     <PreferenceCategory
         app:iconSpaceReserved="false"
-        app:title="@string/preference_category_info"
+        app:title="@string/preference_category_information"
         >
         <Preference
             app:enableCopying="true"

@@ -33,6 +33,7 @@ import net.mm2d.codereader.result.ScanResult
 import net.mm2d.codereader.result.ScanResultAdapter
 import net.mm2d.codereader.result.ScanResultDialog
 import net.mm2d.codereader.util.Launcher
+import net.mm2d.codereader.util.Updater
 import timber.log.Timber
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -63,6 +64,7 @@ class MainActivity : AppCompatActivity() {
         scanner = BarcodeScanning.getClient()
         if (CameraPermission.hasPermission(this)) {
             startCamera()
+            Updater.startUpdateIfAvailable(this)
         } else {
             launcher.launch(Unit)
         }

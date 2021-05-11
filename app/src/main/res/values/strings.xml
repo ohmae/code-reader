@@ -25,7 +25,7 @@
     <string name="action_open">open</string>
     <string name="action_share">share</string>
 
-    <string name="preference_category_info">Info</string>
+    <string name="preference_category_information">Information</string>
     <string name="preference_title_version">Version</string>
 
 </resources>

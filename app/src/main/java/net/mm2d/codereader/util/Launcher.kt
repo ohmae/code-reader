@@ -41,7 +41,7 @@ object Launcher {
             if (context.isNightMode()) CustomTabsIntent.COLOR_SCHEME_DARK
             else CustomTabsIntent.COLOR_SCHEME_LIGHT
         val params = CustomTabColorSchemeParams.Builder()
-            .setToolbarColor(context.resolveColor(R.attr.colorPrimary))
+            .setToolbarColor(context.resolveColor(R.attr.background))
             .build()
         val intent = CustomTabsIntent.Builder()
             .setShowTitle(true)
