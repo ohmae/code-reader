@@ -21,11 +21,7 @@ import net.mm2d.codereader.R
 
 class PermissionDialog : DialogFragment() {
     interface OnCancelListener {
-        fun onCancel()
-    }
-
-    interface OnPositiveClickListener {
-        fun onPositiveClick()
+        fun onPermissionCancel()
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -35,14 +31,13 @@ class PermissionDialog : DialogFragment() {
             .setMessage(R.string.dialog_message_camera_permission)
             .setPositiveButton(R.string.app_info) { _, _ ->
                 startAppInfo(context)
-                (context as? OnPositiveClickListener)?.onPositiveClick()
             }
             .setNegativeButton(R.string.cancel) { dialog, _ -> dialog.cancel() }
             .create()
     }
 
     override fun onCancel(dialog: DialogInterface) {
-        (context as? OnCancelListener)?.onCancel()
+        (context as? OnCancelListener)?.onPermissionCancel()
     }
 
     private fun startAppInfo(context: Context) {

@@ -19,6 +19,7 @@ import net.mm2d.codereader.R
 import net.mm2d.codereader.databinding.DialogResultBinding
 import net.mm2d.codereader.util.ClipboardUtils
 import net.mm2d.codereader.util.Launcher
+import net.mm2d.codereader.util.ReviewRequester
 
 class ScanResultDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -33,13 +34,19 @@ class ScanResultDialog : DialogFragment() {
             if (result.isUrl) {
                 binding.openButton.setOnClickListener {
                     Launcher.openUri(activity, result.value)
+                    ReviewRequester.onAction()
+                    dismiss()
                 }
             }
             binding.copyButton.setOnClickListener {
                 ClipboardUtils.copyToClipboard(activity, result.type, result.value)
+                ReviewRequester.onAction()
+                dismiss()
             }
             binding.shareButton.setOnClickListener {
                 Launcher.shareText(activity, result.value)
+                ReviewRequester.onAction()
+                dismiss()
             }
         }
         return AlertDialog.Builder(activity)

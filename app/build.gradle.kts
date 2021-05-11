@@ -74,7 +74,6 @@ dependencies {
     implementation("androidx.webkit:webkit:1.4.0")
     implementation("com.google.mlkit:barcode-scanning:16.1.1")
     implementation("com.jakewharton.timber:timber:4.7.1")
-    implementation("androidx.preference:preference:1.1.1")
 
     debugImplementation("com.squareup.leakcanary:leakcanary-android:2.7")
     debugImplementation("com.facebook.flipper:flipper:0.87.0")

@@ -33,10 +33,7 @@ object Maintainer {
 
     private fun writeDefaultValue(preferences: Preferences<Main>) {
         preferences.writeLong(Main.TIME_FIRST_USE_LONG, 0L)
-        preferences.writeLong(Main.TIME_FIRST_REVIEW_LONG, 0L)
         preferences.writeInt(Main.COUNT_DETECT_VALUE_ACTION_INT, 0)
-        preferences.writeInt(Main.COUNT_REVIEW_DIALOG_CANCELED_INT, 0)
-        preferences.writeBoolean(Main.REVIEW_REPORTED_BOOLEAN, false)
         preferences.writeBoolean(Main.REVIEW_REVIEWED_BOOLEAN, false)
     }
 }

@@ -33,12 +33,13 @@ import net.mm2d.codereader.result.ScanResult
 import net.mm2d.codereader.result.ScanResultAdapter
 import net.mm2d.codereader.result.ScanResultDialog
 import net.mm2d.codereader.util.Launcher
+import net.mm2d.codereader.util.ReviewRequester
 import net.mm2d.codereader.util.Updater
 import timber.log.Timber
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), PermissionDialog.OnCancelListener {
     private lateinit var binding: ActivityMainBinding
     private lateinit var workerExecutor: ExecutorService
     private lateinit var scanner: BarcodeScanner
@@ -64,7 +65,7 @@ class MainActivity : AppCompatActivity() {
         scanner = BarcodeScanning.getClient()
         if (CameraPermission.hasPermission(this)) {
             startCamera()
-            Updater.startUpdateIfAvailable(this)
+            Updater.startIfAvailable(this)
         } else {
             launcher.launch(Unit)
         }
@@ -77,7 +78,7 @@ class MainActivity : AppCompatActivity() {
                 startCamera()
             } else {
                 toastPermissionError()
-                finish()
+                finishByError()
             }
         }
     }
@@ -96,9 +97,24 @@ class MainActivity : AppCompatActivity() {
                 PermissionDialog.show(this)
             } else {
                 toastPermissionError()
-                finish()
+                finishByError()
             }
         }
+    }
+
+    override fun onPermissionCancel() {
+        finishByError()
+    }
+
+    private fun finishByError() {
+        super.finish()
+    }
+
+    override fun finish() {
+        if (ReviewRequester.requestIfNecessary(this)) {
+            return
+        }
+        super.finish()
     }
 
     private fun toastPermissionError() {
