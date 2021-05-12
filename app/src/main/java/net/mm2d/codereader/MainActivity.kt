@@ -59,8 +59,14 @@ class MainActivity : AppCompatActivity(), PermissionDialog.OnCancelListener {
         binding.resultList.addItemDecoration(
             DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
         )
-        codeScanner = CodeScanner(this, binding.previewView, ::onDetectCode)
         vibrator = getSystemService()!!
+        codeScanner = CodeScanner(this, binding.previewView, ::onDetectCode)
+        binding.flash.setOnClickListener {
+            codeScanner.toggleTorch()
+        }
+        codeScanner.torchState.observe(this) {
+            onFlashOn(it == true)
+        }
         if (CameraPermission.hasPermission(this)) {
             startCamera()
             Updater.startIfAvailable(this)
@@ -79,11 +85,6 @@ class MainActivity : AppCompatActivity(), PermissionDialog.OnCancelListener {
                 finishByError()
             }
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        codeScanner.onDestroy()
     }
 
     private fun onPermissionResult(granted: Boolean) {
@@ -116,6 +117,15 @@ class MainActivity : AppCompatActivity(), PermissionDialog.OnCancelListener {
 
     private fun toastPermissionError() {
         Toast.makeText(this, R.string.toast_permission_required, Toast.LENGTH_LONG).show()
+    }
+
+    private fun onFlashOn(on: Boolean) {
+        val icon = if (on) {
+            R.drawable.ic_flash_on
+        } else {
+            R.drawable.ic_flash_off
+        }
+        binding.flash.setImageResource(icon)
     }
 
     private fun startCamera() {
