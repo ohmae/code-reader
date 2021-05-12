@@ -8,23 +8,23 @@
 package net.mm2d.codereader
 
 import android.animation.ValueAnimator
-import android.annotation.SuppressLint
+import android.os.Build.VERSION
+import android.os.Build.VERSION_CODES
 import android.os.Bundle
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.*
-import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
+import androidx.core.content.getSystemService
 import androidx.core.view.isGone
 import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.google.mlkit.vision.barcode.Barcode
-import com.google.mlkit.vision.barcode.BarcodeScanner
-import com.google.mlkit.vision.barcode.BarcodeScanning
-import com.google.mlkit.vision.common.InputImage
+import net.mm2d.codereader.code.CodeScanner
 import net.mm2d.codereader.databinding.ActivityMainBinding
 import net.mm2d.codereader.extension.formatString
 import net.mm2d.codereader.extension.typeString
@@ -36,19 +36,16 @@ import net.mm2d.codereader.result.ScanResultDialog
 import net.mm2d.codereader.util.Launcher
 import net.mm2d.codereader.util.ReviewRequester
 import net.mm2d.codereader.util.Updater
-import timber.log.Timber
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
 
 class MainActivity : AppCompatActivity(), PermissionDialog.OnCancelListener {
     private lateinit var binding: ActivityMainBinding
-    private lateinit var workerExecutor: ExecutorService
-    private lateinit var scanner: BarcodeScanner
+    private lateinit var codeScanner: CodeScanner
     private var started: Boolean = false
     private val launcher = registerForActivityResult(
         CameraPermission.RequestContract(), ::onPermissionResult
     )
     private lateinit var adapter: ScanResultAdapter
+    private lateinit var vibrator: Vibrator
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,8 +59,8 @@ class MainActivity : AppCompatActivity(), PermissionDialog.OnCancelListener {
         binding.resultList.addItemDecoration(
             DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
         )
-        workerExecutor = Executors.newSingleThreadExecutor()
-        scanner = BarcodeScanning.getClient()
+        codeScanner = CodeScanner(this, binding.previewView, ::onDetectCode)
+        vibrator = getSystemService()!!
         if (CameraPermission.hasPermission(this)) {
             startCamera()
             Updater.startIfAvailable(this)
@@ -86,8 +83,7 @@ class MainActivity : AppCompatActivity(), PermissionDialog.OnCancelListener {
 
     override fun onDestroy() {
         super.onDestroy()
-        workerExecutor.shutdown()
-        scanner.close()
+        codeScanner.onDestroy()
     }
 
     private fun onPermissionResult(granted: Boolean) {
@@ -125,32 +121,7 @@ class MainActivity : AppCompatActivity(), PermissionDialog.OnCancelListener {
     private fun startCamera() {
         if (started) return
         started = true
-        val future = ProcessCameraProvider.getInstance(this)
-        future.addListener({
-            setUpCameraProvider(future.get())
-        }, ContextCompat.getMainExecutor(this))
-    }
-
-    private fun setUpCameraProvider(provider: ProcessCameraProvider) {
-        val preview = Preview.Builder()
-            .setTargetAspectRatio(AspectRatio.RATIO_16_9)
-            .build()
-        preview.setSurfaceProvider(binding.previewView.surfaceProvider)
-
-        val analysis = ImageAnalysis.Builder()
-            .setTargetAspectRatio(AspectRatio.RATIO_16_9)
-            .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-            .build()
-        analysis.setAnalyzer(workerExecutor, CodeAnalyzer(scanner, ::onDetectCode))
-
-        try {
-            provider.unbindAll()
-            provider.bindToLifecycle(
-                this, CameraSelector.DEFAULT_BACK_CAMERA, preview, analysis
-            )
-        } catch (e: Exception) {
-            Timber.e(e)
-        }
+        codeScanner.start()
     }
 
     private fun onDetectCode(codes: List<Barcode>) {
@@ -166,6 +137,7 @@ class MainActivity : AppCompatActivity(), PermissionDialog.OnCancelListener {
                 isUrl = it.valueType == Barcode.TYPE_URL
             )
             if (!adapter.add(result)) return@forEach
+            vibrate()
             binding.resultList.scrollToPosition(adapter.itemCount - 1)
             if (adapter.itemCount == 2) {
                 expandList()
@@ -184,23 +156,13 @@ class MainActivity : AppCompatActivity(), PermissionDialog.OnCancelListener {
             }.start()
     }
 
-    private class CodeAnalyzer(
-        private val scanner: BarcodeScanner,
-        private val callback: (List<Barcode>) -> Unit
-    ) : ImageAnalysis.Analyzer {
-        @SuppressLint("UnsafeOptInUsageError")
-        override fun analyze(imageProxy: ImageProxy) {
-            val image = imageProxy.image
-            if (image != null) {
-                val inputImage = InputImage
-                    .fromMediaImage(image, imageProxy.imageInfo.rotationDegrees)
-                scanner.process(inputImage)
-                    .addOnSuccessListener { callback(it) }
-                    .addOnFailureListener { Timber.e(it) }
-                    .addOnCompleteListener { imageProxy.close() }
-            } else {
-                imageProxy.close()
-            }
+    private fun vibrate() {
+        if (VERSION.SDK_INT >= VERSION_CODES.O) {
+            vibrator.vibrate(
+                VibrationEffect.createOneShot(30, VibrationEffect.DEFAULT_AMPLITUDE)
+            )
+        } else {
+            vibrator.vibrate(30)
         }
     }
 
