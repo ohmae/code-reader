@@ -17,6 +17,7 @@
     <string name="options_menu_share_this_app">Share this app</string>
     <string name="options_menu_settings">Settings</string>
 
+    <string name="scanning">Scanning…</string>
     <string name="format_place_holder">format: </string>
     <string name="type_place_holder">type: </string>
     <string name="format">format: %1$s</string>

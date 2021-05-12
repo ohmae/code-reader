@@ -18,6 +18,7 @@ import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.core.view.isGone
 import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.google.mlkit.vision.barcode.Barcode
@@ -153,6 +154,9 @@ class MainActivity : AppCompatActivity(), PermissionDialog.OnCancelListener {
     }
 
     private fun onDetectCode(codes: List<Barcode>) {
+        if (codes.isNotEmpty()) {
+            binding.scanning.isGone = true
+        }
         codes.forEach {
             val value = it.rawValue ?: return@forEach
             val result = ScanResult(
