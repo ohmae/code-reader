@@ -8,6 +8,7 @@
 package net.mm2d.codereader.setting
 
 import android.content.Context
+import androidx.preference.PreferenceFragmentCompat
 import net.mm2d.codereader.setting.Key.Main
 
 class Settings private constructor(
@@ -28,6 +29,13 @@ class Settings private constructor(
     var reviewed: Boolean
         get() = preferences.readBoolean(Main.REVIEW_REVIEWED_BOOLEAN, false)
         set(value) = preferences.writeBoolean(Main.REVIEW_REVIEWED_BOOLEAN, value)
+
+    val vibrate: Boolean
+        get() = preferences.readBoolean(Main.VIBRATE_BOOLEAN, true)
+
+    fun apply(fragment: PreferenceFragmentCompat) {
+        fragment.preferenceManager.preferenceDataStore = preferences.dataStore
+    }
 
     companion object {
         private lateinit var settings: Settings

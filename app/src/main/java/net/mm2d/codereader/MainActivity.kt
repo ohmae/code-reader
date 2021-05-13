@@ -33,6 +33,7 @@ import net.mm2d.codereader.permission.PermissionDialog
 import net.mm2d.codereader.result.ScanResult
 import net.mm2d.codereader.result.ScanResultAdapter
 import net.mm2d.codereader.result.ScanResultDialog
+import net.mm2d.codereader.setting.Settings
 import net.mm2d.codereader.util.Launcher
 import net.mm2d.codereader.util.ReviewRequester
 import net.mm2d.codereader.util.Updater
@@ -46,6 +47,9 @@ class MainActivity : AppCompatActivity(), PermissionDialog.OnCancelListener {
     )
     private lateinit var adapter: ScanResultAdapter
     private lateinit var vibrator: Vibrator
+    private val settings: Settings by lazy {
+        Settings.get()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -167,6 +171,7 @@ class MainActivity : AppCompatActivity(), PermissionDialog.OnCancelListener {
     }
 
     private fun vibrate() {
+        if (!settings.vibrate) return
         if (VERSION.SDK_INT >= VERSION_CODES.O) {
             vibrator.vibrate(
                 VibrationEffect.createOneShot(30, VibrationEffect.DEFAULT_AMPLITUDE)

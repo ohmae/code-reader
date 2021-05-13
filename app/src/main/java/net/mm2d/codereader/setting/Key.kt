@@ -19,6 +19,7 @@ interface Key {
         REVIEW_INTERVAL_RANDOM_FACTOR_LONG,
         COUNT_DETECT_VALUE_ACTION_INT,
         REVIEW_REVIEWED_BOOLEAN,
+        VIBRATE_BOOLEAN,
         ;
 
         companion object {

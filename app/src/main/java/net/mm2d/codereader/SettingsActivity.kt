@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import net.mm2d.codereader.databinding.ActivitySettingsBinding
+import net.mm2d.codereader.setting.Settings
 
 class SettingsActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySettingsBinding
@@ -34,6 +35,7 @@ class SettingsActivity : AppCompatActivity() {
 
     class SettingsFragment : PreferenceFragmentCompat() {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+            Settings.get().apply(this)
             setPreferencesFromResource(R.xml.preferences, rootKey)
             findPreference<Preference>("VERSION")?.summary = BuildConfig.VERSION_NAME
         }

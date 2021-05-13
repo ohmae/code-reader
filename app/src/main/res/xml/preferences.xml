@@ -3,6 +3,21 @@
 
     <PreferenceCategory
         app:iconSpaceReserved="false"
+        app:title="@string/preference_category_settings"
+        >
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:enableCopying="true"
+            app:iconSpaceReserved="false"
+            app:key="VIBRATE_BOOLEAN"
+            app:summaryOff="@string/preference_summary_vibration_off"
+            app:summaryOn="@string/preference_summary_vibration_on"
+            app:title="@string/preference_title_vibration"
+            />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
         app:title="@string/preference_category_information"
         >
         <Preference

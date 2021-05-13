@@ -3,6 +3,7 @@
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="app_info">App info</string>
+
     <string name="dialog_title_permission">Please allow permission</string>
     <string name="dialog_message_camera_permission">Couldn\'t access to camera.\nPlease allow permission from \"App Info\", to code scan</string>
     <string name="dialog_title_select_action">Select action</string>
@@ -22,9 +23,15 @@
     <string name="type_place_holder">type: </string>
     <string name="format">format: %1$s</string>
     <string name="type">type: %1$s</string>
+
     <string name="action_copy">copy</string>
     <string name="action_open">open</string>
     <string name="action_share">share</string>
+
+    <string name="preference_category_settings">Information</string>
+    <string name="preference_title_vibration">Vibration</string>
+    <string name="preference_summary_vibration_on">Vibrate when code is detected</string>
+    <string name="preference_summary_vibration_off">Does not vibrate when code is detected</string>
 
     <string name="preference_category_information">Information</string>
     <string name="preference_title_version">Version</string>

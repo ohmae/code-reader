@@ -15,7 +15,7 @@ class Preferences<K>(
     name: String
 ) where K : Enum<*>,
         K : Key {
-    private val dataStore: SharedPreferenceDataStore =
+    val dataStore: SharedPreferenceDataStore =
         SharedPreferenceDataStore(
             context.getSharedPreferences(
                 BuildConfig.APPLICATION_ID + "." + name, Context.MODE_PRIVATE

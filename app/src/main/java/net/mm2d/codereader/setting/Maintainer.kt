@@ -35,5 +35,6 @@ object Maintainer {
         preferences.writeLong(Main.TIME_FIRST_USE_LONG, 0L)
         preferences.writeInt(Main.COUNT_DETECT_VALUE_ACTION_INT, 0)
         preferences.writeBoolean(Main.REVIEW_REVIEWED_BOOLEAN, false)
+        preferences.writeBoolean(Main.VIBRATE_BOOLEAN, true)
     }
 }
