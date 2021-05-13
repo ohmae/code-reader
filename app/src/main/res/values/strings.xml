@@ -25,8 +25,9 @@
     <string name="type">type: %1$s</string>
 
     <string name="action_copy">copy</string>
-    <string name="action_open">open</string>
     <string name="action_share">share</string>
+    <string name="action_open">open</string>
+    <string name="action_search">search</string>
 
     <string name="preference_category_settings">Information</string>
     <string name="preference_title_vibration">Vibration</string>

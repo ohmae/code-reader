@@ -8,6 +8,7 @@
 package net.mm2d.codereader.util
 
 import android.app.Activity
+import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -29,6 +30,13 @@ object Launcher {
     fun openUri(context: Context, uri: String): Boolean = runCatching {
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uri))
         intent.addCategory(Intent.CATEGORY_BROWSABLE)
+        context.startActivity(intent)
+        true
+    }.getOrNull() ?: false
+
+    fun search(context: Context, word: String): Boolean = runCatching {
+        val intent = Intent(Intent.ACTION_WEB_SEARCH)
+        intent.putExtra(SearchManager.QUERY, word)
         context.startActivity(intent)
         true
     }.getOrNull() ?: false

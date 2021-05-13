@@ -12,7 +12,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
 import androidx.core.os.bundleOf
-import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentActivity
 import net.mm2d.codereader.R
@@ -30,10 +29,17 @@ class ScanResultDialog : DialogFragment() {
             binding.resultValue.text = result.value
             binding.resultType.text = getString(R.string.type, result.type)
             binding.resultFormat.text = getString(R.string.format, result.format)
-            binding.openButton.isVisible = result.isUrl
             if (result.isUrl) {
+                binding.openButton.setText(R.string.action_open)
                 binding.openButton.setOnClickListener {
                     Launcher.openUri(activity, result.value)
+                    ReviewRequester.onAction()
+                    dismiss()
+                }
+            } else {
+                binding.openButton.setText(R.string.action_search)
+                binding.openButton.setOnClickListener {
+                    Launcher.search(activity, result.value)
                     ReviewRequester.onAction()
                     dismiss()
                 }
