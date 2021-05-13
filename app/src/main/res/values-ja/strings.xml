@@ -1,0 +1,40 @@
+<resources>
+    <string name="app_name">CodeReader</string>
+    <string name="ok">OK</string>
+    <string name="cancel">キャンセル</string>
+    <string name="app_info">アプリ情報</string>
+
+    <string name="dialog_title_permission">権限の許可が必要</string>
+    <string name="dialog_message_camera_permission">カメラへのアクセス権がありません。\nコードスキャンを利用するには「アプリ情報」から許可してください</string>
+    <string name="dialog_title_select_action">アクションの選択</string>
+
+    <string name="toast_permission_required">カメラの利用許可が必要です。許可をいただけない場合はこのアプリを利用することはできません</string>
+    <string name="toast_copy_to_clipboard">クリップボードへコピーしました</string>
+
+    <string name="options_menu_license">オープンソースライセンス</string>
+    <string name="options_menu_source_code">ソースコード</string>
+    <string name="options_menu_privacy_policy">プライバシーポリシー</string>
+    <string name="options_menu_play_store">Google Playストア</string>
+    <string name="options_menu_share_this_app">アプリをシェア</string>
+    <string name="options_menu_settings">設定</string>
+
+    <string name="scanning">読み取っています…</string>
+    <string name="format_place_holder">format: </string>
+    <string name="type_place_holder">type: </string>
+    <string name="format">format: %1$s</string>
+    <string name="type">type: %1$s</string>
+
+    <string name="action_copy">コピー</string>
+    <string name="action_share">シェア</string>
+    <string name="action_open">開く</string>
+    <string name="action_search">検索</string>
+
+    <string name="preference_category_settings">設定</string>
+    <string name="preference_title_vibration">バイブ</string>
+    <string name="preference_summary_vibration_on">検出時にバイブレーションを行います</string>
+    <string name="preference_summary_vibration_off">バイブレーションを行いません</string>
+
+    <string name="preference_category_information">情報</string>
+    <string name="preference_title_version">バージョン</string>
+
+</resources>
