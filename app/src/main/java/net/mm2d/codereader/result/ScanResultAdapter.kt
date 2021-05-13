@@ -10,6 +10,8 @@ package net.mm2d.codereader.result
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import net.mm2d.codereader.R
@@ -18,9 +20,9 @@ import net.mm2d.codereader.result.ScanResultAdapter.ViewHolder
 
 class ScanResultAdapter(
     context: Context,
-    private val listener: (ScanResult) -> Unit
-) : Adapter<ViewHolder>() {
-    private val results: MutableList<ScanResult> = mutableListOf()
+    private val onItemClickListener: (ScanResult) -> Unit
+) : Adapter<ViewHolder>(), Observer<List<ScanResult>> {
+    private var results: List<ScanResult> = emptyList()
     private val layoutInflater = LayoutInflater.from(context)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
@@ -30,17 +32,31 @@ class ScanResultAdapter(
         val result = results[position]
         holder.apply(result)
         holder.itemView.setOnClickListener {
-            listener(result)
+            onItemClickListener(result)
         }
     }
 
     override fun getItemCount(): Int = results.size
 
-    fun add(result: ScanResult): Boolean {
-        if (results.contains(result)) return false
-        results.add(result)
-        notifyItemInserted(results.size - 1)
-        return true
+    override fun onChanged(list: List<ScanResult>?) {
+        list ?: return
+        val diff = DiffUtil.calculateDiff(DiffCallback(results, list))
+        results = list
+        diff.dispatchUpdatesTo(this)
+    }
+
+    class DiffCallback(
+        private val oldList: List<ScanResult>,
+        private val newList: List<ScanResult>
+    ) : DiffUtil.Callback() {
+        override fun getOldListSize(): Int = oldList.size
+        override fun getNewListSize(): Int = newList.size
+
+        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
+            oldList[oldItemPosition] == newList[newItemPosition]
+
+        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
+            oldList[oldItemPosition] == newList[newItemPosition]
     }
 
     class ViewHolder(

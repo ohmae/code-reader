@@ -16,6 +16,7 @@ import android.os.Vibrator
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.*
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -47,6 +48,7 @@ class MainActivity : AppCompatActivity(), PermissionDialog.OnCancelListener {
     )
     private lateinit var adapter: ScanResultAdapter
     private lateinit var vibrator: Vibrator
+    private val viewModel: MainActivityViewModel by viewModels()
     private val settings: Settings by lazy {
         Settings.get()
     }
@@ -70,6 +72,23 @@ class MainActivity : AppCompatActivity(), PermissionDialog.OnCancelListener {
         }
         codeScanner.torchState.observe(this) {
             onFlashOn(it == true)
+        }
+        val size = viewModel.resultLiveData.value?.size ?: 0
+        if (size >= 2) {
+            binding.dummy.updateLayoutParams<ConstraintLayout.LayoutParams> {
+                height = 0
+            }
+        }
+        viewModel.resultLiveData.observe(this, adapter)
+        viewModel.resultLiveData.observe(this) {
+            if (it == null) return@observe
+            binding.resultList.scrollToPosition(adapter.itemCount - 1)
+            if (it.isNotEmpty()) {
+                binding.scanning.isGone = true
+            }
+            if (it.size == 2) {
+                expandList()
+            }
         }
         if (CameraPermission.hasPermission(this)) {
             startCamera()
@@ -139,9 +158,6 @@ class MainActivity : AppCompatActivity(), PermissionDialog.OnCancelListener {
     }
 
     private fun onDetectCode(codes: List<Barcode>) {
-        if (codes.isNotEmpty()) {
-            binding.scanning.isGone = true
-        }
         codes.forEach {
             val value = it.rawValue ?: return@forEach
             val result = ScanResult(
@@ -150,11 +166,8 @@ class MainActivity : AppCompatActivity(), PermissionDialog.OnCancelListener {
                 format = it.formatString(),
                 isUrl = it.valueType == Barcode.TYPE_URL
             )
-            if (!adapter.add(result)) return@forEach
-            vibrate()
-            binding.resultList.scrollToPosition(adapter.itemCount - 1)
-            if (adapter.itemCount == 2) {
-                expandList()
+            if (viewModel.add(result)) {
+                vibrate()
             }
         }
     }
