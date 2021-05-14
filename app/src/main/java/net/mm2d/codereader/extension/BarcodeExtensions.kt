@@ -28,11 +28,11 @@ fun Barcode.typeString(): String =
 
 fun Barcode.formatString(): String =
     when (format) {
-        Barcode.FORMAT_CODE_128 -> "code 128"
-        Barcode.FORMAT_CODE_39 -> "code 39"
-        Barcode.FORMAT_CODE_93 -> "code 93"
-        Barcode.FORMAT_CODABAR -> "codabar"
-        Barcode.FORMAT_DATA_MATRIX -> "data matrix"
+        Barcode.FORMAT_CODE_128 -> "CODE-128"
+        Barcode.FORMAT_CODE_39 -> "CODE-39"
+        Barcode.FORMAT_CODE_93 -> "CODE-93"
+        Barcode.FORMAT_CODABAR -> "NW-7 CODABAR"
+        Barcode.FORMAT_DATA_MATRIX -> "Data Matrix"
         Barcode.FORMAT_EAN_13 -> "EAN-13"
         Barcode.FORMAT_EAN_8 -> "EAN-8"
         Barcode.FORMAT_ITF -> "ITF"
