@@ -190,6 +190,7 @@ class MainActivity : AppCompatActivity(), PermissionDialog.OnCancelListener {
                 VibrationEffect.createOneShot(30, VibrationEffect.DEFAULT_AMPLITUDE)
             )
         } else {
+            @Suppress("DEPRECATION")
             vibrator.vibrate(30)
         }
     }
