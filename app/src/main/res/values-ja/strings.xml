@@ -19,10 +19,8 @@
     <string name="options_menu_settings">設定</string>
 
     <string name="scanning">読み取っています…</string>
-    <string name="format_place_holder">format: </string>
-    <string name="type_place_holder">type: </string>
-    <string name="format">format: %1$s</string>
-    <string name="type">type: %1$s</string>
+    <string name="label_format">format:</string>
+    <string name="label_type">type:</string>
 
     <string name="action_copy">コピー</string>
     <string name="action_share">シェア</string>

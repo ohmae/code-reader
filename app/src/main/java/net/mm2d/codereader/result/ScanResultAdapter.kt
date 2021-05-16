@@ -65,8 +65,8 @@ class ScanResultAdapter(
         fun apply(result: ScanResult) {
             val context = binding.root.context
             binding.resultValue.text = result.value
-            binding.resultType.text = context.getString(R.string.type, result.type)
-            binding.resultFormat.text = context.getString(R.string.format, result.format)
+            binding.resultType.text = result.type
+            binding.resultFormat.text = result.format
         }
     }
 }

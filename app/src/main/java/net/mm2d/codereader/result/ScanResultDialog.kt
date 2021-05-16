@@ -27,8 +27,8 @@ class ScanResultDialog : DialogFragment() {
         val result: ScanResult? = requireArguments().getParcelable(KEY_SCAN_RESULT)
         result?.let {
             binding.resultValue.text = result.value
-            binding.resultType.text = getString(R.string.type, result.type)
-            binding.resultFormat.text = getString(R.string.format, result.format)
+            binding.resultType.text = result.type
+            binding.resultFormat.text = result.format
             if (result.isUrl) {
                 binding.openButton.setText(R.string.action_open)
                 binding.openButton.setOnClickListener {

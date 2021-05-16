@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/result_height"
     android:background="?attr/background"
@@ -9,13 +10,39 @@
     >
 
     <TextView
-        android:id="@+id/result_type"
-        android:layout_width="100dp"
+        android:id="@+id/label_type"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:text="@string/type_place_holder"
+        android:text="@string/label_type"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+        android:textColor="?android:textColorSecondary"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <TextView
+        android:id="@+id/result_type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+        app:layout_constraintStart_toEndOf="@id/label_type"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="URL"
+        />
+
+    <TextView
+        android:id="@+id/label_format"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="132dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/label_format"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+        android:textColor="?android:textColorSecondary"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         />
@@ -24,12 +51,12 @@
         android:id="@+id/result_format"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="@string/format_place_holder"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
-        app:layout_constraintStart_toEndOf="@id/result_type"
+        app:layout_constraintStart_toEndOf="@id/label_format"
         app:layout_constraintTop_toTopOf="parent"
+        tools:text="QR code"
         />
 
     <TextView
