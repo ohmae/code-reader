@@ -23,7 +23,7 @@ android {
         versionCode = versionMajor * 10000 + versionMinor * 100 + versionPatch
         versionName = "${versionMajor}.${versionMinor}.${versionPatch}"
         vectorDrawables.useSupportLibrary = true
-        base.archivesBaseName = "${applicationName}-${versionName}"
+        base.archivesName.set("${applicationName}-${versionName}")
         multiDexEnabled = true
     }
     buildTypes {
@@ -61,7 +61,7 @@ dependencies {
     implementation("androidx.core:core-ktx:1.5.0")
     implementation("androidx.appcompat:appcompat:1.3.0")
     implementation("androidx.activity:activity-ktx:1.2.3")
-    implementation("androidx.fragment:fragment-ktx:1.3.4")
+    implementation("androidx.fragment:fragment-ktx:1.3.5")
     implementation("androidx.preference:preference-ktx:1.1.1")
     implementation("com.google.android.material:material:1.3.0")
     implementation("com.google.android.play:core:1.10.0")
@@ -76,10 +76,10 @@ dependencies {
     implementation("com.jakewharton.timber:timber:4.7.1")
 
     debugImplementation("com.squareup.leakcanary:leakcanary-android:2.7")
-    debugImplementation("com.facebook.flipper:flipper:0.92.0")
+    debugImplementation("com.facebook.flipper:flipper:0.95.0")
     debugImplementation("com.facebook.soloader:soloader:0.10.1")
-    debugImplementation("com.facebook.flipper:flipper-network-plugin:0.92.0")
-    debugImplementation("com.facebook.flipper:flipper-leakcanary2-plugin:0.92.0")
+    debugImplementation("com.facebook.flipper:flipper-network-plugin:0.95.0")
+    debugImplementation("com.facebook.flipper:flipper-leakcanary2-plugin:0.95.0")
 }
 
 fun isStable(version: String): Boolean {
