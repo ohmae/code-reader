@@ -111,12 +111,12 @@ class MainActivity : AppCompatActivity(), PermissionDialog.OnCancelListener {
     }
 
     private fun onPermissionResult(granted: Boolean) {
-        if (granted) {
-            startCamera()
-        } else {
-            if (CameraPermission.deniedWithoutShowDialog(this)) {
+        when {
+            granted ->
+                startCamera()
+            CameraPermission.deniedWithoutShowDialog(this) ->
                 PermissionDialog.show(this)
-            } else {
+            else -> {
                 toastPermissionError()
                 finishByError()
             }
