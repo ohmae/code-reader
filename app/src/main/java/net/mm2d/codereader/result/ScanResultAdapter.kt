@@ -14,7 +14,6 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
-import net.mm2d.codereader.R
 import net.mm2d.codereader.databinding.ItemResultBinding
 import net.mm2d.codereader.result.ScanResultAdapter.ViewHolder
 
@@ -63,7 +62,6 @@ class ScanResultAdapter(
         private val binding: ItemResultBinding
     ) : RecyclerView.ViewHolder(binding.root) {
         fun apply(result: ScanResult) {
-            val context = binding.root.context
             binding.resultValue.text = result.value
             binding.resultType.text = result.type
             binding.resultFormat.text = result.format

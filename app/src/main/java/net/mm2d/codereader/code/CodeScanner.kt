@@ -68,8 +68,8 @@ class CodeScanner(
             provider.bindToLifecycle(
                 activity, CameraSelector.DEFAULT_BACK_CAMERA, preview, analysis
             ).let {
-                it.cameraInfo.torchState.observe(activity) {
-                    torchState.postValue(it == TorchState.ON)
+                it.cameraInfo.torchState.observe(activity) { state ->
+                    torchState.postValue(state == TorchState.ON)
                 }
                 camera = it
             }

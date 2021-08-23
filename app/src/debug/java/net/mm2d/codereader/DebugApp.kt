@@ -50,9 +50,7 @@ class DebugApp : App() {
         detectLeakedClosableObjects()
         detectLeakedRegistrationObjects()
         detectFileUriExposure()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            detectCleartextNetwork()
-        }
+        detectCleartextNetwork()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             detectContentUriWithoutPermission()
         }

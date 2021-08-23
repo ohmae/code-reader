@@ -27,8 +27,7 @@ object BrowserPackageHelper {
     }
 
     private fun getBrowserPackagesInner(context: Context): Set<String> {
-        val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-            PackageManager.MATCH_ALL else 0
+        val flags = PackageManager.MATCH_ALL
         return context.packageManager
             .queryIntentActivities(makeBrowserTestIntent(), flags)
             .mapNotNull { it.activityInfo?.packageName }
