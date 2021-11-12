@@ -36,14 +36,13 @@ object CameraPermission {
         }
 
         override fun getSynchronousResult(
-            context: Context, input: Unit?
-        ): SynchronousResult<Boolean>? {
-            return when {
-                input == null -> SynchronousResult(false)
-                hasPermission(context) -> SynchronousResult(true)
-                else -> null
+            context: Context, input: Unit
+        ): SynchronousResult<Boolean>? =
+            if (hasPermission(context)) {
+                SynchronousResult(true)
+            } else {
+                null
             }
-        }
     }
 
     fun deniedWithoutShowDialog(activity: Activity): Boolean =
