@@ -75,10 +75,10 @@ dependencies {
     implementation("com.jakewharton.timber:timber:5.0.1")
 
     debugImplementation("com.squareup.leakcanary:leakcanary-android:2.7")
-    debugImplementation("com.facebook.flipper:flipper:0.123.0")
+    debugImplementation("com.facebook.flipper:flipper:0.124.0")
     debugImplementation("com.facebook.soloader:soloader:0.10.3")
-    debugImplementation("com.facebook.flipper:flipper-network-plugin:0.123.0")
-    debugImplementation("com.facebook.flipper:flipper-leakcanary2-plugin:0.123.0")
+    debugImplementation("com.facebook.flipper:flipper-network-plugin:0.124.0")
+    debugImplementation("com.facebook.flipper:flipper-leakcanary2-plugin:0.124.0")
 }
 
 fun isStable(version: String): Boolean {
