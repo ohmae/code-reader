@@ -57,21 +57,28 @@
         tools:text="QR code"
         />
 
-    <TextView
-        android:id="@+id/result_value"
+    <ScrollView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="32dp"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+        android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toTopOf="@id/share_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/result_type"
-        app:layout_constraintVertical_bias="0.0"
-        />
+        app:layout_constrainedHeight="true"
+        >
+
+        <TextView
+            android:id="@+id/result_value"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+            tools:text="テスト"
+            />
+    </ScrollView>
 
     <Button
         android:id="@+id/open_button"

@@ -24,7 +24,7 @@ import androidx.core.content.getSystemService
 import androidx.core.view.isGone
 import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.DividerItemDecoration
-import com.google.mlkit.vision.barcode.Barcode
+import com.google.mlkit.vision.barcode.common.Barcode
 import net.mm2d.codereader.code.CodeScanner
 import net.mm2d.codereader.databinding.ActivityMainBinding
 import net.mm2d.codereader.extension.formatString

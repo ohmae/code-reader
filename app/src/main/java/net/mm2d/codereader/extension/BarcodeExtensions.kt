@@ -7,7 +7,7 @@
 
 package net.mm2d.codereader.extension
 
-import com.google.mlkit.vision.barcode.Barcode
+import com.google.mlkit.vision.barcode.common.Barcode
 
 fun Barcode.typeString(): String =
     when (valueType) {
