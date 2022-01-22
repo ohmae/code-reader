@@ -58,14 +58,14 @@ android {
 dependencies {
     implementation(kotlin("stdlib"))
     implementation("androidx.core:core-ktx:1.7.0")
-    implementation("androidx.appcompat:appcompat:1.4.0")
+    implementation("androidx.appcompat:appcompat:1.4.1")
     implementation("androidx.activity:activity-ktx:1.4.0")
     implementation("androidx.fragment:fragment-ktx:1.4.0")
     implementation("androidx.preference:preference-ktx:1.1.1")
-    implementation("com.google.android.material:material:1.4.0")
-    implementation("com.google.android.play:core:1.10.2")
+    implementation("com.google.android.material:material:1.5.0")
+    implementation("com.google.android.play:core:1.10.3")
     implementation("com.google.android.play:core-ktx:1.8.1")
-    implementation("androidx.constraintlayout:constraintlayout:2.1.2")
+    implementation("androidx.constraintlayout:constraintlayout:2.1.3")
     implementation("androidx.camera:camera-camera2:1.0.2")
     implementation("androidx.camera:camera-lifecycle:1.0.2")
     implementation("androidx.camera:camera-view:1.0.0-alpha32")
@@ -75,10 +75,10 @@ dependencies {
     implementation("com.jakewharton.timber:timber:5.0.1")
 
     debugImplementation("com.squareup.leakcanary:leakcanary-android:2.8.1")
-    debugImplementation("com.facebook.flipper:flipper:0.127.0")
+    debugImplementation("com.facebook.flipper:flipper:0.129.0")
     debugImplementation("com.facebook.soloader:soloader:0.10.3")
-    debugImplementation("com.facebook.flipper:flipper-network-plugin:0.127.0")
-    debugImplementation("com.facebook.flipper:flipper-leakcanary2-plugin:0.127.0")
+    debugImplementation("com.facebook.flipper:flipper-network-plugin:0.129.0")
+    debugImplementation("com.facebook.flipper:flipper-leakcanary2-plugin:0.129.0")
 }
 
 fun isStable(version: String): Boolean {
