@@ -23,7 +23,7 @@ object Launcher {
     private const val PACKAGE_NAME = "net.mm2d.codereader"
 
     private const val PRIVACY_POLICY_URL =
-        "https://github.com/ohmae/code-reader/blob/master/PRIVACY-POLICY.md"
+        "https://ohmae.github.io/app/code-reader/privacy-policy.html"
     private const val GITHUB_URL =
         "https://github.com/ohmae/code-reader/"
 
