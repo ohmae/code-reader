@@ -68,7 +68,7 @@ dependencies {
     implementation("com.google.android.material:material:1.6.0")
     implementation("com.google.android.play:core:1.10.3")
     implementation("com.google.android.play:core-ktx:1.8.1")
-    implementation("androidx.constraintlayout:constraintlayout:2.1.3")
+    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.camera:camera-camera2:1.1.0-rc01")
     implementation("androidx.camera:camera-lifecycle:1.1.0-rc01")
     implementation("androidx.camera:camera-view:1.1.0-rc01")
@@ -78,10 +78,10 @@ dependencies {
     implementation("com.jakewharton.timber:timber:5.0.1")
 
     debugImplementation("com.squareup.leakcanary:leakcanary-android:2.9.1")
-    debugImplementation("com.facebook.flipper:flipper:0.145.0")
+    debugImplementation("com.facebook.flipper:flipper:0.147.1")
     debugImplementation("com.facebook.soloader:soloader:0.10.3")
-    debugImplementation("com.facebook.flipper:flipper-network-plugin:0.145.0")
-    debugImplementation("com.facebook.flipper:flipper-leakcanary2-plugin:0.145.0")
+    debugImplementation("com.facebook.flipper:flipper-network-plugin:0.147.1")
+    debugImplementation("com.facebook.flipper:flipper-leakcanary2-plugin:0.147.1")
 
     // for release
 }
