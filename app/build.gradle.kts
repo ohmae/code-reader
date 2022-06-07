@@ -28,12 +28,20 @@ android {
         base.archivesName.set("${applicationName}-${versionName}")
         multiDexEnabled = true
     }
+    applicationVariants.all {
+        if (buildType.name == "release") {
+            outputs.all {
+                (this as com.android.build.gradle.internal.api.BaseVariantOutputImpl).outputFileName = "${applicationName}-${versionName}.apk"
+            }
+        }
+    }
     buildTypes {
-        getByName("debug") {
+        debug {
             isDebuggable = true
             applicationIdSuffix = ".debug"
+            isTestCoverageEnabled = true
         }
-        getByName("release") {
+        release {
             isShrinkResources = true
             isMinifyEnabled = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
@@ -49,39 +57,38 @@ android {
     buildFeatures {
         viewBinding = true
     }
-    applicationVariants.all {
-        if (buildType.name == "release") {
-            outputs.all {
-                (this as com.android.build.gradle.internal.api.BaseVariantOutputImpl).outputFileName = "${applicationName}-${versionName}.apk"
-            }
-        }
+    lint {
+        abortOnError = true
+    }
+    testOptions {
+        unitTests.isIncludeAndroidResources = true
     }
 }
 
 dependencies {
     implementation(kotlin("stdlib"))
-    implementation("androidx.core:core-ktx:1.7.0")
-    implementation("androidx.appcompat:appcompat:1.4.1")
+    implementation("androidx.core:core-ktx:1.8.0")
+    implementation("androidx.appcompat:appcompat:1.4.2")
     implementation("androidx.activity:activity-ktx:1.4.0")
     implementation("androidx.fragment:fragment-ktx:1.4.1")
     implementation("androidx.preference:preference-ktx:1.2.0")
-    implementation("com.google.android.material:material:1.6.0")
+    implementation("com.google.android.material:material:1.6.1")
     implementation("com.google.android.play:core:1.10.3")
     implementation("com.google.android.play:core-ktx:1.8.1")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-    implementation("androidx.camera:camera-camera2:1.1.0-rc01")
-    implementation("androidx.camera:camera-lifecycle:1.1.0-rc01")
-    implementation("androidx.camera:camera-view:1.1.0-rc01")
+    implementation("androidx.camera:camera-camera2:1.1.0-rc02")
+    implementation("androidx.camera:camera-lifecycle:1.1.0-rc02")
+    implementation("androidx.camera:camera-view:1.1.0-rc02")
     implementation("androidx.browser:browser:1.4.0")
     implementation("androidx.webkit:webkit:1.4.0")
     implementation("com.google.mlkit:barcode-scanning:17.0.2")
     implementation("com.jakewharton.timber:timber:5.0.1")
 
     debugImplementation("com.squareup.leakcanary:leakcanary-android:2.9.1")
-    debugImplementation("com.facebook.flipper:flipper:0.147.1")
+    debugImplementation("com.facebook.flipper:flipper:0.148.0")
     debugImplementation("com.facebook.soloader:soloader:0.10.3")
-    debugImplementation("com.facebook.flipper:flipper-network-plugin:0.147.1")
-    debugImplementation("com.facebook.flipper:flipper-leakcanary2-plugin:0.147.1")
+    debugImplementation("com.facebook.flipper:flipper-network-plugin:0.148.0")
+    debugImplementation("com.facebook.flipper:flipper-leakcanary2-plugin:0.148.0")
 
     // for release
 }
