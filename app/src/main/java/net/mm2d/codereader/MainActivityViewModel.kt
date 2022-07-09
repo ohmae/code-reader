@@ -11,7 +11,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import net.mm2d.codereader.result.ScanResult
 
-class MainActivityViewModel: ViewModel() {
+class MainActivityViewModel : ViewModel() {
     val resultLiveData: MutableLiveData<List<ScanResult>> = MutableLiveData(emptyList())
 
     fun add(result: ScanResult): Boolean {
