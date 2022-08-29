@@ -25,7 +25,6 @@
     <string name="action_copy">コピー</string>
     <string name="action_share">シェア</string>
     <string name="action_open">開く</string>
-    <string name="action_search">検索</string>
 
     <string name="preference_category_settings">設定</string>
     <string name="preference_title_vibration">バイブ</string>

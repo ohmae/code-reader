@@ -9,7 +9,6 @@ package net.mm2d.codereader.result
 
 import android.app.Dialog
 import android.os.Bundle
-import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
 import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
@@ -23,26 +22,19 @@ import net.mm2d.codereader.util.ReviewRequester
 class ScanResultDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val activity = requireActivity()
-        val binding = DialogResultBinding.inflate(LayoutInflater.from(activity))
+        val binding = DialogResultBinding.inflate(activity.layoutInflater)
         val result: ScanResult? = requireArguments().getParcelable(KEY_SCAN_RESULT)
         result?.let {
             binding.resultValue.text = result.value
             binding.resultType.text = result.type
             binding.resultFormat.text = result.format
-            if (result.isUrl) {
-                binding.openButton.setText(R.string.action_open)
-                binding.openButton.setOnClickListener {
-                    Launcher.openUri(activity, result.value)
-                    ReviewRequester.onAction()
-                    dismiss()
-                }
-            } else {
-                binding.openButton.setText(R.string.action_search)
-                binding.openButton.setOnClickListener {
+            binding.openButton.setText(R.string.action_open)
+            binding.openButton.setOnClickListener {
+                if (!Launcher.openUri(activity, result.value)) {
                     Launcher.search(activity, result.value)
-                    ReviewRequester.onAction()
-                    dismiss()
                 }
+                ReviewRequester.onAction()
+                dismiss()
             }
             binding.copyButton.setOnClickListener {
                 ClipboardUtils.copyToClipboard(activity, result.type, result.value)
