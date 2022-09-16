@@ -67,8 +67,8 @@ android {
 
 dependencies {
     implementation(kotlin("stdlib"))
-    implementation("androidx.core:core-ktx:1.8.0")
-    implementation("androidx.appcompat:appcompat:1.5.0")
+    implementation("androidx.core:core-ktx:1.9.0")
+    implementation("androidx.appcompat:appcompat:1.5.1")
     implementation("androidx.activity:activity-ktx:1.5.1")
     implementation("androidx.fragment:fragment-ktx:1.5.2")
     implementation("androidx.preference:preference-ktx:1.2.0")
@@ -85,10 +85,10 @@ dependencies {
     implementation("com.jakewharton.timber:timber:5.0.1")
 
     debugImplementation("com.squareup.leakcanary:leakcanary-android:2.9.1")
-    debugImplementation("com.facebook.flipper:flipper:0.162.0")
+    debugImplementation("com.facebook.flipper:flipper:0.164.0")
     debugImplementation("com.facebook.soloader:soloader:0.10.4")
-    debugImplementation("com.facebook.flipper:flipper-network-plugin:0.162.0")
-    debugImplementation("com.facebook.flipper:flipper-leakcanary2-plugin:0.162.0")
+    debugImplementation("com.facebook.flipper:flipper-network-plugin:0.164.0")
+    debugImplementation("com.facebook.flipper:flipper-leakcanary2-plugin:0.164.0")
 
     // for release
 }
