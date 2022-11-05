@@ -58,6 +58,7 @@
         />
 
     <ScrollView
+        android:id="@+id/result_area"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -100,7 +101,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/copy_button"
         app:layout_constraintStart_toEndOf="@id/open_button"
-        app:layout_constraintTop_toBottomOf="@id/result_value"
+        app:layout_constraintTop_toBottomOf="@id/result_area"
         />
 
     <Button
