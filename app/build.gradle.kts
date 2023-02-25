@@ -48,11 +48,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "11"
     }
     buildFeatures {
         viewBinding = true
@@ -68,7 +68,7 @@ android {
 dependencies {
     implementation(kotlin("stdlib"))
     implementation("androidx.core:core-ktx:1.9.0")
-    implementation("androidx.appcompat:appcompat:1.6.0")
+    implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("androidx.activity:activity-ktx:1.6.1")
     implementation("androidx.fragment:fragment-ktx:1.5.5")
     implementation("androidx.preference:preference-ktx:1.2.0")
@@ -79,16 +79,16 @@ dependencies {
     implementation("androidx.camera:camera-camera2:1.2.1")
     implementation("androidx.camera:camera-lifecycle:1.2.1")
     implementation("androidx.camera:camera-view:1.2.1")
-    implementation("androidx.browser:browser:1.4.0")
+    implementation("androidx.browser:browser:1.5.0")
     implementation("androidx.webkit:webkit:1.6.0")
     implementation("com.google.mlkit:barcode-scanning:17.0.3")
     implementation("com.jakewharton.timber:timber:5.0.1")
 
     debugImplementation("com.squareup.leakcanary:leakcanary-android:2.10")
-    debugImplementation("com.facebook.flipper:flipper:0.177.0")
+    debugImplementation("com.facebook.flipper:flipper:0.182.0")
     debugImplementation("com.facebook.soloader:soloader:0.10.5")
-    debugImplementation("com.facebook.flipper:flipper-network-plugin:0.177.0")
-    debugImplementation("com.facebook.flipper:flipper-leakcanary2-plugin:0.177.0")
+    debugImplementation("com.facebook.flipper:flipper-network-plugin:0.182.0")
+    debugImplementation("com.facebook.flipper:flipper-leakcanary2-plugin:0.182.0")
 
     // for release
 }
