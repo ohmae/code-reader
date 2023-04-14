@@ -1,4 +1,5 @@
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
+import java.util.Locale
 
 plugins {
     id("com.android.application")
@@ -67,7 +68,7 @@ android {
 
 dependencies {
     implementation(kotlin("stdlib"))
-    implementation("androidx.core:core-ktx:1.9.0")
+    implementation("androidx.core:core-ktx:1.10.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("androidx.activity:activity-ktx:1.7.0")
     implementation("androidx.fragment:fragment-ktx:1.5.6")
@@ -85,16 +86,16 @@ dependencies {
     implementation("com.jakewharton.timber:timber:5.0.1")
 
     debugImplementation("com.squareup.leakcanary:leakcanary-android:2.10")
-    debugImplementation("com.facebook.flipper:flipper:0.187.0")
+    debugImplementation("com.facebook.flipper:flipper:0.189.0")
     debugImplementation("com.facebook.soloader:soloader:0.10.5")
-    debugImplementation("com.facebook.flipper:flipper-network-plugin:0.187.0")
-    debugImplementation("com.facebook.flipper:flipper-leakcanary2-plugin:0.187.0")
+    debugImplementation("com.facebook.flipper:flipper-network-plugin:0.189.0")
+    debugImplementation("com.facebook.flipper:flipper-leakcanary2-plugin:0.189.0")
 
     // for release
 }
 
 fun isStable(version: String): Boolean {
-    val versionUpperCase = version.toUpperCase()
+    val versionUpperCase = version.uppercase(Locale.getDefault())
     val hasStableKeyword = listOf("RELEASE", "FINAL", "GA").any { versionUpperCase.contains(it) }
     val regex = "^[0-9,.v-]+(-r)?$".toRegex()
     return hasStableKeyword || regex.matches(version)
