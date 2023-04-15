@@ -37,10 +37,9 @@ class ScanResultAdapter(
 
     override fun getItemCount(): Int = results.size
 
-    override fun onChanged(list: List<ScanResult>?) {
-        list ?: return
-        val diff = DiffUtil.calculateDiff(DiffCallback(results, list))
-        results = list
+    override fun onChanged(value: List<ScanResult>) {
+        val diff = DiffUtil.calculateDiff(DiffCallback(results, value))
+        results = value
         diff.dispatchUpdatesTo(this)
     }
 
