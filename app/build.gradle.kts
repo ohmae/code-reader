@@ -70,10 +70,10 @@ dependencies {
     implementation(kotlin("stdlib"))
     implementation("androidx.core:core-ktx:1.10.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("androidx.activity:activity-ktx:1.7.0")
-    implementation("androidx.fragment:fragment-ktx:1.5.6")
+    implementation("androidx.activity:activity-ktx:1.7.1")
+    implementation("androidx.fragment:fragment-ktx:1.5.7")
     implementation("androidx.preference:preference-ktx:1.2.0")
-    implementation("com.google.android.material:material:1.8.0")
+    implementation("com.google.android.material:material:1.9.0")
     implementation("com.google.android.play:core:1.10.3")
     implementation("com.google.android.play:core-ktx:1.8.1")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
@@ -86,10 +86,10 @@ dependencies {
     implementation("com.jakewharton.timber:timber:5.0.1")
 
     debugImplementation("com.squareup.leakcanary:leakcanary-android:2.10")
-    debugImplementation("com.facebook.flipper:flipper:0.189.0")
+    debugImplementation("com.facebook.flipper:flipper:0.190.0")
     debugImplementation("com.facebook.soloader:soloader:0.10.5")
-    debugImplementation("com.facebook.flipper:flipper-network-plugin:0.189.0")
-    debugImplementation("com.facebook.flipper:flipper-leakcanary2-plugin:0.189.0")
+    debugImplementation("com.facebook.flipper:flipper-network-plugin:0.190.0")
+    debugImplementation("com.facebook.flipper:flipper-leakcanary2-plugin:0.190.0")
 
     // for release
 }
