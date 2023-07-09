@@ -7,17 +7,21 @@
 
 package net.mm2d.codereader
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
 import net.mm2d.codereader.result.ScanResult
 
 class MainActivityViewModel : ViewModel() {
-    val resultLiveData: MutableLiveData<List<ScanResult>> = MutableLiveData(emptyList())
+    val resultFlow: MutableStateFlow<List<ScanResult>> = MutableStateFlow(emptyList())
 
-    fun add(result: ScanResult): Boolean {
-        val results = resultLiveData.value ?: emptyList()
-        if (results.contains(result)) return false
-        resultLiveData.value = results + result
-        return true
+    fun add(result: ScanResult) {
+        resultFlow.update {
+            if (it.contains(result)) {
+                it
+            } else {
+                it + result
+            }
+        }
     }
 }

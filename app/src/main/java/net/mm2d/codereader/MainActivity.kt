@@ -37,6 +37,7 @@ import net.mm2d.codereader.setting.Settings
 import net.mm2d.codereader.util.Launcher
 import net.mm2d.codereader.util.ReviewRequester
 import net.mm2d.codereader.util.Updater
+import net.mm2d.codereader.util.observe
 
 class MainActivity : AppCompatActivity(), PermissionDialog.OnCancelListener {
     private lateinit var binding: ActivityMainBinding
@@ -51,6 +52,7 @@ class MainActivity : AppCompatActivity(), PermissionDialog.OnCancelListener {
     private val settings: Settings by lazy {
         Settings.get()
     }
+    private var resultSet: Set<ScanResult> = emptySet()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,15 +74,15 @@ class MainActivity : AppCompatActivity(), PermissionDialog.OnCancelListener {
         codeScanner.torchState.observe(this) {
             onFlashOn(it == true)
         }
-        val size = viewModel.resultLiveData.value?.size ?: 0
+        val size = viewModel.resultFlow.value.size
         if (size >= 2) {
             binding.dummy.updateLayoutParams<ConstraintLayout.LayoutParams> {
                 height = 0
             }
         }
-        viewModel.resultLiveData.observe(this, adapter)
-        viewModel.resultLiveData.observe(this) {
-            if (it == null) return@observe
+        viewModel.resultFlow.observe(this) {
+            resultSet = it.toSet()
+            adapter.onChanged(it)
             binding.resultList.scrollToPosition(adapter.itemCount - 1)
             if (it.isNotEmpty()) {
                 binding.scanning.isGone = true
@@ -113,8 +115,10 @@ class MainActivity : AppCompatActivity(), PermissionDialog.OnCancelListener {
         when {
             granted ->
                 startCamera()
+
             CameraPermission.deniedWithoutShowDialog(this) ->
                 PermissionDialog.show(this)
+
             else -> {
                 toastPermissionError()
                 finishByError()
@@ -165,7 +169,8 @@ class MainActivity : AppCompatActivity(), PermissionDialog.OnCancelListener {
                 format = it.formatString(),
                 isUrl = it.valueType == Barcode.TYPE_URL
             )
-            if (viewModel.add(result)) {
+            if (!resultSet.contains(result)) {
+                viewModel.add(result)
                 vibrate()
             }
         }
