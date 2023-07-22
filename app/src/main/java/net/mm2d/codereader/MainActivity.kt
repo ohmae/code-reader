@@ -71,8 +71,8 @@ class MainActivity : AppCompatActivity(), PermissionDialog.OnCancelListener {
         binding.flash.setOnClickListener {
             codeScanner.toggleTorch()
         }
-        codeScanner.torchState.observe(this) {
-            onFlashOn(it == true)
+        codeScanner.torchStateFlow.observe(this) {
+            onFlashOn(it)
         }
         val size = viewModel.resultFlow.value.size
         if (size >= 2) {

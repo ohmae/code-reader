@@ -14,7 +14,7 @@ object Maintainer {
     private const val SETTINGS_VERSION = 1
 
     fun maintain(preferences: Preferences<Main>) {
-        Main.values().checkSuffix()
+        Main.entries.checkSuffix()
         if (preferences.readInt(Main.APP_VERSION_AT_LAST_LAUNCHED_INT, 0)
             != BuildConfig.VERSION_CODE
         ) {

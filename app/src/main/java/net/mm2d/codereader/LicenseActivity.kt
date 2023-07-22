@@ -18,7 +18,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.webkit.WebSettingsCompat
 import androidx.webkit.WebViewFeature
 import net.mm2d.codereader.databinding.ActivityLicenseBinding
-import net.mm2d.codereader.extension.isNightMode
+import net.mm2d.codereader.extension.isDarkMode
 import net.mm2d.codereader.util.Launcher
 
 class LicenseActivity : AppCompatActivity() {
@@ -34,7 +34,7 @@ class LicenseActivity : AppCompatActivity() {
             it.setSupportZoom(false)
             it.displayZoomControls = false
             if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {
-                val mode = if (isNightMode()) {
+                val mode = if (isDarkMode()) {
                     WebSettingsCompat.FORCE_DARK_ON
                 } else {
                     WebSettingsCompat.FORCE_DARK_OFF

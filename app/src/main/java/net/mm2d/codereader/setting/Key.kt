@@ -42,7 +42,7 @@ private val SUFFIXES =
         SUFFIX_STRING
     )
 
-internal fun Array<out Enum<*>>.checkSuffix() {
+internal fun Collection<Enum<*>>.checkSuffix() {
     if (!BuildConfig.DEBUG) return
     forEach { key ->
         require(SUFFIXES.any { key.name.endsWith(it) }) { "$key has no type suffix." }
@@ -55,15 +55,19 @@ internal fun Enum<*>.checkSuffix(value: Any) {
         is Boolean -> require(name.endsWith(SUFFIX_BOOLEAN)) {
             "$this is used for Boolean, suffix \"$SUFFIX_BOOLEAN\" is required."
         }
+
         is Int -> require(name.endsWith(SUFFIX_INT)) {
             "$this is used for Int, suffix \"$SUFFIX_INT\" is required."
         }
+
         is Long -> require(name.endsWith(SUFFIX_LONG)) {
             "$this is used for Long, suffix \"$SUFFIX_LONG\" is required."
         }
+
         is Float -> require(name.endsWith(SUFFIX_FLOAT)) {
             "$this is used for Float, suffix \"$SUFFIX_FLOAT\" is required."
         }
+
         is String -> require(name.endsWith(SUFFIX_STRING)) {
             "$this is used for String, suffix \"$SUFFIX_STRING\" is required."
         }

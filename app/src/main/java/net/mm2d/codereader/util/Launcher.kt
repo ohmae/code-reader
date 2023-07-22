@@ -16,7 +16,7 @@ import androidx.browser.customtabs.CustomTabColorSchemeParams
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.app.ShareCompat
 import net.mm2d.codereader.R
-import net.mm2d.codereader.extension.isNightMode
+import net.mm2d.codereader.extension.isDarkMode
 import net.mm2d.codereader.extension.resolveColor
 
 object Launcher {
@@ -46,7 +46,7 @@ object Launcher {
 
     fun openCustomTabs(context: Context, uri: Uri): Boolean = runCatching {
         val scheme =
-            if (context.isNightMode()) CustomTabsIntent.COLOR_SCHEME_DARK
+            if (context.isDarkMode()) CustomTabsIntent.COLOR_SCHEME_DARK
             else CustomTabsIntent.COLOR_SCHEME_LIGHT
         val params = CustomTabColorSchemeParams.Builder()
             .setToolbarColor(context.resolveColor(R.attr.background))
