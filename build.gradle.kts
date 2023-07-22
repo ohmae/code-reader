@@ -5,7 +5,3 @@ plugins {
 
     // for release
 }
-
-tasks.create("clean", Delete::class) {
-    delete(rootProject.buildDir)
-}
