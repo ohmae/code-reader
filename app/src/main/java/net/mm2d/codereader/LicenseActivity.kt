@@ -56,7 +56,16 @@ class LicenseActivity : AppCompatActivity() {
                 return Launcher.openCustomTabs(this@LicenseActivity, uri)
             }
         }
-        binding.webView.loadUrl("file:///android_asset/license.html")
+        if (savedInstanceState == null) {
+            binding.webView.loadUrl("file:///android_asset/license.html")
+        } else {
+            binding.webView.restoreState(savedInstanceState)
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        binding.webView.saveState(outState)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

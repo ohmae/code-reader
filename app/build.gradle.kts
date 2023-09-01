@@ -16,7 +16,7 @@ val versionMinor = 1
 val versionPatch = 4
 
 android {
-    compileSdk = 33
+    compileSdk = 34
 
     namespace = "net.mm2d.codereader"
     defaultConfig {
@@ -71,8 +71,8 @@ dependencies {
     implementation("androidx.core:core-ktx:1.10.1")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("androidx.activity:activity-ktx:1.7.2")
-    implementation("androidx.fragment:fragment-ktx:1.6.0")
-    implementation("androidx.preference:preference-ktx:1.2.0")
+    implementation("androidx.fragment:fragment-ktx:1.6.1")
+    implementation("androidx.preference:preference-ktx:1.2.1")
     implementation("com.google.android.material:material:1.9.0")
     implementation("com.google.android.play:core:1.10.3")
     implementation("com.google.android.play:core-ktx:1.8.1")
@@ -80,16 +80,16 @@ dependencies {
     implementation("androidx.camera:camera-camera2:1.2.3")
     implementation("androidx.camera:camera-lifecycle:1.2.3")
     implementation("androidx.camera:camera-view:1.2.3")
-    implementation("androidx.browser:browser:1.5.0")
+    implementation("androidx.browser:browser:1.6.0")
     implementation("androidx.webkit:webkit:1.7.0")
-    implementation("com.google.mlkit:barcode-scanning:17.1.0")
+    implementation("com.google.mlkit:barcode-scanning:17.2.0")
     implementation("com.jakewharton.timber:timber:5.0.1")
 
     debugImplementation("com.squareup.leakcanary:leakcanary-android:2.12")
-    debugImplementation("com.facebook.flipper:flipper:0.201.0")
+    debugImplementation("com.facebook.flipper:flipper:0.214.0")
     debugImplementation("com.facebook.soloader:soloader:0.10.5")
-    debugImplementation("com.facebook.flipper:flipper-network-plugin:0.201.0")
-    debugImplementation("com.facebook.flipper:flipper-leakcanary2-plugin:0.201.0")
+    debugImplementation("com.facebook.flipper:flipper-network-plugin:0.214.0")
+    debugImplementation("com.facebook.flipper:flipper-leakcanary2-plugin:0.214.0")
 
     // for release
 }
