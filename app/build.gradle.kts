@@ -68,7 +68,7 @@ android {
 
 dependencies {
     implementation(kotlin("stdlib"))
-    implementation("androidx.core:core-ktx:1.10.1")
+    implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("androidx.activity:activity-ktx:1.7.2")
     implementation("androidx.fragment:fragment-ktx:1.6.1")
@@ -81,15 +81,15 @@ dependencies {
     implementation("androidx.camera:camera-lifecycle:1.2.3")
     implementation("androidx.camera:camera-view:1.2.3")
     implementation("androidx.browser:browser:1.6.0")
-    implementation("androidx.webkit:webkit:1.7.0")
+    implementation("androidx.webkit:webkit:1.8.0")
     implementation("com.google.mlkit:barcode-scanning:17.2.0")
     implementation("com.jakewharton.timber:timber:5.0.1")
 
     debugImplementation("com.squareup.leakcanary:leakcanary-android:2.12")
-    debugImplementation("com.facebook.flipper:flipper:0.214.0")
+    debugImplementation("com.facebook.flipper:flipper:0.219.0")
     debugImplementation("com.facebook.soloader:soloader:0.10.5")
-    debugImplementation("com.facebook.flipper:flipper-network-plugin:0.214.0")
-    debugImplementation("com.facebook.flipper:flipper-leakcanary2-plugin:0.214.0")
+    debugImplementation("com.facebook.flipper:flipper-network-plugin:0.219.0")
+    debugImplementation("com.facebook.flipper:flipper-leakcanary2-plugin:0.219.0")
 
     // for release
 }
