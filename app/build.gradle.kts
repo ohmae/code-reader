@@ -22,7 +22,7 @@ android {
     defaultConfig {
         applicationId = "net.mm2d.codereader"
         minSdk = 23
-        targetSdk = 33
+        targetSdk = 34
         versionCode = versionMajor * 10000 + versionMinor * 100 + versionPatch
         versionName = "${versionMajor}.${versionMinor}.${versionPatch}"
         vectorDrawables.useSupportLibrary = true
