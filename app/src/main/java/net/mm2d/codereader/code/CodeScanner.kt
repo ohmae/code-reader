@@ -30,7 +30,7 @@ import java.util.concurrent.Executors
 class CodeScanner(
     private val activity: ComponentActivity,
     private val previewView: PreviewView,
-    callback: (List<Barcode>) -> Unit
+    callback: (List<Barcode>) -> Unit,
 ) {
     private val workerExecutor: ExecutorService = Executors.newSingleThreadExecutor()
     private val scanner: BarcodeScanner = BarcodeScanning.getClient()
@@ -45,7 +45,7 @@ class CodeScanner(
                     workerExecutor.shutdown()
                     scanner.close()
                 }
-            }
+            },
         )
     }
 
@@ -71,7 +71,10 @@ class CodeScanner(
         try {
             provider.unbindAll()
             provider.bindToLifecycle(
-                activity, CameraSelector.DEFAULT_BACK_CAMERA, preview, analysis
+                activity,
+                CameraSelector.DEFAULT_BACK_CAMERA,
+                preview,
+                analysis,
             ).let {
                 it.cameraInfo.torchState.observe(activity) { state ->
                     torchStateFlow.tryEmit(state == TorchState.ON)

@@ -39,7 +39,7 @@ private val SUFFIXES =
         SUFFIX_INT,
         SUFFIX_LONG,
         SUFFIX_FLOAT,
-        SUFFIX_STRING
+        SUFFIX_STRING,
     )
 
 internal fun Collection<Enum<*>>.checkSuffix() {

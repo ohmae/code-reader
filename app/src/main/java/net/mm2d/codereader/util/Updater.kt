@@ -26,7 +26,9 @@ object Updater {
                 if (it.isAvailable()) {
                     runCatching {
                         manager.startUpdateFlow(
-                            it, activity, AppUpdateOptions.defaultOptions(AppUpdateType.IMMEDIATE)
+                            it,
+                            activity,
+                            AppUpdateOptions.defaultOptions(AppUpdateType.IMMEDIATE),
                         )
                     }
                 }
@@ -35,6 +37,6 @@ object Updater {
 
     private fun AppUpdateInfo.isAvailable(): Boolean =
         updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE &&
-                clientVersionStalenessDays.let { it != null && it >= DAYS_FOR_UPDATE } &&
-                isImmediateUpdateAllowed
+            clientVersionStalenessDays.let { it != null && it >= DAYS_FOR_UPDATE } &&
+            isImmediateUpdateAllowed
 }

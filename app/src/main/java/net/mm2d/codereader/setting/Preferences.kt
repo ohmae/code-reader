@@ -12,14 +12,15 @@ import net.mm2d.codereader.BuildConfig
 
 class Preferences<K>(
     context: Context,
-    name: String
+    name: String,
 ) where K : Enum<*>,
         K : Key {
     val dataStore: SharedPreferenceDataStore =
         SharedPreferenceDataStore(
             context.getSharedPreferences(
-                BuildConfig.APPLICATION_ID + "." + name, Context.MODE_PRIVATE
-            )
+                BuildConfig.APPLICATION_ID + "." + name,
+                Context.MODE_PRIVATE,
+            ),
         )
 
     fun remove(key: K): Unit =

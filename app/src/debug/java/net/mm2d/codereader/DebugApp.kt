@@ -38,10 +38,10 @@ class DebugApp : App() {
 
     private fun setUpStrictMode() {
         StrictMode.setThreadPolicy(
-            StrictMode.ThreadPolicy.Builder().detectAll().penaltyLog().build()
+            StrictMode.ThreadPolicy.Builder().detectAll().penaltyLog().build(),
         )
         StrictMode.setVmPolicy(
-            StrictMode.VmPolicy.Builder().detectDefault().penaltyLog().build()
+            StrictMode.VmPolicy.Builder().detectDefault().penaltyLog().build(),
         )
     }
 

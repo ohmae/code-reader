@@ -19,7 +19,7 @@ import net.mm2d.codereader.result.ScanResultAdapter.ViewHolder
 
 class ScanResultAdapter(
     context: Context,
-    private val onItemClickListener: (ScanResult) -> Unit
+    private val onItemClickListener: (ScanResult) -> Unit,
 ) : Adapter<ViewHolder>(), Observer<List<ScanResult>> {
     private var results: List<ScanResult> = emptyList()
     private val layoutInflater = LayoutInflater.from(context)
@@ -45,7 +45,7 @@ class ScanResultAdapter(
 
     class DiffCallback(
         private val oldList: List<ScanResult>,
-        private val newList: List<ScanResult>
+        private val newList: List<ScanResult>,
     ) : DiffUtil.Callback() {
         override fun getOldListSize(): Int = oldList.size
         override fun getNewListSize(): Int = newList.size
@@ -58,7 +58,7 @@ class ScanResultAdapter(
     }
 
     class ViewHolder(
-        private val binding: ItemResultBinding
+        private val binding: ItemResultBinding,
     ) : RecyclerView.ViewHolder(binding.root) {
         fun apply(result: ScanResult) {
             binding.resultValue.text = result.value

@@ -17,7 +17,7 @@ import timber.log.Timber
 
 class CodeAnalyzer(
     private val scanner: BarcodeScanner,
-    private val callback: (List<Barcode>) -> Unit
+    private val callback: (List<Barcode>) -> Unit,
 ) : Analyzer {
     @SuppressLint("UnsafeOptInUsageError")
     override fun analyze(imageProxy: ImageProxy) {

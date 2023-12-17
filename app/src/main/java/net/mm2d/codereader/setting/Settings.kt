@@ -12,7 +12,7 @@ import androidx.preference.PreferenceFragmentCompat
 import net.mm2d.codereader.setting.Key.Main
 
 class Settings private constructor(
-    private val preferences: Preferences<Main>
+    private val preferences: Preferences<Main>,
 ) {
     var reviewIntervalRandomFactor: Long
         get() = preferences.readLong(Main.REVIEW_INTERVAL_RANDOM_FACTOR_LONG, 0L)

@@ -44,7 +44,8 @@ class MainActivity : AppCompatActivity(), PermissionDialog.OnCancelListener {
     private lateinit var codeScanner: CodeScanner
     private var started: Boolean = false
     private val launcher = registerForActivityResult(
-        CameraPermission.RequestContract(), ::onPermissionResult
+        CameraPermission.RequestContract(),
+        ::onPermissionResult,
     )
     private lateinit var adapter: ScanResultAdapter
     private lateinit var vibrator: Vibrator
@@ -64,7 +65,7 @@ class MainActivity : AppCompatActivity(), PermissionDialog.OnCancelListener {
         }
         binding.resultList.adapter = adapter
         binding.resultList.addItemDecoration(
-            DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
+            DividerItemDecoration(this, DividerItemDecoration.VERTICAL),
         )
         vibrator = getSystemService()!!
         codeScanner = CodeScanner(this, binding.previewView, ::onDetectCode)
@@ -167,7 +168,7 @@ class MainActivity : AppCompatActivity(), PermissionDialog.OnCancelListener {
                 value = value,
                 type = it.typeString(),
                 format = it.formatString(),
-                isUrl = it.valueType == Barcode.TYPE_URL
+                isUrl = it.valueType == Barcode.TYPE_URL,
             )
             if (!resultSet.contains(result)) {
                 viewModel.add(result)
@@ -191,7 +192,7 @@ class MainActivity : AppCompatActivity(), PermissionDialog.OnCancelListener {
         if (!settings.vibrate) return
         if (VERSION.SDK_INT >= VERSION_CODES.O) {
             vibrator.vibrate(
-                VibrationEffect.createOneShot(30, VibrationEffect.DEFAULT_AMPLITUDE)
+                VibrationEffect.createOneShot(30, VibrationEffect.DEFAULT_AMPLITUDE),
             )
         } else {
             @Suppress("DEPRECATION")

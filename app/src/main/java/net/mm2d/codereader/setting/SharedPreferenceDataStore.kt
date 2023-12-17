@@ -11,7 +11,7 @@ import android.content.SharedPreferences
 import androidx.preference.PreferenceDataStore
 
 class SharedPreferenceDataStore(
-    private val sharedPreferences: SharedPreferences
+    private val sharedPreferences: SharedPreferences,
 ) : PreferenceDataStore() {
     fun clear(): Unit =
         sharedPreferences.edit().clear().apply()

@@ -36,7 +36,8 @@ object CameraPermission {
         }
 
         override fun getSynchronousResult(
-            context: Context, input: Unit
+            context: Context,
+            input: Unit,
         ): SynchronousResult<Boolean>? =
             if (hasPermission(context)) {
                 SynchronousResult(true)
@@ -50,5 +51,5 @@ object CameraPermission {
 
     fun hasPermission(context: Context) =
         ContextCompat.checkSelfPermission(context, PERMISSION) ==
-                PackageManager.PERMISSION_GRANTED
+            PackageManager.PERMISSION_GRANTED
 }

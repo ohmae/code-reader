@@ -50,7 +50,9 @@ object BrowserPackageHelper {
             ?: return null
         return if (getBrowserPackages(context).contains(packageName)) {
             packageName
-        } else null
+        } else {
+            null
+        }
     }
 
     private fun makeBrowseIntent(uri: String): Intent {
