@@ -32,7 +32,6 @@ class CodeAnalyzer(
             imageProxy.close()
             return
         }
-        imageProxy.toBitmap()
         val inputImage = InputImage.fromMediaImage(image, imageProxy.imageInfo.rotationDegrees)
         scanner.process(inputImage)
             .addOnSuccessListener { callback(imageProxy, it) }

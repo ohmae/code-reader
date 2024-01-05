@@ -77,18 +77,17 @@ class CodeScanner(
 
         try {
             provider.unbindAll()
-            provider.bindToLifecycle(
+            val camera = provider.bindToLifecycle(
                 activity,
                 CameraSelector.DEFAULT_BACK_CAMERA,
                 preview,
                 analysis,
-            ).let {
-                it.cameraInfo.torchState.observe(activity) { state ->
-                    torchStateFlow.tryEmit(state == TorchState.ON)
-                }
-                camera = it
-                resolutionInfo = analysis.resolutionInfo
+            )
+            camera.cameraInfo.torchState.observe(activity) { state ->
+                torchStateFlow.tryEmit(state == TorchState.ON)
             }
+            this.camera = camera
+            resolutionInfo = analysis.resolutionInfo
         } catch (e: Exception) {
             Timber.e(e)
         }
