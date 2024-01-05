@@ -17,19 +17,34 @@ import timber.log.Timber
 
 class CodeAnalyzer(
     private val scanner: BarcodeScanner,
-    private val callback: (List<Barcode>) -> Unit,
+    private val callback: (ImageProxy, List<Barcode>) -> Unit,
 ) : Analyzer {
+    private var paused: Boolean = false
+
     @SuppressLint("UnsafeOptInUsageError")
     override fun analyze(imageProxy: ImageProxy) {
-        val image = imageProxy.image
-        if (image != null) {
-            val inputImage = InputImage.fromMediaImage(image, imageProxy.imageInfo.rotationDegrees)
-            scanner.process(inputImage)
-                .addOnSuccessListener { callback(it) }
-                .addOnFailureListener { Timber.e(it) }
-                .addOnCompleteListener { imageProxy.close() }
-        } else {
+        if (paused) {
             imageProxy.close()
+            return
         }
+        val image = imageProxy.image
+        if (image == null) {
+            imageProxy.close()
+            return
+        }
+        imageProxy.toBitmap()
+        val inputImage = InputImage.fromMediaImage(image, imageProxy.imageInfo.rotationDegrees)
+        scanner.process(inputImage)
+            .addOnSuccessListener { callback(imageProxy, it) }
+            .addOnFailureListener { Timber.e(it) }
+            .addOnCompleteListener { imageProxy.close() }
+    }
+
+    fun resume() {
+        paused = false
+    }
+
+    fun pause() {
+        paused = true
     }
 }

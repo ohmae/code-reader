@@ -18,6 +18,7 @@ import android.view.MenuItem
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.camera.core.ImageProxy
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.getSystemService
 import androidx.core.view.isGone
@@ -49,6 +50,7 @@ class MainActivity : AppCompatActivity(), PermissionDialog.OnCancelListener {
     )
     private lateinit var adapter: ScanResultAdapter
     private lateinit var vibrator: Vibrator
+    private lateinit var detectedPresenter: DetectedPresenter
     private val viewModel: MainActivityViewModel by viewModels()
     private val settings: Settings by lazy {
         Settings.get()
@@ -75,6 +77,11 @@ class MainActivity : AppCompatActivity(), PermissionDialog.OnCancelListener {
         codeScanner.torchStateFlow.observe(this) {
             onFlashOn(it)
         }
+        detectedPresenter = DetectedPresenter(
+            codeScanner = codeScanner,
+            detectedMarker = binding.detectedMarker,
+            stillImage = binding.stillImage,
+        )
         val size = viewModel.resultFlow.value.size
         if (size >= 2) {
             binding.dummy.updateLayoutParams<ConstraintLayout.LayoutParams> {
@@ -161,7 +168,8 @@ class MainActivity : AppCompatActivity(), PermissionDialog.OnCancelListener {
         codeScanner.start()
     }
 
-    private fun onDetectCode(codes: List<Barcode>) {
+    private fun onDetectCode(imageProxy: ImageProxy, codes: List<Barcode>) {
+        val detected = mutableListOf<Barcode>()
         codes.forEach {
             val value = it.rawValue ?: return@forEach
             val result = ScanResult(
@@ -173,8 +181,11 @@ class MainActivity : AppCompatActivity(), PermissionDialog.OnCancelListener {
             if (!resultSet.contains(result)) {
                 viewModel.add(result)
                 vibrate()
+                detected.add(it)
             }
         }
+        if (detected.isEmpty()) return
+        detectedPresenter.onDetected(imageProxy, detected)
     }
 
     private fun expandList() {

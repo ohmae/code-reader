@@ -39,6 +39,29 @@
             app:layout_constraintTop_toTopOf="parent"
             />
 
+        <ImageView
+            android:id="@+id/still_image"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:scaleType="centerCrop"
+            android:visibility="gone"
+            android:contentDescription="@null"
+            app:layout_constraintBottom_toBottomOf="@id/preview_view"
+            app:layout_constraintEnd_toEndOf="@id/preview_view"
+            app:layout_constraintStart_toStartOf="@id/preview_view"
+            app:layout_constraintTop_toTopOf="@id/preview_view"
+            />
+
+        <net.mm2d.codereader.view.DetectedMarkerView
+            android:id="@+id/detected_marker"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="@id/preview_view"
+            app:layout_constraintEnd_toEndOf="@id/preview_view"
+            app:layout_constraintStart_toStartOf="@id/preview_view"
+            app:layout_constraintTop_toTopOf="@id/preview_view"
+            />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/result_list"
             android:layout_width="0dp"
@@ -75,10 +98,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
+            android:alpha="0.8"
             android:background="@drawable/bg_camera_button"
             android:contentDescription="@null"
             android:padding="16dp"
-            android:alpha="0.8"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_flash_off"

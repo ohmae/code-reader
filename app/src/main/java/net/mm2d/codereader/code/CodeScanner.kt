@@ -8,12 +8,15 @@
 package net.mm2d.codereader.code
 
 import androidx.activity.ComponentActivity
-import androidx.camera.core.AspectRatio
 import androidx.camera.core.Camera
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
+import androidx.camera.core.ImageProxy
 import androidx.camera.core.Preview
+import androidx.camera.core.ResolutionInfo
 import androidx.camera.core.TorchState
+import androidx.camera.core.resolutionselector.AspectRatioStrategy
+import androidx.camera.core.resolutionselector.ResolutionSelector
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
@@ -30,13 +33,14 @@ import java.util.concurrent.Executors
 class CodeScanner(
     private val activity: ComponentActivity,
     private val previewView: PreviewView,
-    callback: (List<Barcode>) -> Unit,
+    callback: (ImageProxy, List<Barcode>) -> Unit,
 ) {
     private val workerExecutor: ExecutorService = Executors.newSingleThreadExecutor()
     private val scanner: BarcodeScanner = BarcodeScanning.getClient()
     private val analyzer: CodeAnalyzer = CodeAnalyzer(scanner, callback)
     private var camera: Camera? = null
     val torchStateFlow: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    private var resolutionInfo: ResolutionInfo? = null
 
     init {
         activity.lifecycle.addObserver(
@@ -57,13 +61,16 @@ class CodeScanner(
     }
 
     private fun setUp(provider: ProcessCameraProvider) {
+        val resolutionSelector = ResolutionSelector.Builder()
+            .setAspectRatioStrategy(AspectRatioStrategy.RATIO_16_9_FALLBACK_AUTO_STRATEGY)
+            .build()
         val preview = Preview.Builder()
-            .setTargetAspectRatio(AspectRatio.RATIO_16_9)
+            .setResolutionSelector(resolutionSelector)
             .build()
         preview.setSurfaceProvider(previewView.surfaceProvider)
 
         val analysis = ImageAnalysis.Builder()
-            .setTargetAspectRatio(AspectRatio.RATIO_16_9)
+            .setResolutionSelector(resolutionSelector)
             .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
             .build()
         analysis.setAnalyzer(workerExecutor, analyzer)
@@ -80,6 +87,7 @@ class CodeScanner(
                     torchStateFlow.tryEmit(state == TorchState.ON)
                 }
                 camera = it
+                resolutionInfo = analysis.resolutionInfo
             }
         } catch (e: Exception) {
             Timber.e(e)
@@ -87,8 +95,17 @@ class CodeScanner(
     }
 
     fun toggleTorch() {
-        camera?.let {
-            it.cameraControl.enableTorch(!torchStateFlow.value)
-        }
+        val camera = camera ?: return
+        camera.cameraControl.enableTorch(!torchStateFlow.value)
+    }
+
+    fun getResolutionInfo(): ResolutionInfo? = resolutionInfo
+
+    fun resume() {
+        analyzer.resume()
+    }
+
+    fun pause() {
+        analyzer.pause()
     }
 }
