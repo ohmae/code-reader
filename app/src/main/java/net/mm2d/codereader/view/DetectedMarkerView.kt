@@ -8,7 +8,6 @@ import android.graphics.Path
 import android.graphics.Point
 import android.graphics.PointF
 import android.util.AttributeSet
-import android.util.Size
 import android.view.View
 import androidx.camera.core.ResolutionInfo
 import net.mm2d.codereader.R
@@ -36,20 +35,14 @@ class DetectedMarkerView @JvmOverloads constructor(
     private val drawPaths: MutableList<Path> = mutableListOf<Path>()
 
     fun setMarkers(resolutionInfo: ResolutionInfo, pointsList: List<Array<Point>>) {
-        val aspect = if (width > height) PointF(16f, 9f) else PointF(9f, 16f)
-        val offset: PointF
-        val ratio: Float
-        val resolution = normalizeResolution(resolutionInfo)
-        if (width * aspect.y > height * aspect.x) {
-            ratio = width / resolution.width.toFloat()
-            offset = PointF(0f, (width * aspect.y / aspect.x - height) / 2)
-        } else {
-            ratio = height / resolution.height.toFloat()
-            offset = PointF((height * aspect.x / aspect.y - width) / 2, 0f)
-        }
+        val (rw, rh) = normalizeResolution(resolutionInfo)
+        val w = width.toFloat()
+        val h = height.toFloat()
+        val scale = maxOf(w / rw, h / rh)
+        val offset = PointF((rw * scale - w) / 2f, (rh * scale - h) / 2f)
 
         pointsList
-            .map { it.map { PointF(it.x * ratio - offset.x, it.y * ratio - offset.y) } }
+            .map { it.map { PointF(it.x * scale - offset.x, it.y * scale - offset.y) } }
             .forEach { points ->
                 val center = PointF(
                     points.fold(0f) { acc, point -> acc + point.x } / points.size,
@@ -67,11 +60,14 @@ class DetectedMarkerView @JvmOverloads constructor(
             }
     }
 
-    private fun normalizeResolution(info: ResolutionInfo): Size =
-        when (info.rotationDegrees) {
-            90, 270 -> Size(info.resolution.height, info.resolution.width)
-            else -> info.resolution
+    private fun normalizeResolution(info: ResolutionInfo): Pair<Float, Float> {
+        val w = info.resolution.width.toFloat()
+        val h = info.resolution.height.toFloat()
+        return when (info.rotationDegrees) {
+            90, 270 -> h to w
+            else -> w to h
         }
+    }
 
     fun clearMarker() {
         markers.clear()
