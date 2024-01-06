@@ -22,10 +22,9 @@ class DetectedPresenter(
         imageProxy: ImageProxy,
         detectedCodes: List<Barcode>,
     ) {
-        val resolutionInfo = codeScanner.getResolutionInfo() ?: return
         codeScanner.pause()
         val pointsList = detectedCodes.mapNotNull { it.toCornerPoints() }
-        detectedMarker.setMarkers(resolutionInfo, pointsList)
+        detectedMarker.setMarkers(imageProxy, pointsList)
         stillImage.setImageBitmap(toBitmap(imageProxy))
         stillImage.isVisible = true
         ValueAnimator.ofFloat(4f, 1.2f)

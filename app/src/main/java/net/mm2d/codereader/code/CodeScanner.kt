@@ -13,7 +13,6 @@ import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import androidx.camera.core.Preview
-import androidx.camera.core.ResolutionInfo
 import androidx.camera.core.TorchState
 import androidx.camera.core.resolutionselector.AspectRatioStrategy
 import androidx.camera.core.resolutionselector.ResolutionSelector
@@ -40,7 +39,6 @@ class CodeScanner(
     private val analyzer: CodeAnalyzer = CodeAnalyzer(scanner, callback)
     private var camera: Camera? = null
     val torchStateFlow: MutableStateFlow<Boolean> = MutableStateFlow(false)
-    private var resolutionInfo: ResolutionInfo? = null
 
     init {
         activity.lifecycle.addObserver(
@@ -87,7 +85,6 @@ class CodeScanner(
                 torchStateFlow.tryEmit(state == TorchState.ON)
             }
             this.camera = camera
-            resolutionInfo = analysis.resolutionInfo
         } catch (e: Exception) {
             Timber.e(e)
         }
@@ -97,8 +94,6 @@ class CodeScanner(
         val camera = camera ?: return
         camera.cameraControl.enableTorch(!torchStateFlow.value)
     }
-
-    fun getResolutionInfo(): ResolutionInfo? = resolutionInfo
 
     fun resume() {
         analyzer.resume()

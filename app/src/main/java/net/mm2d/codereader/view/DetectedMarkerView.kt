@@ -9,7 +9,7 @@ import android.graphics.Point
 import android.graphics.PointF
 import android.util.AttributeSet
 import android.view.View
-import androidx.camera.core.ResolutionInfo
+import androidx.camera.core.ImageProxy
 import net.mm2d.codereader.R
 import net.mm2d.codereader.extension.resolveColor
 import com.google.android.material.R as MR
@@ -32,10 +32,10 @@ class DetectedMarkerView @JvmOverloads constructor(
     }
     private val matrix = Matrix()
     private val markers: MutableList<Marker> = mutableListOf()
-    private val drawPaths: MutableList<Path> = mutableListOf<Path>()
+    private val drawPaths: MutableList<Path> = mutableListOf()
 
-    fun setMarkers(resolutionInfo: ResolutionInfo, pointsList: List<Array<Point>>) {
-        val (rw, rh) = normalizeResolution(resolutionInfo)
+    fun setMarkers(imageProxy: ImageProxy, pointsList: List<Array<Point>>) {
+        val (rw, rh) = normalizeResolution(imageProxy)
         val w = width.toFloat()
         val h = height.toFloat()
         val scale = maxOf(w / rw, h / rh)
@@ -60,10 +60,10 @@ class DetectedMarkerView @JvmOverloads constructor(
             }
     }
 
-    private fun normalizeResolution(info: ResolutionInfo): Pair<Float, Float> {
-        val w = info.resolution.width.toFloat()
-        val h = info.resolution.height.toFloat()
-        return when (info.rotationDegrees) {
+    private fun normalizeResolution(imageProxy: ImageProxy): Pair<Float, Float> {
+        val w = imageProxy.width.toFloat()
+        val h = imageProxy.height.toFloat()
+        return when (imageProxy.imageInfo.rotationDegrees) {
             90, 270 -> h to w
             else -> w to h
         }
