@@ -7,34 +7,37 @@ import androidx.activity.result.contract.ActivityResultContracts.RequestPermissi
 import androidx.core.app.ActivityCompat
 
 interface PermissionRequestLauncher {
-    fun launch(activity: Activity)
+    fun launch()
 }
 
 fun ComponentActivity.registerForPermissionRequest(
     permission: String,
     callback: (granted: Boolean, succeedToShowDialog: Boolean) -> Unit,
-): PermissionRequestLauncher = PermissionRequestLauncherImpl(permission).also { launcher ->
-    launcher.launcher = registerForActivityResult(RequestPermission()) { granted ->
-        callback(granted, launcher.succeedToShowDialog(this))
+): PermissionRequestLauncher =
+    PermissionRequestLauncherImpl({ this }, permission).also { launcher ->
+        launcher.launcher = registerForActivityResult(RequestPermission()) { granted ->
+            callback(granted, launcher.succeedToShowDialog())
+        }
     }
-}
 
 class PermissionRequestLauncherImpl(
+    private val activitySupplier: () -> Activity,
     private val permission: String,
 ) : PermissionRequestLauncher {
     lateinit var launcher: ActivityResultLauncher<String>
     private var shouldShowRationalBefore: Boolean = false
     private var start: Long = 0L
 
-    fun succeedToShowDialog(activity: Activity): Boolean {
+    fun succeedToShowDialog(): Boolean {
         if (shouldShowRationalBefore) return true
         if (System.currentTimeMillis() - start > ENOUGH_DURATION) return true
-        return ActivityCompat.shouldShowRequestPermissionRationale(activity, permission)
+        return ActivityCompat.shouldShowRequestPermissionRationale(activitySupplier(), permission)
     }
 
-    override fun launch(activity: Activity) {
+    override fun launch() {
         start = System.currentTimeMillis()
-        shouldShowRationalBefore = ActivityCompat.shouldShowRequestPermissionRationale(activity, permission)
+        shouldShowRationalBefore =
+            ActivityCompat.shouldShowRequestPermissionRationale(activitySupplier(), permission)
         launcher.launch(permission)
     }
 

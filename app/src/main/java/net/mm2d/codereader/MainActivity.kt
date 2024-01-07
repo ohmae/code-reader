@@ -109,7 +109,7 @@ class MainActivity : AppCompatActivity() {
             startCamera()
             Updater.startIfAvailable(this)
         } else {
-            launcher.launch(this)
+            launcher.launch()
         }
         PermissionDialog.registerListener(this, CAMERA_PERMISSION_REQUEST_KEY) {
             finishByError()
