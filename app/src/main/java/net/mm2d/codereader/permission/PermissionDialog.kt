@@ -15,15 +15,12 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import androidx.appcompat.app.AlertDialog
+import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentActivity
 import net.mm2d.codereader.R
 
 class PermissionDialog : DialogFragment() {
-    interface OnCancelListener {
-        fun onPermissionCancel()
-    }
-
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val context = requireContext()
         return AlertDialog.Builder(context)
@@ -37,7 +34,8 @@ class PermissionDialog : DialogFragment() {
     }
 
     override fun onCancel(dialog: DialogInterface) {
-        (context as? OnCancelListener)?.onPermissionCancel()
+        val requestKey = requireArguments().getString(REQUEST_KEY, "")
+        parentFragmentManager.setFragmentResult(requestKey, Bundle())
     }
 
     private fun startAppInfo(context: Context) {
@@ -50,12 +48,26 @@ class PermissionDialog : DialogFragment() {
 
     companion object {
         private const val TAG = "PermissionDialog"
+        private const val REQUEST_KEY = "REQUEST_KEY"
 
-        fun show(activity: FragmentActivity) {
+        fun registerListener(
+            activity: FragmentActivity,
+            requestKey: String,
+            onCancel: () -> Unit,
+        ) {
+            val manager = activity.supportFragmentManager
+            manager.setFragmentResultListener(requestKey, activity) { _, _ ->
+                onCancel()
+            }
+        }
+
+        fun show(activity: FragmentActivity, requestKey: String) {
             val manager = activity.supportFragmentManager
             if (manager.isStateSaved) return
             if (manager.findFragmentByTag(TAG) != null) return
-            PermissionDialog().show(manager, TAG)
+            PermissionDialog().also {
+                it.arguments = bundleOf(REQUEST_KEY to requestKey)
+            }.show(manager, TAG)
         }
     }
 }

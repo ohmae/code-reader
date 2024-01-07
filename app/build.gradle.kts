@@ -68,8 +68,6 @@ android {
     }
 }
 
-val ktlint by configurations.creating
-
 dependencies {
     implementation(kotlin("stdlib"))
     implementation("androidx.core:core-ktx:1.12.0")
@@ -95,41 +93,7 @@ dependencies {
     debugImplementation("com.facebook.flipper:flipper-network-plugin:0.244.0")
     debugImplementation("com.facebook.flipper:flipper-leakcanary2-plugin:0.244.0")
 
-    ktlint("com.pinterest.ktlint:ktlint-cli:1.1.0") {
-        attributes {
-            attribute(Bundling.BUNDLING_ATTRIBUTE, objects.named(Bundling.EXTERNAL))
-        }
-    }
-
     // for release
-}
-
-tasks.register<JavaExec>("ktlint") {
-    group = LifecycleBasePlugin.VERIFICATION_GROUP
-    description = "Check Kotlin code style"
-    classpath = ktlint
-    mainClass.set("com.pinterest.ktlint.Main")
-    args(
-        "**/src/**/*.kt",
-        "**.kts",
-        "!**/build/**",
-    )
-    isIgnoreExitValue = true
-}
-
-tasks.register<JavaExec>("ktlintFormat") {
-    group = LifecycleBasePlugin.VERIFICATION_GROUP
-    description = "Check Kotlin code style and format"
-    classpath = ktlint
-    mainClass.set("com.pinterest.ktlint.Main")
-    jvmArgs("--add-opens=java.base/java.lang=ALL-UNNAMED")
-    args(
-        "-F",
-        "**/src/**/*.kt",
-        "**.kts",
-        "!**/build/**",
-    )
-    isIgnoreExitValue = true
 }
 
 fun isStable(version: String): Boolean {

@@ -31,6 +31,7 @@ import net.mm2d.codereader.extension.formatString
 import net.mm2d.codereader.extension.typeString
 import net.mm2d.codereader.permission.CameraPermission
 import net.mm2d.codereader.permission.PermissionDialog
+import net.mm2d.codereader.permission.registerForCameraPermissionRequest
 import net.mm2d.codereader.result.ScanResult
 import net.mm2d.codereader.result.ScanResultAdapter
 import net.mm2d.codereader.result.ScanResultDialog
@@ -40,14 +41,19 @@ import net.mm2d.codereader.util.ReviewRequester
 import net.mm2d.codereader.util.Updater
 import net.mm2d.codereader.util.observe
 
-class MainActivity : AppCompatActivity(), PermissionDialog.OnCancelListener {
+class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var codeScanner: CodeScanner
     private var started: Boolean = false
-    private val launcher = registerForActivityResult(
-        CameraPermission.RequestContract(),
-        ::onPermissionResult,
-    )
+    private val launcher = registerForCameraPermissionRequest { granted, succeedToShowDialog ->
+        if (granted) {
+            startCamera()
+        } else if (!succeedToShowDialog) {
+            PermissionDialog.show(this, CAMERA_PERMISSION_REQUEST_KEY)
+        } else {
+            finishByError()
+        }
+    }
     private lateinit var adapter: ScanResultAdapter
     private lateinit var vibrator: Vibrator
     private lateinit var detectedPresenter: DetectedPresenter
@@ -103,7 +109,10 @@ class MainActivity : AppCompatActivity(), PermissionDialog.OnCancelListener {
             startCamera()
             Updater.startIfAvailable(this)
         } else {
-            launcher.launch(Unit)
+            launcher.launch(this)
+        }
+        PermissionDialog.registerListener(this, CAMERA_PERMISSION_REQUEST_KEY) {
+            finishByError()
         }
     }
 
@@ -113,32 +122,13 @@ class MainActivity : AppCompatActivity(), PermissionDialog.OnCancelListener {
             if (CameraPermission.hasPermission(this)) {
                 startCamera()
             } else {
-                toastPermissionError()
                 finishByError()
             }
         }
-    }
-
-    private fun onPermissionResult(granted: Boolean) {
-        when {
-            granted ->
-                startCamera()
-
-            CameraPermission.deniedWithoutShowDialog(this) ->
-                PermissionDialog.show(this)
-
-            else -> {
-                toastPermissionError()
-                finishByError()
-            }
-        }
-    }
-
-    override fun onPermissionCancel() {
-        finishByError()
     }
 
     private fun finishByError() {
+        toastPermissionError()
         super.finish()
     }
 
@@ -227,5 +217,9 @@ class MainActivity : AppCompatActivity(), PermissionDialog.OnCancelListener {
             else -> return super.onOptionsItemSelected(item)
         }
         return true
+    }
+
+    companion object {
+        private const val CAMERA_PERMISSION_REQUEST_KEY = "CAMERA_PERMISSION_REQUEST_KEY"
     }
 }

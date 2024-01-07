@@ -14,7 +14,7 @@ class Preferences<K>(
     context: Context,
     name: String,
 ) where K : Enum<*>,
-        K : Key {
+          K : Key {
     val dataStore: SharedPreferenceDataStore =
         SharedPreferenceDataStore(
             context.getSharedPreferences(
