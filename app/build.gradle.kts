@@ -83,15 +83,15 @@ dependencies {
     implementation("androidx.camera:camera-lifecycle:1.3.1")
     implementation("androidx.camera:camera-view:1.3.1")
     implementation("androidx.browser:browser:1.7.0")
-    implementation("androidx.webkit:webkit:1.9.0")
+    implementation("androidx.webkit:webkit:1.10.0")
     implementation("com.google.mlkit:barcode-scanning:17.2.0")
     implementation("com.jakewharton.timber:timber:5.0.1")
 
     debugImplementation("com.squareup.leakcanary:leakcanary-android:2.13")
-    debugImplementation("com.facebook.flipper:flipper:0.244.0")
+    debugImplementation("com.facebook.flipper:flipper:0.245.0")
     debugImplementation("com.facebook.soloader:soloader:0.11.0")
-    debugImplementation("com.facebook.flipper:flipper-network-plugin:0.244.0")
-    debugImplementation("com.facebook.flipper:flipper-leakcanary2-plugin:0.244.0")
+    debugImplementation("com.facebook.flipper:flipper-network-plugin:0.245.0")
+    debugImplementation("com.facebook.flipper:flipper-leakcanary2-plugin:0.245.0")
 
     // for release
 }
