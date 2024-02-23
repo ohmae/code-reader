@@ -70,6 +70,7 @@ android {
 
 dependencies {
     implementation(kotlin("stdlib"))
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0")
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("androidx.activity:activity-ktx:1.8.2")
@@ -88,10 +89,10 @@ dependencies {
     implementation("com.jakewharton.timber:timber:5.0.1")
 
     debugImplementation("com.squareup.leakcanary:leakcanary-android:2.13")
-    debugImplementation("com.facebook.flipper:flipper:0.245.0")
+    debugImplementation("com.facebook.flipper:flipper:0.247.0")
     debugImplementation("com.facebook.soloader:soloader:0.11.0")
-    debugImplementation("com.facebook.flipper:flipper-network-plugin:0.245.0")
-    debugImplementation("com.facebook.flipper:flipper-leakcanary2-plugin:0.245.0")
+    debugImplementation("com.facebook.flipper:flipper-network-plugin:0.247.0")
+    debugImplementation("com.facebook.flipper:flipper-leakcanary2-plugin:0.247.0")
 
     // for release
 }
