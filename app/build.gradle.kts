@@ -2,10 +2,10 @@ import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 import java.util.Locale
 
 plugins {
-    id("com.android.application")
-    id("org.jetbrains.kotlin.android")
+    alias(libs.plugins.androidApplication)
+    alias(libs.plugins.kotlinAndroid)
     id("kotlin-parcelize")
-    id("com.github.ben-manes.versions")
+    alias(libs.plugins.gradleVersions)
 
     // for release
 }
@@ -69,30 +69,25 @@ android {
 }
 
 dependencies {
-    implementation(kotlin("stdlib"))
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0")
-    implementation("androidx.core:core-ktx:1.12.0")
-    implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("androidx.activity:activity-ktx:1.8.2")
-    implementation("androidx.fragment:fragment-ktx:1.6.2")
-    implementation("androidx.preference:preference-ktx:1.2.1")
-    implementation("com.google.android.material:material:1.11.0")
-    implementation("com.google.android.play:core:1.10.3")
-    implementation("com.google.android.play:core-ktx:1.8.1")
-    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-    implementation("androidx.camera:camera-camera2:1.3.2")
-    implementation("androidx.camera:camera-lifecycle:1.3.2")
-    implementation("androidx.camera:camera-view:1.3.2")
-    implementation("androidx.browser:browser:1.8.0")
-    implementation("androidx.webkit:webkit:1.10.0")
-    implementation("com.google.mlkit:barcode-scanning:17.2.0")
-    implementation("com.jakewharton.timber:timber:5.0.1")
+    implementation(libs.kotlinStdlib)
+    implementation(libs.kotlinxCoroutinesAndroid)
+    implementation(libs.androidxCore)
+    implementation(libs.androidxAppCompat)
+    implementation(libs.androidxActivity)
+    implementation(libs.androidxFragment)
+    implementation(libs.androidxBrowser)
+    implementation(libs.androidxWebkit)
+    implementation(libs.androidxPreference)
+    implementation(libs.androidxConstraintLayout)
+    implementation(libs.bundles.androidxCamera)
+    implementation(libs.mlkitBarcodeScanning)
+    implementation(libs.material)
+    implementation(libs.playCore)
+    implementation(libs.playCoreKtx)
+    implementation(libs.timber)
 
-    debugImplementation("com.squareup.leakcanary:leakcanary-android:2.13")
-    debugImplementation("com.facebook.flipper:flipper:0.249.0")
-    debugImplementation("com.facebook.soloader:soloader:0.11.0")
-    debugImplementation("com.facebook.flipper:flipper-network-plugin:0.249.0")
-    debugImplementation("com.facebook.flipper:flipper-leakcanary2-plugin:0.249.0")
+    debugImplementation(libs.leakcanary)
+    debugImplementation(libs.bundles.flipper)
 
     // for release
 }

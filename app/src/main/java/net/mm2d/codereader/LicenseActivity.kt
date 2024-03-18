@@ -15,10 +15,7 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
-import androidx.webkit.WebSettingsCompat
-import androidx.webkit.WebViewFeature
 import net.mm2d.codereader.databinding.ActivityLicenseBinding
-import net.mm2d.codereader.extension.isDarkMode
 import net.mm2d.codereader.util.Launcher
 
 class LicenseActivity : AppCompatActivity() {
@@ -33,20 +30,6 @@ class LicenseActivity : AppCompatActivity() {
         binding.webView.settings.let {
             it.setSupportZoom(false)
             it.displayZoomControls = false
-            if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {
-                val mode = if (isDarkMode()) {
-                    WebSettingsCompat.FORCE_DARK_ON
-                } else {
-                    WebSettingsCompat.FORCE_DARK_OFF
-                }
-                WebSettingsCompat.setForceDark(it, mode)
-            }
-            if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK_STRATEGY)) {
-                WebSettingsCompat.setForceDarkStrategy(
-                    it,
-                    WebSettingsCompat.DARK_STRATEGY_WEB_THEME_DARKENING_ONLY,
-                )
-            }
         }
         binding.webView.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(

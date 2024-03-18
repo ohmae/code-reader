@@ -87,8 +87,7 @@ object Launcher {
     }
 
     fun shareText(context: Activity, text: String) {
-        ShareCompat.IntentBuilder
-            .from(context)
+        ShareCompat.IntentBuilder(context)
             .setText(text)
             .setType("text/plain")
             .startChooser()

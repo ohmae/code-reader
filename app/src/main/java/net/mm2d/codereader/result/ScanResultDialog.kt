@@ -18,12 +18,13 @@ import net.mm2d.codereader.databinding.DialogResultBinding
 import net.mm2d.codereader.util.ClipboardUtils
 import net.mm2d.codereader.util.Launcher
 import net.mm2d.codereader.util.ReviewRequester
+import net.mm2d.codereader.util.getParcelableSafely
 
 class ScanResultDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val activity = requireActivity()
         val binding = DialogResultBinding.inflate(activity.layoutInflater)
-        val result: ScanResult? = requireArguments().getParcelable(KEY_SCAN_RESULT)
+        val result: ScanResult? = requireArguments().getParcelableSafely(KEY_SCAN_RESULT)
         result?.let {
             binding.resultValue.text = result.value
             binding.resultType.text = result.type
