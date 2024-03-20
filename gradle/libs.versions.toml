@@ -1,5 +1,5 @@
 [versions]
-androidGradlePlugin = "8.3.0"
+androidGradlePlugin = "8.3.1"
 kotlin = "1.9.22"
 gradleVersionsPlugin = "0.51.0"
 kotlinxCoroutines = "1.8.0"
@@ -20,7 +20,7 @@ playCoreKtx = "1.8.1"
 timber = "5.0.1"
 
 leakcanary = "2.13"
-flipper = "0.249.0"
+flipper = "0.250.0"
 soloader = "0.11.0"
 
 ktlint = "1.2.1"
