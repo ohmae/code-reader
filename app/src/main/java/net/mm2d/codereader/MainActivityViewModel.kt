@@ -9,11 +9,13 @@ package net.mm2d.codereader
 
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import net.mm2d.codereader.result.ScanResult
 
 class MainActivityViewModel : ViewModel() {
-    val resultFlow: MutableStateFlow<List<ScanResult>> = MutableStateFlow(emptyList())
+    private val resultFlow: MutableStateFlow<List<ScanResult>> = MutableStateFlow(emptyList())
+    fun getResultStream(): StateFlow<List<ScanResult>> = resultFlow
 
     fun add(result: ScanResult) {
         resultFlow.update {

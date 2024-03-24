@@ -24,6 +24,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import com.google.mlkit.vision.barcode.BarcodeScanner
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.barcode.common.Barcode
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import timber.log.Timber
 import java.util.concurrent.ExecutorService
@@ -38,7 +39,8 @@ class CodeScanner(
     private val scanner: BarcodeScanner = BarcodeScanning.getClient()
     private val analyzer: CodeAnalyzer = CodeAnalyzer(scanner, callback)
     private var camera: Camera? = null
-    val torchStateFlow: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    private val torchStateFlow: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    fun getTouchStateStream(): Flow<Boolean> = torchStateFlow
 
     init {
         activity.lifecycle.addObserver(

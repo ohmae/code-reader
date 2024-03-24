@@ -6,7 +6,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
 import androidx.core.app.ActivityCompat
 
-interface PermissionRequestLauncher {
+fun interface PermissionRequestLauncher {
     fun launch()
 }
 

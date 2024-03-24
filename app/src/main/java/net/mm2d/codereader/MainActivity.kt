@@ -80,7 +80,7 @@ class MainActivity : AppCompatActivity() {
         binding.flash.setOnClickListener {
             codeScanner.toggleTorch()
         }
-        codeScanner.torchStateFlow.observe(this) {
+        codeScanner.getTouchStateStream().observe(this) {
             onFlashOn(it)
         }
         detectedPresenter = DetectedPresenter(
@@ -88,13 +88,13 @@ class MainActivity : AppCompatActivity() {
             detectedMarker = binding.detectedMarker,
             stillImage = binding.stillImage,
         )
-        val size = viewModel.resultFlow.value.size
+        val size = viewModel.getResultStream().value.size
         if (size >= 2) {
             binding.dummy.updateLayoutParams<ConstraintLayout.LayoutParams> {
                 height = 0
             }
         }
-        viewModel.resultFlow.observe(this) {
+        viewModel.getResultStream().observe(this) {
             resultSet = it.toSet()
             adapter.onChanged(it)
             binding.resultList.scrollToPosition(adapter.itemCount - 1)

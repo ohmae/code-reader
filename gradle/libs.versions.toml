@@ -1,6 +1,6 @@
 [versions]
 androidGradlePlugin = "8.3.1"
-kotlin = "1.9.22"
+kotlin = "1.9.23"
 gradleVersionsPlugin = "0.51.0"
 kotlinxCoroutines = "1.8.0"
 
@@ -29,34 +29,35 @@ ktlint = "1.2.1"
 kotlinStdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin" }
 kotlinxCoroutinesAndroid = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutines" }
 
-androidxCore = { module = "androidx.core:core-ktx", version.ref = "androidxCore" }
-androidxAppCompat = { module = "androidx.appcompat:appcompat", version.ref = "androidxAppCompat" }
-androidxActivity = { module = "androidx.activity:activity-ktx", version.ref = "androidxActivity" }
-androidxFragment = { module = "androidx.fragment:fragment-ktx", version.ref = "androidxFragment" }
-androidxBrowser = { module = "androidx.browser:browser", version.ref = "androidxBrowser" }
-androidxWebkit = { module = "androidx.webkit:webkit", version.ref = "androidxWebkit" }
-androidxPreference = { module = "androidx.preference:preference-ktx", version.ref = "androidxPreference" }
-androidxConstraintLayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "androidxConstraintLayout" }
-androidxCameraView = { module = "androidx.camera:camera-view", version.ref = "androidxCamera" }
-androidxCameraCamera2 = { module = "androidx.camera:camera-camera2", version.ref = "androidxCamera" }
-androidxCameraLifecycle = { module = "androidx.camera:camera-lifecycle", version.ref = "androidxCamera" }
-mlkitBarcodeScanning = { module = "com.google.mlkit:barcode-scanning", version.ref = "mlkitBarcodeScanning" }
-material = { module = "com.google.android.material:material", version.ref = "material" }
-playCore = { module = "com.google.android.play:core", version.ref = "playCore" }
-playCoreKtx = { module = "com.google.android.play:core-ktx", version.ref = "playCoreKtx" }
-timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
+androidxCore = { group = "androidx.core", name = "core-ktx", version.ref = "androidxCore" }
+androidxAppCompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidxAppCompat" }
+androidxActivity = { group = "androidx.activity", name = "activity-ktx", version.ref = "androidxActivity" }
+androidxFragment = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "androidxFragment" }
+androidxBrowser = { group = "androidx.browser", name = "browser", version.ref = "androidxBrowser" }
+androidxWebkit = { group = "androidx.webkit", name = "webkit", version.ref = "androidxWebkit" }
+androidxPreference = { group = "androidx.preference", name = "preference-ktx", version.ref = "androidxPreference" }
+androidxConstraintLayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "androidxConstraintLayout" }
+androidxCameraView = { group = "androidx.camera", name = "camera-view", version.ref = "androidxCamera" }
+androidxCameraCamera2 = { group = "androidx.camera", name = "camera-camera2", version.ref = "androidxCamera" }
+androidxCameraLifecycle = { group = "androidx.camera", name = "camera-lifecycle", version.ref = "androidxCamera" }
+mlkitBarcodeScanning = { group = "com.google.mlkit", name = "barcode-scanning", version.ref = "mlkitBarcodeScanning" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+playCore = { group = "com.google.android.play", name = "core", version.ref = "playCore" }
+playCoreKtx = { group = "com.google.android.play", name = "core-ktx", version.ref = "playCoreKtx" }
+timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
 
-leakcanary = { module = "com.squareup.leakcanary:leakcanary-android", version.ref = "leakcanary" }
-flipper = { module = "com.facebook.flipper:flipper", version.ref = "flipper" }
-soloader = { module = "com.facebook.soloader:soloader", version.ref = "soloader" }
-flipperNetwork = { module = "com.facebook.flipper:flipper-network-plugin", version.ref = "flipper" }
-flipperLeakCanary2 = { module = "com.facebook.flipper:flipper-leakcanary2-plugin", version.ref = "flipper" }
+leakcanary = { group = "com.squareup.leakcanary", name = "leakcanary-android", version.ref = "leakcanary" }
+flipper = { group = "com.facebook.flipper", name = "flipper", version.ref = "flipper" }
+soloader = { group = "com.facebook.soloader", name = "soloader", version.ref = "soloader" }
+flipperNetwork = { group = "com.facebook.flipper", name = "flipper-network-plugin", version.ref = "flipper" }
+flipperLeakCanary2 = { group = "com.facebook.flipper", name = "flipper-leakcanary2-plugin", version.ref = "flipper" }
 
 ktlint = { group = "com.pinterest.ktlint", name = "ktlint-cli", version.ref = "ktlint" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "androidGradlePlugin" }
 kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlinParcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
 gradleVersions = { id = "com.github.ben-manes.versions", version.ref = "gradleVersionsPlugin" }
 
 [bundles]
