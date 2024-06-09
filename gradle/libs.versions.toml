@@ -15,15 +15,15 @@ androidxConstraintLayout = "2.1.4"
 androidxCamera = "1.3.3"
 mlkitBarcodeScanning = "17.2.0"
 material = "1.12.0"
-playCore = "1.10.3"
-playCoreKtx = "1.8.1"
+playReview = "2.0.1"
+playAppUpdate = "2.1.0"
 timber = "5.0.1"
 
 leakcanary = "2.14"
 flipper = "0.250.0"
 soloader = "0.11.0"
 
-ktlint = "1.2.1"
+ktlint = "1.3.0"
 
 [libraries]
 kotlinStdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin" }
@@ -42,8 +42,8 @@ androidxCameraCamera2 = { group = "androidx.camera", name = "camera-camera2", ve
 androidxCameraLifecycle = { group = "androidx.camera", name = "camera-lifecycle", version.ref = "androidxCamera" }
 mlkitBarcodeScanning = { group = "com.google.mlkit", name = "barcode-scanning", version.ref = "mlkitBarcodeScanning" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
-playCore = { group = "com.google.android.play", name = "core", version.ref = "playCore" }
-playCoreKtx = { group = "com.google.android.play", name = "core-ktx", version.ref = "playCoreKtx" }
+playReview = { group = "com.google.android.play", name = "review-ktx", version.ref = "playReview" }
+playAppUpdate = { group = "com.google.android.play", name = "app-update-ktx", version.ref = "playAppUpdate" }
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
 
 leakcanary = { group = "com.squareup.leakcanary", name = "leakcanary-android", version.ref = "leakcanary" }

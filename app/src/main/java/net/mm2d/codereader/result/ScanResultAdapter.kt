@@ -20,7 +20,8 @@ import net.mm2d.codereader.result.ScanResultAdapter.ViewHolder
 class ScanResultAdapter(
     context: Context,
     private val onItemClickListener: (ScanResult) -> Unit,
-) : Adapter<ViewHolder>(), Observer<List<ScanResult>> {
+) : Adapter<ViewHolder>(),
+    Observer<List<ScanResult>> {
     private var results: List<ScanResult> = emptyList()
     private val layoutInflater = LayoutInflater.from(context)
 

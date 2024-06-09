@@ -55,13 +55,10 @@ object BrowserPackageHelper {
         }
     }
 
-    private fun makeBrowseIntent(uri: String): Intent {
-        return Intent(Intent.ACTION_VIEW, Uri.parse(uri)).also {
+    private fun makeBrowseIntent(uri: String): Intent =
+        Intent(Intent.ACTION_VIEW, Uri.parse(uri)).also {
             it.addCategory(Intent.CATEGORY_BROWSABLE)
         }
-    }
 
-    private fun makeBrowserTestIntent(): Intent {
-        return makeBrowseIntent("http://www.example.com/")
-    }
+    private fun makeBrowserTestIntent(): Intent = makeBrowseIntent("http://www.example.com/")
 }

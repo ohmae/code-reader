@@ -82,8 +82,8 @@ dependencies {
     implementation(libs.bundles.androidxCamera)
     implementation(libs.mlkitBarcodeScanning)
     implementation(libs.material)
-    implementation(libs.playCore)
-    implementation(libs.playCoreKtx)
+    implementation(libs.playReview)
+    implementation(libs.playAppUpdate)
     implementation(libs.timber)
 
     debugImplementation(libs.leakcanary)
