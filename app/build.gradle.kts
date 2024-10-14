@@ -17,13 +17,13 @@ val versionMinor = 2
 val versionPatch = 4
 
 android {
-    compileSdk = 34
+    compileSdk = 35
 
     namespace = "net.mm2d.codereader"
     defaultConfig {
         applicationId = "net.mm2d.codereader"
         minSdk = 23
-        targetSdk = 34
+        targetSdk = 35
         versionCode = versionMajor * 10000 + versionMinor * 100 + versionPatch
         versionName = "$versionMajor.$versionMinor.$versionPatch"
         vectorDrawables.useSupportLibrary = true
