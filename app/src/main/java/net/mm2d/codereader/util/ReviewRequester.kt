@@ -27,7 +27,9 @@ object ReviewRequester {
         settings.detectValueActionCount++
     }
 
-    fun requestIfNecessary(activity: Activity): Boolean {
+    fun requestIfNecessary(
+        activity: Activity,
+    ): Boolean {
         val settings = Settings.get()
         if (settings.reviewed) return false
         if (settings.detectValueActionCount < ACTION_COUNT) return false

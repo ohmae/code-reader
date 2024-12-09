@@ -66,7 +66,9 @@ class MainActivity : AppCompatActivity() {
     }
     private var resultSet: Set<ScanResult> = emptySet()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(
+        savedInstanceState: Bundle?,
+    ) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -152,7 +154,9 @@ class MainActivity : AppCompatActivity() {
         Toast.makeText(this, R.string.toast_permission_required, Toast.LENGTH_LONG).show()
     }
 
-    private fun onFlashOn(on: Boolean) {
+    private fun onFlashOn(
+        on: Boolean,
+    ) {
         val icon = if (on) {
             R.drawable.ic_flash_on
         } else {
@@ -167,7 +171,10 @@ class MainActivity : AppCompatActivity() {
         codeScanner.start()
     }
 
-    private fun onDetectCode(imageProxy: ImageProxy, codes: List<Barcode>) {
+    private fun onDetectCode(
+        imageProxy: ImageProxy,
+        codes: List<Barcode>,
+    ) {
         val detected = mutableListOf<Barcode>()
         codes.forEach {
             val value = it.rawValue ?: return@forEach
@@ -210,12 +217,16 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+    override fun onCreateOptionsMenu(
+        menu: Menu,
+    ): Boolean {
         menuInflater.inflate(R.menu.main, menu)
         return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+    override fun onOptionsItemSelected(
+        item: MenuItem,
+    ): Boolean {
         when (item.itemId) {
             R.id.license -> LicenseActivity.start(this)
             R.id.source_code -> Launcher.openSourceCode(this)

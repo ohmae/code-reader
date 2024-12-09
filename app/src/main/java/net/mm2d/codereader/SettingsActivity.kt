@@ -22,7 +22,9 @@ import net.mm2d.codereader.setting.Settings
 class SettingsActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySettingsBinding
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(
+        savedInstanceState: Bundle?,
+    ) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         binding = ActivitySettingsBinding.inflate(layoutInflater)
@@ -48,7 +50,10 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     class SettingsFragment : PreferenceFragmentCompat() {
-        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+        override fun onCreatePreferences(
+            savedInstanceState: Bundle?,
+            rootKey: String?,
+        ) {
             Settings.get().apply(this)
             setPreferencesFromResource(R.xml.preferences, rootKey)
             findPreference<Preference>("VERSION")?.summary = BuildConfig.VERSION_NAME
@@ -56,7 +61,9 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     companion object {
-        fun start(context: Context) {
+        fun start(
+            context: Context,
+        ) {
             context.startActivity(Intent(context, SettingsActivity::class.java))
         }
     }

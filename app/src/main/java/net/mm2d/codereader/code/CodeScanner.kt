@@ -60,7 +60,9 @@ class CodeScanner(
         }, ContextCompat.getMainExecutor(activity))
     }
 
-    private fun setUp(provider: ProcessCameraProvider) {
+    private fun setUp(
+        provider: ProcessCameraProvider,
+    ) {
         val resolutionSelector = ResolutionSelector.Builder()
             .setAspectRatioStrategy(AspectRatioStrategy.RATIO_16_9_FALLBACK_AUTO_STRATEGY)
             .build()

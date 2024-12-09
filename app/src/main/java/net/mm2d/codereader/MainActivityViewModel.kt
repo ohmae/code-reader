@@ -17,7 +17,9 @@ class MainActivityViewModel : ViewModel() {
     private val resultFlow: MutableStateFlow<List<ScanResult>> = MutableStateFlow(emptyList())
     fun getResultStream(): StateFlow<List<ScanResult>> = resultFlow
 
-    fun add(result: ScanResult) {
+    fun add(
+        result: ScanResult,
+    ) {
         resultFlow.update {
             if (it.contains(result)) {
                 it

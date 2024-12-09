@@ -33,7 +33,9 @@ class Settings private constructor(
     val vibrate: Boolean
         get() = preferences.readBoolean(Main.VIBRATE_BOOLEAN, true)
 
-    fun apply(fragment: PreferenceFragmentCompat) {
+    fun apply(
+        fragment: PreferenceFragmentCompat,
+    ) {
         fragment.preferenceManager.preferenceDataStore = preferences.dataStore
     }
 
@@ -42,7 +44,9 @@ class Settings private constructor(
 
         fun get(): Settings = settings
 
-        fun initialize(context: Context) {
+        fun initialize(
+            context: Context,
+        ) {
             Preferences<Main>(context, Main.FILE_NAME).also {
                 Maintainer.maintain(it)
                 settings = Settings(it)

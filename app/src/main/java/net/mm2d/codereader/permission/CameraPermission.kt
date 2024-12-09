@@ -14,9 +14,10 @@ import androidx.activity.ComponentActivity
 import androidx.core.content.ContextCompat
 
 object CameraPermission {
-    fun hasPermission(context: Context) =
-        ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) ==
-            PackageManager.PERMISSION_GRANTED
+    fun hasPermission(
+        context: Context,
+    ) = ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) ==
+        PackageManager.PERMISSION_GRANTED
 }
 
 fun ComponentActivity.registerForCameraPermissionRequest(

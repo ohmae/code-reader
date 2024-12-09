@@ -21,7 +21,9 @@ import net.mm2d.codereader.util.ReviewRequester
 import net.mm2d.codereader.util.getParcelableSafely
 
 class ScanResultDialog : DialogFragment() {
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+    override fun onCreateDialog(
+        savedInstanceState: Bundle?,
+    ): Dialog {
         val activity = requireActivity()
         val binding = DialogResultBinding.inflate(activity.layoutInflater)
         val result: ScanResult? = requireArguments().getParcelableSafely(KEY_SCAN_RESULT)
@@ -58,7 +60,10 @@ class ScanResultDialog : DialogFragment() {
         private const val TAG = "ScanResultDialog"
         private const val KEY_SCAN_RESULT = "KEY_SCAN_RESULT"
 
-        fun show(activity: FragmentActivity, result: ScanResult) {
+        fun show(
+            activity: FragmentActivity,
+            result: ScanResult,
+        ) {
             val manager = activity.supportFragmentManager
             if (manager.isStateSaved) return
             if (manager.findFragmentByTag(TAG) != null) return

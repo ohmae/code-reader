@@ -33,7 +33,8 @@ android {
     applicationVariants.all {
         if (buildType.name == "release") {
             outputs.all {
-                (this as com.android.build.gradle.internal.api.BaseVariantOutputImpl).outputFileName = "$applicationName-$versionName.apk"
+                (this as com.android.build.gradle.internal.api.BaseVariantOutputImpl).outputFileName =
+                    "$applicationName-$versionName.apk"
             }
         }
     }
@@ -96,7 +97,9 @@ dependencies {
     // for release
 }
 
-fun isStable(version: String): Boolean {
+fun isStable(
+    version: String,
+): Boolean {
     val versionUpperCase = version.uppercase(Locale.getDefault())
     val hasStableKeyword = listOf("RELEASE", "FINAL", "GA").any { versionUpperCase.contains(it) }
     val regex = "^[0-9,.v-]+(-r)?$".toRegex()

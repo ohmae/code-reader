@@ -22,7 +22,9 @@ object CustomTabsHelper {
     private const val ACTION_CUSTOM_TABS_CONNECTION =
         "android.support.customtabs.action.CustomTabsService"
 
-    fun findPackageNameToUse(context: Context): String? {
+    fun findPackageNameToUse(
+        context: Context,
+    ): String? {
         val browsers = BrowserPackageHelper.getBrowserPackages(context)
         val candidate = context.packageManager
             .queryIntentServices(Intent(ACTION_CUSTOM_TABS_CONNECTION), 0)

@@ -13,48 +13,73 @@ import androidx.preference.PreferenceDataStore
 class SharedPreferenceDataStore(
     private val sharedPreferences: SharedPreferences,
 ) : PreferenceDataStore() {
-    fun clear(): Unit =
-        sharedPreferences.edit().clear().apply()
+    fun clear(): Unit = sharedPreferences.edit().clear().apply()
 
-    fun remove(key: String): Unit =
-        sharedPreferences.edit().remove(key).apply()
+    fun remove(
+        key: String,
+    ): Unit = sharedPreferences.edit().remove(key).apply()
 
-    fun contains(key: String): Boolean =
-        sharedPreferences.contains(key)
+    fun contains(
+        key: String,
+    ): Boolean = sharedPreferences.contains(key)
 
-    override fun getBoolean(key: String, defValue: Boolean): Boolean =
-        sharedPreferences.getBoolean(key, defValue)
+    override fun getBoolean(
+        key: String,
+        defValue: Boolean,
+    ): Boolean = sharedPreferences.getBoolean(key, defValue)
 
-    override fun putBoolean(key: String, value: Boolean) =
-        sharedPreferences.edit().putBoolean(key, value).apply()
+    override fun putBoolean(
+        key: String,
+        value: Boolean,
+    ) = sharedPreferences.edit().putBoolean(key, value).apply()
 
-    override fun getInt(key: String, defValue: Int): Int =
-        sharedPreferences.getInt(key, defValue)
+    override fun getInt(
+        key: String,
+        defValue: Int,
+    ): Int = sharedPreferences.getInt(key, defValue)
 
-    override fun putInt(key: String, value: Int) =
-        sharedPreferences.edit().putInt(key, value).apply()
+    override fun putInt(
+        key: String,
+        value: Int,
+    ) = sharedPreferences.edit().putInt(key, value).apply()
 
-    override fun getLong(key: String, defValue: Long): Long =
-        sharedPreferences.getLong(key, defValue)
+    override fun getLong(
+        key: String,
+        defValue: Long,
+    ): Long = sharedPreferences.getLong(key, defValue)
 
-    override fun putLong(key: String, value: Long) =
-        sharedPreferences.edit().putLong(key, value).apply()
+    override fun putLong(
+        key: String,
+        value: Long,
+    ) = sharedPreferences.edit().putLong(key, value).apply()
 
-    override fun getFloat(key: String, defValue: Float): Float =
-        sharedPreferences.getFloat(key, defValue)
+    override fun getFloat(
+        key: String,
+        defValue: Float,
+    ): Float = sharedPreferences.getFloat(key, defValue)
 
-    override fun putFloat(key: String, value: Float) =
-        sharedPreferences.edit().putFloat(key, value).apply()
+    override fun putFloat(
+        key: String,
+        value: Float,
+    ) = sharedPreferences.edit().putFloat(key, value).apply()
 
-    override fun getString(key: String, defValue: String?): String? =
-        sharedPreferences.getString(key, defValue)
+    override fun getString(
+        key: String,
+        defValue: String?,
+    ): String? = sharedPreferences.getString(key, defValue)
 
-    override fun putString(key: String, value: String?) =
-        sharedPreferences.edit().putString(key, value).apply()
+    override fun putString(
+        key: String,
+        value: String?,
+    ) = sharedPreferences.edit().putString(key, value).apply()
 
-    override fun getStringSet(key: String, defValues: Set<String>?): Set<String>? =
-        sharedPreferences.getStringSet(key, defValues)
+    override fun getStringSet(
+        key: String,
+        defValues: Set<String>?,
+    ): Set<String>? = sharedPreferences.getStringSet(key, defValues)
 
-    override fun putStringSet(key: String, values: Set<String>?) =
-        sharedPreferences.edit().putStringSet(key, values).apply()
+    override fun putStringSet(
+        key: String,
+        values: Set<String>?,
+    ) = sharedPreferences.edit().putStringSet(key, values).apply()
 }

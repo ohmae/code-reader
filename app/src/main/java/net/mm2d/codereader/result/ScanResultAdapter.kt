@@ -25,10 +25,15 @@ class ScanResultAdapter(
     private var results: List<ScanResult> = emptyList()
     private val layoutInflater = LayoutInflater.from(context)
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
-        ViewHolder(ItemResultBinding.inflate(layoutInflater, parent, false))
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int,
+    ): ViewHolder = ViewHolder(ItemResultBinding.inflate(layoutInflater, parent, false))
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(
+        holder: ViewHolder,
+        position: Int,
+    ) {
         val result = results[position]
         holder.apply(result)
         holder.itemView.setOnClickListener {
@@ -38,7 +43,9 @@ class ScanResultAdapter(
 
     override fun getItemCount(): Int = results.size
 
-    override fun onChanged(value: List<ScanResult>) {
+    override fun onChanged(
+        value: List<ScanResult>,
+    ) {
         val diff = DiffUtil.calculateDiff(DiffCallback(results, value))
         results = value
         diff.dispatchUpdatesTo(this)
@@ -51,17 +58,23 @@ class ScanResultAdapter(
         override fun getOldListSize(): Int = oldList.size
         override fun getNewListSize(): Int = newList.size
 
-        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
-            oldList[oldItemPosition] == newList[newItemPosition]
+        override fun areItemsTheSame(
+            oldItemPosition: Int,
+            newItemPosition: Int,
+        ): Boolean = oldList[oldItemPosition] == newList[newItemPosition]
 
-        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
-            oldList[oldItemPosition] == newList[newItemPosition]
+        override fun areContentsTheSame(
+            oldItemPosition: Int,
+            newItemPosition: Int,
+        ): Boolean = oldList[oldItemPosition] == newList[newItemPosition]
     }
 
     class ViewHolder(
         private val binding: ItemResultBinding,
     ) : RecyclerView.ViewHolder(binding.root) {
-        fun apply(result: ScanResult) {
+        fun apply(
+            result: ScanResult,
+        ) {
             binding.resultValue.text = result.value
             binding.resultType.text = result.type
             binding.resultFormat.text = result.format

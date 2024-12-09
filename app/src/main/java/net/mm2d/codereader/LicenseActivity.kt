@@ -24,7 +24,9 @@ import net.mm2d.codereader.util.Launcher
 class LicenseActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLicenseBinding
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(
+        savedInstanceState: Bundle?,
+    ) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         binding = ActivityLicenseBinding.inflate(layoutInflater)
@@ -56,12 +58,16 @@ class LicenseActivity : AppCompatActivity() {
         }
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
+    override fun onSaveInstanceState(
+        outState: Bundle,
+    ) {
         super.onSaveInstanceState(outState)
         binding.webView.saveState(outState)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+    override fun onOptionsItemSelected(
+        item: MenuItem,
+    ): Boolean {
         when (item.itemId) {
             android.R.id.home -> finish()
             else -> return super.onOptionsItemSelected(item)
@@ -70,7 +76,9 @@ class LicenseActivity : AppCompatActivity() {
     }
 
     companion object {
-        fun start(context: Context) {
+        fun start(
+            context: Context,
+        ) {
             context.startActivity(Intent(context, LicenseActivity::class.java))
         }
     }

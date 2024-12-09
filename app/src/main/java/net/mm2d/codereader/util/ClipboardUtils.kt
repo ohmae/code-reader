@@ -15,7 +15,11 @@ import androidx.core.content.getSystemService
 import net.mm2d.codereader.R
 
 object ClipboardUtils {
-    fun copyToClipboard(context: Context, label: String, text: String) {
+    fun copyToClipboard(
+        context: Context,
+        label: String,
+        text: String,
+    ) {
         context.getSystemService<ClipboardManager>()?.let {
             it.setPrimaryClip(ClipData.newPlainText(label, text))
             Toast.makeText(context, R.string.toast_copy_to_clipboard, Toast.LENGTH_SHORT)

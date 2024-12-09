@@ -22,7 +22,9 @@ class CodeAnalyzer(
     private var paused: Boolean = false
 
     @SuppressLint("UnsafeOptInUsageError")
-    override fun analyze(imageProxy: ImageProxy) {
+    override fun analyze(
+        imageProxy: ImageProxy,
+    ) {
         if (paused) {
             imageProxy.close()
             return

@@ -49,7 +49,9 @@ internal fun Collection<Enum<*>>.checkSuffix() {
     }
 }
 
-internal fun Enum<*>.checkSuffix(value: Any) {
+internal fun Enum<*>.checkSuffix(
+    value: Any,
+) {
     if (!BuildConfig.DEBUG) return
     when (value) {
         is Boolean -> require(name.endsWith(SUFFIX_BOOLEAN)) {

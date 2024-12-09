@@ -53,7 +53,9 @@ class DetectedPresenter(
         }, RESUME_INTERVAL)
     }
 
-    private fun toBitmap(imageProxy: ImageProxy): Bitmap =
+    private fun toBitmap(
+        imageProxy: ImageProxy,
+    ): Bitmap =
         if (imageProxy.imageInfo.rotationDegrees == 0) {
             imageProxy.toBitmap()
         } else {

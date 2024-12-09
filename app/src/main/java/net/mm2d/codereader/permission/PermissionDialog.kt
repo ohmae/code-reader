@@ -21,7 +21,9 @@ import androidx.fragment.app.FragmentActivity
 import net.mm2d.codereader.R
 
 class PermissionDialog : DialogFragment() {
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+    override fun onCreateDialog(
+        savedInstanceState: Bundle?,
+    ): Dialog {
         val context = requireContext()
         return AlertDialog.Builder(context)
             .setTitle(R.string.dialog_title_permission)
@@ -33,12 +35,16 @@ class PermissionDialog : DialogFragment() {
             .create()
     }
 
-    override fun onCancel(dialog: DialogInterface) {
+    override fun onCancel(
+        dialog: DialogInterface,
+    ) {
         val requestKey = requireArguments().getString(REQUEST_KEY, "")
         parentFragmentManager.setFragmentResult(requestKey, Bundle())
     }
 
-    private fun startAppInfo(context: Context) {
+    private fun startAppInfo(
+        context: Context,
+    ) {
         val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
             data = Uri.parse("package:" + context.packageName)
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -61,7 +67,10 @@ class PermissionDialog : DialogFragment() {
             }
         }
 
-        fun show(activity: FragmentActivity, requestKey: String) {
+        fun show(
+            activity: FragmentActivity,
+            requestKey: String,
+        ) {
             val manager = activity.supportFragmentManager
             if (manager.isStateSaved) return
             if (manager.findFragmentByTag(TAG) != null) return

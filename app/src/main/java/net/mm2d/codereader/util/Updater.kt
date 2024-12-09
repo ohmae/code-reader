@@ -19,7 +19,9 @@ import com.google.android.play.core.ktx.isImmediateUpdateAllowed
 object Updater {
     private const val DAYS_FOR_UPDATE: Int = 2
 
-    fun startIfAvailable(activity: Activity) {
+    fun startIfAvailable(
+        activity: Activity,
+    ) {
         val manager = AppUpdateManagerFactory.create(activity.applicationContext)
         manager.appUpdateInfo
             .addOnSuccessListener {

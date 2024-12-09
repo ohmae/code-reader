@@ -34,7 +34,10 @@ class DetectedMarkerView @JvmOverloads constructor(
     private val markers: MutableList<Marker> = mutableListOf()
     private val drawPaths: MutableList<Path> = mutableListOf()
 
-    fun setMarkers(imageProxy: ImageProxy, pointsList: List<Array<Point>>) {
+    fun setMarkers(
+        imageProxy: ImageProxy,
+        pointsList: List<Array<Point>>,
+    ) {
         val (rw, rh) = normalizeResolution(imageProxy)
         val w = width.toFloat()
         val h = height.toFloat()
@@ -60,7 +63,9 @@ class DetectedMarkerView @JvmOverloads constructor(
             }
     }
 
-    private fun normalizeResolution(imageProxy: ImageProxy): Pair<Float, Float> {
+    private fun normalizeResolution(
+        imageProxy: ImageProxy,
+    ): Pair<Float, Float> {
         val w = imageProxy.width.toFloat()
         val h = imageProxy.height.toFloat()
         return when (imageProxy.imageInfo.rotationDegrees) {
@@ -75,7 +80,9 @@ class DetectedMarkerView @JvmOverloads constructor(
         invalidate()
     }
 
-    fun drawMarker(scale: Float) {
+    fun drawMarker(
+        scale: Float,
+    ) {
         drawPaths.clear()
         markers.forEach {
             drawPaths.add(transformPath(scale, it))
@@ -83,13 +90,18 @@ class DetectedMarkerView @JvmOverloads constructor(
         invalidate()
     }
 
-    private fun transformPath(scale: Float, marker: Marker): Path =
+    private fun transformPath(
+        scale: Float,
+        marker: Marker,
+    ): Path =
         Path(marker.path).also {
             matrix.setScale(scale, scale, marker.center.x, marker.center.y)
             it.transform(matrix)
         }
 
-    override fun onDraw(canvas: Canvas) {
+    override fun onDraw(
+        canvas: Canvas,
+    ) {
         drawPaths.forEach {
             canvas.drawPath(it, basePaint)
             canvas.drawPath(it, accentPaint)
