@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">CodeReader</string>
-    <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="app_info">App info</string>
 

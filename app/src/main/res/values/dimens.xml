@@ -3,4 +3,5 @@
     <dimen name="list_height">160dp</dimen>
     <dimen name="frame_stroke_width">2dp</dimen>
     <dimen name="frame_base_stroke_width">6dp</dimen>
+    <dimen name="menu_width">240dp</dimen>
 </resources>

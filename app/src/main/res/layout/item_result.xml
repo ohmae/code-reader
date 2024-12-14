@@ -7,6 +7,7 @@
     android:layout_height="@dimen/result_height"
     android:background="?attr/background"
     android:foreground="?selectableItemBackground"
+    tools:ignore="Overdraw"
     >
 
     <TextView

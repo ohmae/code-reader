@@ -13,8 +13,7 @@ import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
-import android.view.Menu
-import android.view.MenuItem
+import android.view.ViewGroup.MarginLayoutParams
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -39,7 +38,6 @@ import net.mm2d.codereader.result.ScanResult
 import net.mm2d.codereader.result.ScanResultAdapter
 import net.mm2d.codereader.result.ScanResultDialog
 import net.mm2d.codereader.setting.Settings
-import net.mm2d.codereader.util.Launcher
 import net.mm2d.codereader.util.ReviewRequester
 import net.mm2d.codereader.util.Updater
 import net.mm2d.codereader.util.observe
@@ -75,10 +73,12 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            view.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            view.setPadding(systemBars.left, 0, systemBars.right, systemBars.bottom)
+            binding.guideTop.updateLayoutParams<MarginLayoutParams> {
+                topMargin = systemBars.top
+            }
             insets
         }
-        setSupportActionBar(binding.toolbar)
         adapter = ScanResultAdapter(this) {
             ScanResultDialog.show(this, it)
         }
@@ -125,6 +125,7 @@ class MainActivity : AppCompatActivity() {
         PermissionDialog.registerListener(this, CAMERA_PERMISSION_REQUEST_KEY) {
             finishByError()
         }
+        OptionsMenuPresenter(this, binding.menu).setUp()
     }
 
     override fun onRestart() {
@@ -215,28 +216,6 @@ class MainActivity : AppCompatActivity() {
             @Suppress("DEPRECATION")
             vibrator.vibrate(30)
         }
-    }
-
-    override fun onCreateOptionsMenu(
-        menu: Menu,
-    ): Boolean {
-        menuInflater.inflate(R.menu.main, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(
-        item: MenuItem,
-    ): Boolean {
-        when (item.itemId) {
-            R.id.license -> LicenseActivity.start(this)
-            R.id.source_code -> Launcher.openSourceCode(this)
-            R.id.privacy_policy -> Launcher.openPrivacyPolicy(this)
-            R.id.share_this_app -> Launcher.shareThisApp(this)
-            R.id.play_store -> Launcher.openGooglePlay(this)
-            R.id.settings -> SettingsActivity.start(this)
-            else -> return super.onOptionsItemSelected(item)
-        }
-        return true
     }
 
     companion object {
