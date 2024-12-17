@@ -69,7 +69,7 @@ class CodeScanner(
         val preview = Preview.Builder()
             .setResolutionSelector(resolutionSelector)
             .build()
-        preview.setSurfaceProvider(previewView.surfaceProvider)
+        preview.surfaceProvider = previewView.surfaceProvider
 
         val analysis = ImageAnalysis.Builder()
             .setResolutionSelector(resolutionSelector)

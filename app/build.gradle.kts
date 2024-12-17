@@ -26,9 +26,7 @@ android {
         targetSdk = 35
         versionCode = versionMajor * 10000 + versionMinor * 100 + versionPatch
         versionName = "$versionMajor.$versionMinor.$versionPatch"
-        vectorDrawables.useSupportLibrary = true
         base.archivesName.set("$applicationName-$versionName")
-        multiDexEnabled = true
     }
     applicationVariants.all {
         if (buildType.name == "release") {
