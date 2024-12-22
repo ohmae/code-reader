@@ -2,7 +2,7 @@
 androidGradlePlugin = "8.7.3"
 kotlin = "2.1.0"
 gradleVersionsPlugin = "0.51.0"
-kotlinxCoroutines = "1.9.0"
+kotlinxCoroutines = "1.10.1"
 
 androidxCore = "1.15.0"
 androidxAppCompat = "1.7.0"
