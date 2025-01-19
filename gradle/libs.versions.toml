@@ -6,7 +6,7 @@ kotlinxCoroutines = "1.10.1"
 
 androidxCore = "1.15.0"
 androidxAppCompat = "1.7.0"
-androidxActivity = "1.9.3"
+androidxActivity = "1.10.0"
 androidxFragment = "1.8.5"
 androidxBrowser = "1.8.0"
 androidxWebkit = "1.12.1"
