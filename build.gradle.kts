@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlinAndroid) apply false
     alias(libs.plugins.kotlinParcelize) apply false
     alias(libs.plugins.gradleVersions) apply false
+    alias(libs.plugins.dependencyGuard) apply false
 
     // for release
 }

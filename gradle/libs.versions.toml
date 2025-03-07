@@ -1,8 +1,9 @@
 [versions]
-androidGradlePlugin = "8.8.2"
+androidGradlePlugin = "8.9.0"
 kotlin = "2.1.10"
 gradleVersionsPlugin = "0.52.0"
 kotlinxCoroutines = "1.10.1"
+dependencyGuard = "0.5.0"
 
 androidxCore = "1.15.0"
 androidxAppCompat = "1.7.0"
@@ -63,6 +64,7 @@ androidApplication = { id = "com.android.application", version.ref = "androidGra
 kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlinParcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
 gradleVersions = { id = "com.github.ben-manes.versions", version.ref = "gradleVersionsPlugin" }
+dependencyGuard = { id = "com.dropbox.dependency-guard", version.ref = "dependencyGuard" }
 
 # for release
 

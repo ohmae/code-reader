@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.kotlinAndroid)
     alias(libs.plugins.kotlinParcelize)
     alias(libs.plugins.gradleVersions)
+    alias(libs.plugins.dependencyGuard)
 
     // for release
 }
@@ -93,6 +94,10 @@ dependencies {
     debugImplementation(libs.bundles.flipper)
 
     // for release
+}
+
+dependencyGuard {
+    configuration("releaseRuntimeClasspath")
 }
 
 fun isStable(
