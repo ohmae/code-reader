@@ -2,10 +2,10 @@
 androidGradlePlugin = "8.9.1"
 kotlin = "2.1.20"
 gradleVersionsPlugin = "0.52.0"
-kotlinxCoroutines = "1.10.1"
+kotlinxCoroutines = "1.10.2"
 dependencyGuard = "0.5.0"
 
-androidxCore = "1.15.0"
+androidxCore = "1.16.0"
 androidxAppCompat = "1.7.0"
 androidxActivity = "1.10.1"
 androidxFragment = "1.8.6"
