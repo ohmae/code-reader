@@ -92,7 +92,6 @@ dependencies {
     implementation(libs.timber)
 
     debugImplementation(libs.leakcanary)
-    debugImplementation(libs.bundles.flipper)
 
     // for release
 }

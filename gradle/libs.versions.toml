@@ -1,7 +1,7 @@
 [versions]
 androidGradlePlugin = "8.10.0"
 desugarJdkLibs = "2.1.5"
-kotlin = "2.1.20"
+kotlin = "2.1.21"
 gradleVersionsPlugin = "0.52.0"
 kotlinxCoroutines = "1.10.2"
 dependencyGuard = "0.5.0"
@@ -22,8 +22,6 @@ playAppUpdate = "2.1.0"
 timber = "5.0.1"
 
 leakcanary = "2.14"
-flipper = "0.273.0"
-soloader = "0.12.1"
 
 ktlint = "1.5.0"
 
@@ -53,10 +51,6 @@ playAppUpdate = { group = "com.google.android.play", name = "app-update-ktx", ve
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
 
 leakcanary = { group = "com.squareup.leakcanary", name = "leakcanary-android", version.ref = "leakcanary" }
-flipper = { group = "com.facebook.flipper", name = "flipper", version.ref = "flipper" }
-soloader = { group = "com.facebook.soloader", name = "soloader", version.ref = "soloader" }
-flipperNetwork = { group = "com.facebook.flipper", name = "flipper-network-plugin", version.ref = "flipper" }
-flipperLeakCanary2 = { group = "com.facebook.flipper", name = "flipper-leakcanary2-plugin", version.ref = "flipper" }
 
 ktlint = { group = "com.pinterest.ktlint", name = "ktlint-cli", version.ref = "ktlint" }
 
@@ -76,12 +70,6 @@ androidxCamera = [
     "androidxCameraView",
     "androidxCameraCamera2",
     "androidxCameraLifecycle"
-]
-flipper = [
-    "flipper",
-    "soloader",
-    "flipperNetwork",
-    "flipperLeakCanary2"
 ]
 
 # for release
