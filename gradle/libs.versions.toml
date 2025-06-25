@@ -1,7 +1,7 @@
 [versions]
-androidGradlePlugin = "8.10.1"
+androidGradlePlugin = "8.11.0"
 desugarJdkLibs = "2.1.5"
-kotlin = "2.1.21"
+kotlin = "2.2.0"
 gradleVersionsPlugin = "0.52.0"
 kotlinxCoroutines = "1.10.2"
 dependencyGuard = "0.5.0"
