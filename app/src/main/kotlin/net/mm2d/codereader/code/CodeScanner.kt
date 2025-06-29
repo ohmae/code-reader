@@ -14,6 +14,7 @@ import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import androidx.camera.core.Preview
 import androidx.camera.core.TorchState
+import androidx.camera.core.UseCase
 import androidx.camera.core.resolutionselector.AspectRatioStrategy
 import androidx.camera.core.resolutionselector.ResolutionSelector
 import androidx.camera.lifecycle.ProcessCameraProvider
@@ -40,13 +41,20 @@ class CodeScanner(
     private val analyzer: CodeAnalyzer = CodeAnalyzer(scanner, callback)
     private var camera: Camera? = null
     private val torchStateFlow: MutableStateFlow<Boolean> = MutableStateFlow(false)
+
+    private var cameraProviderInternal: ProcessCameraProvider? = null
+    private var previewUseCaseInternal: Preview? = null
+    private var analysisUseCaseInternal: ImageAnalysis? = null
+
     fun getTouchStateStream(): Flow<Boolean> = torchStateFlow
 
     init {
         activity.lifecycle.addObserver(
             LifecycleEventObserver { _, event ->
                 if (event == Event.ON_DESTROY) {
-                    workerExecutor.shutdown()
+                    if (!workerExecutor.isShutdown) {
+                        workerExecutor.shutdown()
+                    }
                     scanner.close()
                 }
             },
@@ -56,7 +64,13 @@ class CodeScanner(
     fun start() {
         val future = ProcessCameraProvider.getInstance(activity)
         future.addListener({
-            setUp(future.get())
+            try {
+                val provider = future.get()
+                this.cameraProviderInternal = provider
+                setUp(provider)
+            } catch (e: Exception) {
+                Timber.e(e, "CodeScanner: Failed to get ProcessCameraProvider in start() listener.")
+            }
         }, ContextCompat.getMainExecutor(activity))
     }
 
@@ -66,36 +80,59 @@ class CodeScanner(
         val resolutionSelector = ResolutionSelector.Builder()
             .setAspectRatioStrategy(AspectRatioStrategy.RATIO_16_9_FALLBACK_AUTO_STRATEGY)
             .build()
+
         val preview = Preview.Builder()
             .setResolutionSelector(resolutionSelector)
             .build()
         preview.surfaceProvider = previewView.surfaceProvider
+        this.previewUseCaseInternal = preview
 
         val analysis = ImageAnalysis.Builder()
             .setResolutionSelector(resolutionSelector)
             .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
             .build()
         analysis.setAnalyzer(workerExecutor, analyzer)
+        this.analysisUseCaseInternal = analysis
 
         try {
             provider.unbindAll()
             val camera = provider.bindToLifecycle(
                 activity,
                 CameraSelector.DEFAULT_BACK_CAMERA,
-                preview,
-                analysis,
+                previewUseCaseInternal!!,
+                analysisUseCaseInternal!!,
             )
+            this.camera = camera
             camera.cameraInfo.torchState.observe(activity) { state ->
                 torchStateFlow.tryEmit(state == TorchState.ON)
             }
-            this.camera = camera
         } catch (e: Exception) {
-            Timber.e(e)
+            Timber.e(e, "CodeScanner: Use case binding failed in setUp.")
+            this.camera = null
         }
     }
 
+    fun shutdownCamera() {
+        cameraProviderInternal?.let { provider ->
+            val useCasesToUnbind = mutableListOf<UseCase>()
+            previewUseCaseInternal?.let { useCasesToUnbind.add(it) }
+            analysisUseCaseInternal?.let { useCasesToUnbind.add(it) }
+
+            if (useCasesToUnbind.isNotEmpty()) {
+                try {
+                    provider.unbind(*useCasesToUnbind.toTypedArray())
+                } catch (e: Exception) {
+                    Timber.e(e, "CodeScanner: [shutdownCamera] Error unbinding specific use cases: ${e.message}")
+                }
+            }
+        }
+        previewUseCaseInternal = null
+        analysisUseCaseInternal = null
+        camera = null
+    }
+
     fun toggleTorch() {
-        val camera = camera ?: return
+        val camera = this.camera ?: return
         camera.cameraControl.enableTorch(!torchStateFlow.value)
     }
 

@@ -38,6 +38,11 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="com.adamrocker.android.simeji.ACTION_INTERCEPT" />
+                <category android:name="com.adamrocker.android.simeji.REPLACE" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity-alias>
 
         <activity
