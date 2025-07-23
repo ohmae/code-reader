@@ -22,7 +22,7 @@ timber = "5.0.1"
 
 leakcanary = "2.14"
 
-ktlint = "1.7.0"
+ktlint = "1.7.1"
 
 # for release
 
