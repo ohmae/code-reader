@@ -8,6 +8,7 @@
 package net.mm2d.codereader
 
 import android.animation.ValueAnimator
+import android.content.Intent // Mushroom mode 用に追加
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import android.os.Bundle
@@ -42,13 +43,16 @@ import net.mm2d.codereader.util.ReviewRequester
 import net.mm2d.codereader.util.Updater
 import net.mm2d.codereader.util.observe
 
+// Mushroom mode 用に追加
+const val ACTION_INTERCEPT_MAIN = "com.adamrocker.android.simeji.ACTION_INTERCEPT" // 定数名変更
+const val REPLACE_KEY_MAIN = "replace_key" // 定数名変更
+
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var codeScanner: CodeScanner
-    private var started: Boolean = false
     private val launcher = registerForCameraPermissionRequest { granted, succeedToShowDialog ->
         if (granted) {
-            startCamera()
+            // パーミッションが付与されたら onResume でカメラが開始される
         } else if (!succeedToShowDialog) {
             PermissionDialog.show(this, CAMERA_PERMISSION_REQUEST_KEY)
         } else {
@@ -63,12 +67,16 @@ class MainActivity : AppCompatActivity() {
         Settings.get()
     }
     private var resultSet: Set<ScanResult> = emptySet()
+    private var isMushroomMode: Boolean = false // Mushroom mode 用フラグ
 
     override fun onCreate(
         savedInstanceState: Bundle?,
     ) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        // Mushroom mode の判定 (intent.action を確認)
+        isMushroomMode = intent.action?.contains(ACTION_INTERCEPT_MAIN) ?: false
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, insets ->
@@ -87,11 +95,11 @@ class MainActivity : AppCompatActivity() {
             DividerItemDecoration(this, DividerItemDecoration.VERTICAL),
         )
         vibrator = getSystemService()!!
-        codeScanner = CodeScanner(this, binding.previewView, ::onDetectCode)
+        codeScanner = CodeScanner(this, binding.previewView, ::onDetectCode) // CodeScanner はここで初期化
         binding.flash.setOnClickListener {
             codeScanner.toggleTorch()
         }
-        codeScanner.getTouchStateStream().observe(this) {
+        codeScanner.getTouchStateStream().observe(this) { // メソッド名を getTouchStateStream に戻す
             onFlashOn(it)
         }
         detectedPresenter = DetectedPresenter(
@@ -116,27 +124,52 @@ class MainActivity : AppCompatActivity() {
                 expandList()
             }
         }
-        if (CameraPermission.hasPermission(this)) {
-            startCamera()
-            Updater.startIfAvailable(this)
-        } else {
-            launcher.launch()
-        }
         PermissionDialog.registerListener(this, CAMERA_PERMISSION_REQUEST_KEY) {
             finishByError()
         }
         OptionsMenuPresenter(this, binding.menu).setUp()
+        Updater.startIfAvailable(this) // Updaterはパーミッション状態に関わらず呼べるならここに
+    }
+
+    // onStart を追加
+    override fun onStart() {
+        super.onStart()
+        if (!CameraPermission.hasPermission(this)) {
+            launcher.launch()
+        }
+        // パーミッションがある場合は onResume でカメラが開始される
+    }
+
+    // onResume を追加/修正
+    override fun onResume() {
+        super.onResume()
+        if (CameraPermission.hasPermission(this)) {
+            if (::codeScanner.isInitialized) { // codeScannerが初期化済みか確認
+                codeScanner.start()  // カメラの初期化/再初期化
+                codeScanner.resume() // 解析の再開
+            }
+        }
+    }
+
+    // onPause を追加
+    override fun onPause() {
+        super.onPause()
+        if (::codeScanner.isInitialized) { // codeScannerが初期化済みか確認
+            codeScanner.pause()          // 解析の一時停止
+            codeScanner.shutdownCamera() // カメラリソースの解放
+        }
     }
 
     override fun onRestart() {
         super.onRestart()
-        if (!started) {
-            if (CameraPermission.hasPermission(this)) {
-                startCamera()
-            } else {
-                finishByError()
-            }
-        }
+        // 以前の onRestart のロジックは onStart と onResume でカバーされるため、
+        // ここでの特別なカメラ処理は不要になる。
+    }
+
+    // onDestroy を追加 (任意、デバッグや最終確認用)
+    override fun onDestroy() {
+        // onPause で shutdownCamera が呼ばれるため、通常は不要。
+        super.onDestroy()
     }
 
     private fun finishByError() {
@@ -166,18 +199,12 @@ class MainActivity : AppCompatActivity() {
         binding.flash.setImageResource(icon)
     }
 
-    private fun startCamera() {
-        if (started) return
-        started = true
-        codeScanner.start()
-    }
-
     private fun onDetectCode(
         imageProxy: ImageProxy,
         codes: List<Barcode>,
     ) {
         val detected = mutableListOf<Barcode>()
-        codes.forEach {
+        codes.forEach { // it を使用
             val value = it.rawValue ?: return@forEach
             val result = ScanResult(
                 value = value,
@@ -186,12 +213,23 @@ class MainActivity : AppCompatActivity() {
                 isUrl = it.valueType == Barcode.TYPE_URL,
             )
             if (!resultSet.contains(result)) {
+                if (isMushroomMode) { // Mushroom mode の処理を先に行う
+                    val data = Intent()
+                    data.putExtra(REPLACE_KEY_MAIN, result.value)
+                    setResult(RESULT_OK, data)
+                    finish()
+                    return // Mushroomモードでは最初の検出でActivityを終了
+                }
                 viewModel.add(result)
                 vibrate()
                 detected.add(it)
             }
         }
-        if (detected.isEmpty()) return
+        if (detected.isEmpty()) {
+            // imageProxy.close() は CodeAnalyzer 内で自動的に行われるはずなので、
+            // ここでの呼び出しは不要。
+            return
+        }
         detectedPresenter.onDetected(imageProxy, detected)
     }
 
