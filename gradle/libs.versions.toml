@@ -1,6 +1,5 @@
 [versions]
-androidGradlePlugin = "8.11.0"
-desugarJdkLibs = "2.1.5"
+androidGradlePlugin = "8.11.1"
 kotlin = "2.2.0"
 gradleVersionsPlugin = "0.52.0"
 kotlinxCoroutines = "1.10.2"
@@ -23,13 +22,11 @@ timber = "5.0.1"
 
 leakcanary = "2.14"
 
-ktlint = "1.6.0"
+ktlint = "1.7.1"
 
 # for release
 
 [libraries]
-desugarJdkLibs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "desugarJdkLibs" }
-
 kotlinStdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin" }
 kotlinxCoroutinesAndroid = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutines" }
 
