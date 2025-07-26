@@ -11,7 +11,6 @@ plugins {
 val ktlint: Configuration by configurations.creating
 
 dependencies {
-    @Suppress("UnstableApiUsage")
     ktlint(libs.ktlint) {
         attributes {
             attribute(Bundling.BUNDLING_ATTRIBUTE, objects.named(Bundling.EXTERNAL))

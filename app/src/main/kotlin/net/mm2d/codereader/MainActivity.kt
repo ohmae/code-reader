@@ -196,14 +196,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun expandList() {
-        ValueAnimator.ofInt(binding.dummy.height, 0)
-            .also {
-                it.addUpdateListener {
-                    binding.dummy.updateLayoutParams<ConstraintLayout.LayoutParams> {
-                        height = it.animatedValue as Int
-                    }
-                }
-            }.start()
+        val animator = ValueAnimator.ofInt(binding.dummy.height, 0)
+        animator.addUpdateListener {
+            binding.dummy.updateLayoutParams<ConstraintLayout.LayoutParams> {
+                height = it.animatedValue as Int
+            }
+        }
+        animator.start()
     }
 
     private fun vibrate() {

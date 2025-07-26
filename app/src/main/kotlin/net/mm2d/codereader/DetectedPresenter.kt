@@ -27,15 +27,14 @@ class DetectedPresenter(
         detectedMarker.setMarkers(imageProxy, pointsList)
         stillImage.setImageBitmap(toBitmap(imageProxy))
         stillImage.isVisible = true
-        ValueAnimator.ofFloat(4f, 1.2f)
-            .also {
-                it.setDuration(ANIMATION_DURATION)
-                it.setInterpolator(DecelerateInterpolator(3f))
-                it.addUpdateListener {
-                    detectedMarker.drawMarker(it.animatedValue as Float)
-                }
-                it.addListener(onEnd = { onEnd() })
-            }.start()
+        val animator = ValueAnimator.ofFloat(4f, 1.2f)
+        animator.duration = ANIMATION_DURATION
+        animator.interpolator = DecelerateInterpolator(3f)
+        animator.addUpdateListener {
+            detectedMarker.drawMarker(it.animatedValue as Float)
+        }
+        animator.addListener(onEnd = { onEnd() })
+        animator.start()
     }
 
     private fun Barcode.toCornerPoints(): Array<Point>? {

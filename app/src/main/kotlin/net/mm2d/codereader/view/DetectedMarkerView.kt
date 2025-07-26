@@ -45,7 +45,7 @@ class DetectedMarkerView @JvmOverloads constructor(
         val offset = PointF((rw * scale - w) / 2f, (rh * scale - h) / 2f)
 
         pointsList
-            .map { it.map { PointF(it.x * scale - offset.x, it.y * scale - offset.y) } }
+            .map { points -> points.map { PointF(it.x * scale - offset.x, it.y * scale - offset.y) } }
             .forEach { points ->
                 val center = PointF(
                     points.fold(0f) { acc, point -> acc + point.x } / points.size,
