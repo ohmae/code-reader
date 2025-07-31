@@ -7,7 +7,7 @@ androidx.appcompat:appcompat-resources:1.7.1
 androidx.appcompat:appcompat:1.7.1
 androidx.arch.core:core-common:2.2.0
 androidx.arch.core:core-runtime:2.2.0
-androidx.browser:browser:1.8.0
+androidx.browser:browser:1.9.0
 androidx.camera:camera-camera2:1.4.2
 androidx.camera:camera-core:1.4.2
 androidx.camera:camera-lifecycle:1.4.2
