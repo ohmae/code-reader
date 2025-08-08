@@ -88,6 +88,7 @@ class MainActivity : AppCompatActivity() {
         )
         vibrator = getSystemService()!!
         codeScanner = CodeScanner(this, binding.previewView, ::onDetectCode)
+        codeScanner.initialize()
         binding.flash.setOnClickListener {
             codeScanner.toggleTorch()
         }
