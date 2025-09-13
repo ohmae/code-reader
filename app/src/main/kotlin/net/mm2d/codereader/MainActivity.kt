@@ -8,8 +8,6 @@
 package net.mm2d.codereader
 
 import android.animation.ValueAnimator
-import android.os.Build.VERSION
-import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
@@ -208,14 +206,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun vibrate() {
         if (!settings.vibrate) return
-        if (VERSION.SDK_INT >= VERSION_CODES.O) {
-            vibrator.vibrate(
-                VibrationEffect.createOneShot(30, VibrationEffect.DEFAULT_AMPLITUDE),
-            )
-        } else {
-            @Suppress("DEPRECATION")
-            vibrator.vibrate(30)
-        }
+        vibrator.vibrate(
+            VibrationEffect.createOneShot(30, VibrationEffect.DEFAULT_AMPLITUDE),
+        )
     }
 
     companion object {

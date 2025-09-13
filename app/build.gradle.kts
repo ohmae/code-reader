@@ -23,7 +23,7 @@ android {
     namespace = "net.mm2d.codereader"
     defaultConfig {
         applicationId = "net.mm2d.codereader"
-        minSdk = 23
+        minSdk = 26
         targetSdk = 36
         versionCode = versionMajor * 10000 + versionMinor * 100 + versionPatch
         versionName = "$versionMajor.$versionMinor.$versionPatch"

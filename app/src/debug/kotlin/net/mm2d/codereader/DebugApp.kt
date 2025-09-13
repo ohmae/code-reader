@@ -38,9 +38,7 @@ class DebugApp : App() {
             detectLeakedRegistrationObjects()
             detectFileUriExposure()
             detectCleartextNetwork()
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                detectContentUriWithoutPermission()
-            }
+            detectContentUriWithoutPermission()
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 detectCredentialProtectedWhileLocked()
             }
