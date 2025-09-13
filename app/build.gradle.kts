@@ -88,8 +88,6 @@ dependencies {
     implementation(libs.playAppUpdate)
     implementation(libs.timber)
 
-    debugImplementation(libs.leakcanary)
-
     // for release
 }
 
