@@ -1,5 +1,5 @@
 [versions]
-androidGradlePlugin = "8.13.0"
+androidGradlePlugin = "8.13.1"
 kotlin = "2.2.21"
 gradleVersionsPlugin = "0.53.0"
 kotlinxCoroutines = "1.10.2"
@@ -20,7 +20,7 @@ playReview = "2.0.2"
 playAppUpdate = "2.1.0"
 timber = "5.0.1"
 
-ktlint = "1.7.1"
+ktlint = "1.8.0"
 
 # for release
 

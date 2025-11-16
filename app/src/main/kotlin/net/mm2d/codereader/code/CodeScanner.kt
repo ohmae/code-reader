@@ -66,7 +66,9 @@ class CodeScanner(
             LifecycleEventObserver { _, event ->
                 when (event) {
                     Lifecycle.Event.ON_RESUME -> bind()
+
                     Lifecycle.Event.ON_PAUSE -> unbind()
+
                     Lifecycle.Event.ON_DESTROY -> {
                         workerExecutor.shutdown()
                         scanner.close()

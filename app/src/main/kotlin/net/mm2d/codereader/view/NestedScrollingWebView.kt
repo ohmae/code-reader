@@ -62,7 +62,9 @@ class NestedScrollingWebView
     ): Boolean {
         when (event.action) {
             MotionEvent.ACTION_DOWN -> startY = event.rawY
+
             MotionEvent.ACTION_MOVE -> onTouchMove(event)
+
             MotionEvent.ACTION_UP,
             MotionEvent.ACTION_CANCEL,
             -> onTouchEnd()
