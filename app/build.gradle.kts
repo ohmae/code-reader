@@ -15,7 +15,7 @@ plugins {
 val applicationName = "CodeReader"
 val versionMajor = 0
 val versionMinor = 4
-val versionPatch = 1
+val versionPatch = 2
 
 android {
     compileSdk = 36
