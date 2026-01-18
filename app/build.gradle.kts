@@ -1,10 +1,10 @@
+import com.android.build.api.variant.impl.VariantOutputImpl
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.util.Locale
 
 plugins {
     alias(libs.plugins.androidApplication)
-    alias(libs.plugins.kotlinAndroid)
     alias(libs.plugins.kotlinParcelize)
     alias(libs.plugins.gradleVersions)
     alias(libs.plugins.dependencyGuard)
@@ -18,9 +18,10 @@ val versionMinor = 4
 val versionPatch = 2
 
 android {
-    compileSdk = 36
-
     namespace = "net.mm2d.codereader"
+    compileSdk {
+        version = release(36)
+    }
     defaultConfig {
         applicationId = "net.mm2d.codereader"
         minSdk = 26
@@ -28,14 +29,6 @@ android {
         versionCode = versionMajor * 10000 + versionMinor * 100 + versionPatch
         versionName = "$versionMajor.$versionMinor.$versionPatch"
         base.archivesName.set("$applicationName-$versionName")
-    }
-    applicationVariants.all {
-        if (buildType.name == "release") {
-            outputs.all {
-                (this as com.android.build.gradle.internal.api.BaseVariantOutputImpl).outputFileName =
-                    "$applicationName-$versionName.apk"
-            }
-        }
     }
     buildTypes {
         debug {
@@ -56,11 +49,6 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    kotlin {
-        compilerOptions {
-            jvmTarget = JvmTarget.JVM_11
-        }
-    }
     buildFeatures {
         buildConfig = true
         viewBinding = true
@@ -73,8 +61,21 @@ android {
     }
 }
 
+androidComponents {
+    onVariants(selector().withBuildType("release")) { variant ->
+        variant.outputs.forEach {
+            (it as VariantOutputImpl).outputFileName.set("$applicationName-${it.versionName.get()}.apk")
+        }
+    }
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget = JvmTarget.JVM_11
+    }
+}
+
 dependencies {
-    implementation(libs.kotlinStdlib)
     implementation(libs.kotlinxCoroutinesAndroid)
     implementation(libs.androidxCore)
     implementation(libs.androidxAppCompat)
