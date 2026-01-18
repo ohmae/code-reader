@@ -14,8 +14,8 @@ plugins {
 
 val applicationName = "CodeReader"
 val versionMajor = 0
-val versionMinor = 4
-val versionPatch = 2
+val versionMinor = 5
+val versionPatch = 0
 
 android {
     namespace = "net.mm2d.codereader"
