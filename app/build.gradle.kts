@@ -1,12 +1,9 @@
 import com.android.build.api.variant.impl.VariantOutputImpl
-import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import java.util.Locale
 
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.kotlinParcelize)
-    alias(libs.plugins.gradleVersions)
     alias(libs.plugins.dependencyGuard)
 
     // for release
@@ -97,17 +94,4 @@ dependencies {
 
 dependencyGuard {
     configuration("releaseRuntimeClasspath")
-}
-
-fun isStable(
-    version: String,
-): Boolean {
-    val versionUpperCase = version.uppercase(Locale.getDefault())
-    val hasStableKeyword = listOf("RELEASE", "FINAL", "GA").any { versionUpperCase.contains(it) }
-    val regex = "^[0-9,.v-]+(-r)?$".toRegex()
-    return hasStableKeyword || regex.matches(version)
-}
-
-tasks.named<DependencyUpdatesTask>("dependencyUpdates").configure {
-    rejectVersionIf { !isStable(candidate.version) && isStable(currentVersion) }
 }
