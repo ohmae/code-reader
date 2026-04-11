@@ -30,20 +30,20 @@ kotlinGradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plu
 
 kotlinxCoroutinesAndroid = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutines" }
 
-androidxCore = { group = "androidx.core", name = "core-ktx", version.ref = "androidxCore" }
+androidxCore = { group = "androidx.core", name = "core", version.ref = "androidxCore" }
 androidxAppCompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidxAppCompat" }
-androidxActivity = { group = "androidx.activity", name = "activity-ktx", version.ref = "androidxActivity" }
-androidxFragment = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "androidxFragment" }
+androidxActivity = { group = "androidx.activity", name = "activity", version.ref = "androidxActivity" }
+androidxFragment = { group = "androidx.fragment", name = "fragment", version.ref = "androidxFragment" }
 androidxBrowser = { group = "androidx.browser", name = "browser", version.ref = "androidxBrowser" }
 androidxWebkit = { group = "androidx.webkit", name = "webkit", version.ref = "androidxWebkit" }
-androidxPreference = { group = "androidx.preference", name = "preference-ktx", version.ref = "androidxPreference" }
+androidxPreference = { group = "androidx.preference", name = "preference", version.ref = "androidxPreference" }
 androidxConstraintLayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "androidxConstraintLayout" }
 androidxCameraView = { group = "androidx.camera", name = "camera-view", version.ref = "androidxCamera" }
 androidxCameraCamera2 = { group = "androidx.camera", name = "camera-camera2", version.ref = "androidxCamera" }
 androidxCameraLifecycle = { group = "androidx.camera", name = "camera-lifecycle", version.ref = "androidxCamera" }
 mlkitBarcodeScanning = { group = "com.google.mlkit", name = "barcode-scanning", version.ref = "mlkitBarcodeScanning" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
-playReview = { group = "com.google.android.play", name = "review-ktx", version.ref = "playReview" }
+playReview = { group = "com.google.android.play", name = "review", version.ref = "playReview" }
 playAppUpdate = { group = "com.google.android.play", name = "app-update-ktx", version.ref = "playAppUpdate" }
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
 
