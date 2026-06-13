@@ -17,7 +17,7 @@ val versionPatch = 1
 android {
     namespace = "net.mm2d.codereader"
     compileSdk {
-        version = release(36)
+        version = release(37)
     }
     defaultConfig {
         applicationId = "net.mm2d.codereader"

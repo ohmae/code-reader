@@ -10,7 +10,6 @@ package net.mm2d.codereader.result
 import android.app.Dialog
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
-import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentActivity
 import net.mm2d.codereader.R
@@ -68,7 +67,9 @@ class ScanResultDialog : DialogFragment() {
             if (manager.isStateSaved) return
             if (manager.findFragmentByTag(TAG) != null) return
             ScanResultDialog().also {
-                it.arguments = bundleOf(KEY_SCAN_RESULT to result)
+                it.arguments = Bundle().also { bundle ->
+                    bundle.putParcelable(KEY_SCAN_RESULT, result)
+                }
             }.show(manager, TAG)
         }
     }
