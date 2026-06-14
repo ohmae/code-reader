@@ -18,6 +18,7 @@ import androidx.core.net.toUri
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentActivity
 import net.mm2d.codereader.R
+import net.mm2d.codereader.util.stringBundle
 
 class PermissionDialog : DialogFragment() {
     override fun onCreateDialog(
@@ -74,9 +75,7 @@ class PermissionDialog : DialogFragment() {
             if (manager.isStateSaved) return
             if (manager.findFragmentByTag(TAG) != null) return
             PermissionDialog().also {
-                it.arguments = Bundle().also { bundle ->
-                    bundle.putString(REQUEST_KEY, requestKey)
-                }
+                it.arguments = stringBundle(REQUEST_KEY, requestKey)
             }.show(manager, TAG)
         }
     }

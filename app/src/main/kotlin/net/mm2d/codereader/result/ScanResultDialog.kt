@@ -18,6 +18,7 @@ import net.mm2d.codereader.util.ClipboardUtils
 import net.mm2d.codereader.util.Launcher
 import net.mm2d.codereader.util.ReviewRequester
 import net.mm2d.codereader.util.getParcelableSafely
+import net.mm2d.codereader.util.parcelableBundle
 
 class ScanResultDialog : DialogFragment() {
     override fun onCreateDialog(
@@ -67,9 +68,7 @@ class ScanResultDialog : DialogFragment() {
             if (manager.isStateSaved) return
             if (manager.findFragmentByTag(TAG) != null) return
             ScanResultDialog().also {
-                it.arguments = Bundle().also { bundle ->
-                    bundle.putParcelable(KEY_SCAN_RESULT, result)
-                }
+                it.arguments = parcelableBundle(KEY_SCAN_RESULT, result)
             }.show(manager, TAG)
         }
     }
