@@ -1,5 +1,6 @@
 [versions]
 androidGradlePlugin = "9.3.0"
+desugarJdkLibs = "2.1.5"
 kotlin = "2.4.10"
 kotlinxCoroutines = "1.11.0"
 dependencyGuard = "0.5.0"
@@ -25,8 +26,9 @@ ktlint = "1.8.0"
 # for release
 
 [libraries]
-# classPath
 kotlinGradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+
+desugarJdkLibs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "desugarJdkLibs" }
 
 kotlinxCoroutinesAndroid = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutines" }
 
