@@ -58,6 +58,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var adapter: ScanResultAdapter
     private var vibrator: Vibrator? = null
     private lateinit var detectedPresenter: DetectedPresenter
+    private var expandAnimator: ValueAnimator? = null
     private val viewModel: MainActivityViewModel by viewModels()
     private val settings: Settings by lazy {
         Settings.get()
@@ -97,7 +98,7 @@ class MainActivity : AppCompatActivity() {
         binding.flash.setOnClickListener {
             codeScanner.toggleTorch()
         }
-        codeScanner.getTouchStateStream().observe(this) {
+        codeScanner.getTorchStateStream().observe(this) {
             onFlashOn(it)
         }
         detectedPresenter = DetectedPresenter(
@@ -145,6 +146,18 @@ class MainActivity : AppCompatActivity() {
             }
         }
         ReviewRequester.requestIfNecessary(this)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Updater.onResume(this)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        expandAnimator?.cancel()
+        expandAnimator = null
+        detectedPresenter.destroy()
     }
 
     private fun finishByError() {
@@ -197,6 +210,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun expandList() {
+        expandAnimator?.cancel()
         val animator = ValueAnimator.ofInt(binding.dummy.height, 0)
         animator.addUpdateListener {
             binding.dummy.updateLayoutParams<ConstraintLayout.LayoutParams> {
@@ -204,6 +218,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
         animator.start()
+        expandAnimator = animator
     }
 
     private fun vibrate() {

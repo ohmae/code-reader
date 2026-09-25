@@ -85,20 +85,27 @@ class DetectedMarkerView @JvmOverloads constructor(
     fun drawMarker(
         scale: Float,
     ) {
-        drawPaths.clear()
-        markers.forEach {
-            drawPaths.add(transformPath(scale, it))
+        if (drawPaths.size != markers.size) {
+            drawPaths.clear()
+            markers.forEach {
+                drawPaths.add(Path().transformPath(scale, it))
+            }
+        } else {
+            markers.forEachIndexed { index, marker ->
+                drawPaths[index].transformPath(scale, marker)
+            }
         }
         invalidate()
     }
 
-    private fun transformPath(
+    private fun Path.transformPath(
         scale: Float,
         marker: Marker,
     ): Path =
-        Path(marker.path).also {
+        apply {
+            this.set(marker.path)
             matrix.setScale(scale, scale, marker.center.x, marker.center.y)
-            it.transform(matrix)
+            this.transform(matrix)
         }
 
     override fun onDraw(

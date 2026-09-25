@@ -10,6 +10,7 @@ package net.mm2d.codereader.util
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.os.Build
 import android.widget.Toast
 import androidx.core.content.getSystemService
 import net.mm2d.codereader.R
@@ -22,8 +23,10 @@ object ClipboardUtils {
     ) {
         context.getSystemService<ClipboardManager>()?.let {
             it.setPrimaryClip(ClipData.newPlainText(label, text))
-            Toast.makeText(context, R.string.toast_copy_to_clipboard, Toast.LENGTH_SHORT)
-                .show()
+            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2) {
+                Toast.makeText(context, R.string.toast_copy_to_clipboard, Toast.LENGTH_SHORT)
+                    .show()
+            }
         }
     }
 }

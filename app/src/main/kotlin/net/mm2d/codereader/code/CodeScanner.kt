@@ -125,7 +125,7 @@ class CodeScanner(
         torchStateFlow.tryEmit(state == TorchState.ON)
     }
 
-    fun getTouchStateStream(): Flow<Boolean> = torchStateFlow
+    fun getTorchStateStream(): Flow<Boolean> = torchStateFlow
 
     private fun Camera.attachTorchObserver() {
         cameraInfo.torchState.observe(activity, torchStateObserver)

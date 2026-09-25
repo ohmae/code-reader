@@ -37,6 +37,24 @@ object Updater {
             }
     }
 
+    fun onResume(
+        activity: Activity,
+    ) {
+        val manager = AppUpdateManagerFactory.create(activity.applicationContext)
+        manager.appUpdateInfo
+            .addOnSuccessListener {
+                if (it.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
+                    runCatching {
+                        manager.startUpdateFlow(
+                            it,
+                            activity,
+                            AppUpdateOptions.defaultOptions(AppUpdateType.IMMEDIATE),
+                        )
+                    }
+                }
+            }
+    }
+
     private fun AppUpdateInfo.isAvailable(): Boolean =
         updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE &&
             clientVersionStalenessDays.let { it != null && it >= DAYS_FOR_UPDATE } &&

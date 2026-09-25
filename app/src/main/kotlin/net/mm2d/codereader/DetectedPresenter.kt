@@ -18,11 +18,22 @@ class DetectedPresenter(
     private val detectedMarker: DetectedMarkerView,
     private val stillImage: ImageView,
 ) {
+    private var animator: ValueAnimator? = null
+    private val resumeRunnable = Runnable {
+        detectedMarker.clearMarker()
+        stillImage.setImageBitmap(null)
+        stillImage.isVisible = false
+        codeScanner.resume()
+    }
+
     fun onDetected(
         imageProxy: ImageProxy,
         detectedCodes: List<Barcode>,
     ) {
         codeScanner.pause()
+        animator?.cancel()
+        detectedMarker.removeCallbacks(resumeRunnable)
+
         val pointsList = detectedCodes.mapNotNull { it.toCornerPoints() }
         detectedMarker.setMarkers(imageProxy, pointsList)
         stillImage.setImageBitmap(toBitmap(imageProxy))
@@ -35,6 +46,7 @@ class DetectedPresenter(
         }
         animator.addListener(onEnd = { onEnd() })
         animator.start()
+        this.animator = animator
     }
 
     private fun Barcode.toCornerPoints(): Array<Point>? {
@@ -44,12 +56,17 @@ class DetectedPresenter(
     }
 
     private fun onEnd() {
-        detectedMarker.postDelayed({
-            detectedMarker.clearMarker()
-            stillImage.setImageBitmap(null)
-            stillImage.isVisible = false
-            codeScanner.resume()
-        }, RESUME_INTERVAL)
+        detectedMarker.removeCallbacks(resumeRunnable)
+        detectedMarker.postDelayed(resumeRunnable, RESUME_INTERVAL)
+    }
+
+    fun destroy() {
+        animator?.cancel()
+        animator = null
+        detectedMarker.removeCallbacks(resumeRunnable)
+        detectedMarker.clearMarker()
+        stillImage.setImageBitmap(null)
+        stillImage.isVisible = false
     }
 
     private fun toBitmap(
@@ -62,7 +79,11 @@ class DetectedPresenter(
             val matrix = Matrix().apply {
                 postRotate(imageProxy.imageInfo.rotationDegrees.toFloat())
             }
-            Bitmap.createBitmap(temp, 0, 0, temp.width, temp.height, matrix, true)
+            try {
+                Bitmap.createBitmap(temp, 0, 0, temp.width, temp.height, matrix, true)
+            } finally {
+                temp.recycle()
+            }
         }
 
     companion object {
