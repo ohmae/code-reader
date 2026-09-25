@@ -8,9 +8,11 @@
 package net.mm2d.codereader
 
 import android.animation.ValueAnimator
+import android.os.Build
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
+import android.os.VibratorManager
 import android.view.ViewGroup.MarginLayoutParams
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -54,7 +56,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
     private lateinit var adapter: ScanResultAdapter
-    private lateinit var vibrator: Vibrator
+    private var vibrator: Vibrator? = null
     private lateinit var detectedPresenter: DetectedPresenter
     private val viewModel: MainActivityViewModel by viewModels()
     private val settings: Settings by lazy {
@@ -84,7 +86,12 @@ class MainActivity : AppCompatActivity() {
         binding.resultList.addItemDecoration(
             DividerItemDecoration(this, DividerItemDecoration.VERTICAL),
         )
-        vibrator = getSystemService()!!
+        vibrator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            getSystemService<VibratorManager>()?.defaultVibrator
+        } else {
+            @Suppress("DEPRECATION")
+            getSystemService<Vibrator>()
+        }
         codeScanner = CodeScanner(this, binding.previewView, ::onDetectCode)
         codeScanner.initialize()
         binding.flash.setOnClickListener {
@@ -134,19 +141,14 @@ class MainActivity : AppCompatActivity() {
                 startCamera()
             } else {
                 finishByError()
+                return
             }
         }
+        ReviewRequester.requestIfNecessary(this)
     }
 
     private fun finishByError() {
         toastPermissionError()
-        super.finish()
-    }
-
-    override fun finish() {
-        if (ReviewRequester.requestIfNecessary(this)) {
-            return
-        }
         super.finish()
     }
 
@@ -206,7 +208,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun vibrate() {
         if (!settings.vibrate) return
-        vibrator.vibrate(
+        val v = vibrator ?: return
+        if (!v.hasVibrator()) return
+        v.vibrate(
             VibrationEffect.createOneShot(30, VibrationEffect.DEFAULT_AMPLITUDE),
         )
     }

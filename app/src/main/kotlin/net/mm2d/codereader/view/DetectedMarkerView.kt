@@ -38,6 +38,8 @@ class DetectedMarkerView @JvmOverloads constructor(
         imageProxy: ImageProxy,
         pointsList: List<Array<Point>>,
     ) {
+        markers.clear()
+        drawPaths.clear()
         val (rw, rh) = normalizeResolution(imageProxy)
         val w = width.toFloat()
         val h = height.toFloat()
