@@ -11,7 +11,6 @@ androidxAppCompat = "1.8.0"
 androidxActivity = "1.13.0"
 androidxFragment = "1.9.1"
 androidxBrowser = "1.10.0"
-androidxWebkit = "1.17.1"
 androidxPreference = "1.2.1"
 androidxConstraintLayout = "2.2.2"
 androidxCamera = "1.6.2"
@@ -37,7 +36,6 @@ androidxAppCompat = { group = "androidx.appcompat", name = "appcompat", version.
 androidxActivity = { group = "androidx.activity", name = "activity", version.ref = "androidxActivity" }
 androidxFragment = { group = "androidx.fragment", name = "fragment", version.ref = "androidxFragment" }
 androidxBrowser = { group = "androidx.browser", name = "browser", version.ref = "androidxBrowser" }
-androidxWebkit = { group = "androidx.webkit", name = "webkit", version.ref = "androidxWebkit" }
 androidxPreference = { group = "androidx.preference", name = "preference", version.ref = "androidxPreference" }
 androidxConstraintLayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "androidxConstraintLayout" }
 androidxCameraView = { group = "androidx.camera", name = "camera-view", version.ref = "androidxCamera" }

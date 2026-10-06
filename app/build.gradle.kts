@@ -82,7 +82,6 @@ dependencies {
     implementation(libs.androidxActivity)
     implementation(libs.androidxFragment)
     implementation(libs.androidxBrowser)
-    implementation(libs.androidxWebkit)
     implementation(libs.androidxPreference)
     implementation(libs.androidxConstraintLayout)
     implementation(libs.bundles.androidxCamera)
