@@ -6,6 +6,11 @@
 - Kotlin、Android Views、View Binding を使用する。パッケージ名と名前空間は `net.mm2d.codereader`。
 - アプリの概要は `README.md` を参照する。SDK の設定と依存関係のバージョンは、変更時に `app/build.gradle.kts` と `gradle/libs.versions.toml` で確認する。
 
+## 基本方針
+
+- Google推奨のAndroid開発のベストプラクティスを踏まえ、既存の設計・命名・コードスタイルを尊重する。
+- ユーザーへの説明・確認・完了報告、出力ドキュメント、著作権表示を除くコードコメントは指定がなければ日本語としてください。
+
 ## 主なファイル
 
 - `app/src/main/kotlin/net/mm2d/codereader/`: Activity、UI ロジック、ViewModel。
