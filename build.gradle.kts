@@ -3,6 +3,7 @@ import nl.littlerobots.vcu.plugin.versionCatalogUpdate
 
 plugins {
     alias(libs.plugins.androidApplication) apply false
+    alias(libs.plugins.kotlinCompose) apply false
     alias(libs.plugins.kotlinParcelize) apply false
     alias(libs.plugins.dependencyGuard) apply false
     alias(libs.plugins.versionCatalogUpdate)

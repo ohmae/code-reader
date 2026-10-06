@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.androidApplication)
+    alias(libs.plugins.kotlinCompose)
     alias(libs.plugins.kotlinParcelize)
     alias(libs.plugins.dependencyGuard)
 
@@ -50,6 +51,7 @@ android {
     buildFeatures {
         buildConfig = true
         viewBinding = true
+        compose = true
     }
     lint {
         abortOnError = true
@@ -90,6 +92,14 @@ dependencies {
     implementation(libs.playReview)
     implementation(libs.playAppUpdate)
     implementation(libs.timber)
+
+    implementation(platform(libs.androidxComposeBom))
+    implementation(libs.androidxComposeUi)
+    implementation(libs.androidxComposeMaterial3)
+    implementation(libs.androidxActivityCompose)
+    implementation(libs.androidxLifecycleRuntimeCompose)
+    implementation(libs.androidxComposeUiToolingPreview)
+    debugImplementation(libs.androidxComposeUiTooling)
 
     // for release
 }
