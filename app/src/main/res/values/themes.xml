@@ -24,14 +24,6 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="Theme.CodeReader.AppBarOverlay" parent="ThemeOverlay.MaterialComponents.ActionBar">
-        <item name="colorPrimary">@color/white</item>
-    </style>
-
-    <style name="Theme.CodeReader.PopupOverlay" parent="ThemeOverlay.MaterialComponents.Light">
-        <item name="colorSurface">@color/white</item>
-    </style>
-
     <style name="Theme.CodeReader.Dialog" parent="Theme.MaterialComponents.DayNight.Dialog.Alert">
         <item name="colorPrimary">@color/orange_a700</item>
         <item name="colorSecondary">@color/orange_a700</item>

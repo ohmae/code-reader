@@ -3,8 +3,8 @@
 作成日: 2026-10-06。Code Reader と `../orientation-faker-private` の現在の実装を比較した計画。
 このドキュメントは移行順序と完了条件を定める。
 
-進捗（2026-10-06）: 段階 1 の基盤導入と段階 2 の設定画面移行を実装した。
-設定画面は Compose、メイン・ライセンス画面は Views のまま維持している。
+進捗（2026-10-07）: 段階 1 の基盤導入、段階 2 の設定画面、段階 3 のライセンス画面を実装した。
+設定・ライセンス画面は Compose、メイン画面は Views のまま維持している。
 設定の保存と画面操作は Robolectric で検証し、エミュレータでも表示を確認した。
 詳細は[設定画面の移行記録](compose-settings/README.md)を参照。
 IDE での Preview 描画は未確認。段階 0 の未確認項目は
@@ -94,19 +94,20 @@ Code Reader は単一モジュールの小さなアプリなので、既存 View
 
 ## 段階 3: ライセンス画面を移行する
 
+実装済み。検証内容は [ライセンス画面の移行記録](compose-license/README.md) を参照。
+
 対象: `LicenseActivity.kt`、`view/NestedScrollingWebView.kt`、`ui/license/`。
 
 - Activity は維持し、Compose のツールバーと `AndroidView` の WebView に置き換える。
 - 既存 `license.html`、Custom Tabs へのリンク処理、ズーム設定を維持する。
   現在の HTML は CSS の `prefers-color-scheme` を使用しており、参考アプリの
   JavaScript `setTheme()` は実装されていない。その呼出しだけをコピーしない。
-- 参考アプリの Compose 用 nested scroll 実装を参考にする。
-  現行 WebView は `CoordinatorLayout` / `AppBarLayout` を前提にしているため、
-  Compose に載せるだけではツールバーとのスクロール連動を引き継げない。
-- WebView の状態・スクロール位置を再生成時に復元し、離脱時に View を解放する。
-  再コンポーズごとの再生成や HTML の再読込みを避ける。
+- TopAppBar は固定とし、本文は標準 WebView でスクロールする。
+  埋め込み HTML の表示に用途を限定し、nested scroll と状態保存・復元は実装しない。
+- WebView は初回生成時に HTML を読み込み、再コンポーズでの再生成・再読込みを避ける。
+  Activity 再生成時は先頭から表示し、離脱時に読み込みを停止して View を解放する。
 
-完了条件: 長文スクロール、ツールバー連動、外部リンク、明暗、回転後の状態が維持される。
+完了条件: 長文スクロール中もアプリバーが固定され、外部リンク・明暗表示が機能する。
 確認後に `activity_license.xml` と不要になった旧 WebView 実装を削除する。
 
 ## 段階 4: メインの結果一覧だけを移行する
