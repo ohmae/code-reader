@@ -3,9 +3,12 @@
 作成日: 2026-10-06。Code Reader と `../orientation-faker-private` の現在の実装を比較した計画。
 このドキュメントは移行順序と完了条件を定める。
 
-進捗（2026-10-06）: 段階 1 のビルド基盤・テーマ・Preview を追加し、ビルドと静的検証を完了。
-IDE での Preview 描画は未確認。段階 0 は一部の画面を記録し、残る確認項目は
-[移行前の確認記録](compose-baseline/README.md)に記載した。既存画面は Views のまま維持している。
+進捗（2026-10-06）: 段階 1 の基盤導入と段階 2 の設定画面移行を実装した。
+設定画面は Compose、メイン・ライセンス画面は Views のまま維持している。
+設定の保存と画面操作は Robolectric で検証し、エミュレータでも表示を確認した。
+詳細は[設定画面の移行記録](compose-settings/README.md)を参照。
+IDE での Preview 描画は未確認。段階 0 の未確認項目は
+[移行前の確認記録](compose-baseline/README.md)に記載した。
 
 ## 方針と到達点
 
@@ -212,7 +215,8 @@ UI の Compose 化だけを先にリリースする場合、この段階は後�
 - View Binding を無効化し、Binding、Fragment、RecyclerView、ConstraintLayout、
   Material Components、Preference への参照を検索して不要な依存だけを削除する。
 - Preference 依存を削除する前に `SharedPreferenceDataStore` の継承と
-  `Settings.apply(PreferenceFragmentCompat)` を外し、SharedPreferences の小さなラッパーにする。
+  段階 2 で削除した `Settings.apply` に代わる Fragment 接続は追加せず、
+  SharedPreferences の小さなラッパーにする。
   設定ファイルとキーを維持する。Jetpack DataStore への変更は別計画とする。
 - AppCompat は既存ユーティリティの参照を確認してから判断する。
   残る XML テーマは起動ウィンドウなどの用途を整理して維持する。

@@ -101,6 +101,12 @@ dependencies {
     implementation(libs.androidxComposeUiToolingPreview)
     debugImplementation(libs.androidxComposeUiTooling)
 
+    testImplementation(libs.junit)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.androidxTestCore)
+    testImplementation(libs.androidxJunit)
+    testImplementation(libs.androidxComposeUiTestJunit4)
+
     // for release
 }
 

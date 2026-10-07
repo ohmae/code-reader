@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">CodeReader</string>
     <string name="cancel">Cancel</string>
+    <string name="navigate_back">Navigate back</string>
     <string name="app_info">App info</string>
 
     <string name="dialog_title_permission">Please allow permission</string>

@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">CodeReader</string>
     <string name="cancel">キャンセル</string>
+    <string name="navigate_back">戻る</string>
     <string name="app_info">アプリ情報</string>
 
     <string name="dialog_title_permission">権限の許可が必要</string>
