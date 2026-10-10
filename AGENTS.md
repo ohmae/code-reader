@@ -4,7 +4,7 @@
 
 - Code Reader は CameraX と ML Kit を使うバーコード読み取り用 Android アプリ。モジュールは `:app` のみ。
 - Kotlin を使用し、Android Views、View Binding から Jetpack Compose へ段階的に移行している。
-  画面 UI・ダイアログ・検出演出は Compose、カメラプレビューは AndroidView 内の PreviewView。パッケージ名と名前空間は `net.mm2d.codereader`。
+  画面 UI・ダイアログ・検出演出は Compose、カメラプレビューは camera-compose の CameraXViewfinder。パッケージ名と名前空間は `net.mm2d.codereader`。
 - アプリの概要は `README.md` を参照する。SDK の設定と依存関係のバージョンは、変更時に `app/build.gradle.kts` と `gradle/libs.versions.toml` で確認する。
 
 ## 基本方針

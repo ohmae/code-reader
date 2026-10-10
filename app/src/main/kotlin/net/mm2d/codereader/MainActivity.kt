@@ -18,19 +18,16 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.getSystemService
 import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.mlkit.vision.barcode.common.Barcode
-import kotlinx.coroutines.flow.MutableStateFlow
 import net.mm2d.codereader.extension.formatString
 import net.mm2d.codereader.extension.typeString
 import net.mm2d.codereader.permission.CameraPermission
@@ -38,8 +35,8 @@ import net.mm2d.codereader.permission.registerForCameraPermissionRequest
 import net.mm2d.codereader.result.ScanResult
 import net.mm2d.codereader.setting.Settings
 import net.mm2d.codereader.ui.main.CameraPermissionDialog
-import net.mm2d.codereader.ui.main.CameraPreviewView
-import net.mm2d.codereader.ui.main.DetectionOverlay
+import net.mm2d.codereader.ui.main.CameraPreview
+import net.mm2d.codereader.ui.main.CameraPreviewState
 import net.mm2d.codereader.ui.main.MainScreen
 import net.mm2d.codereader.ui.theme.AppTheme
 import net.mm2d.codereader.util.ClipboardUtils
@@ -78,16 +75,22 @@ class MainActivity : AppCompatActivity() {
         permissionRequestPending = savedInstanceState?.getBoolean(PERMISSION_REQUEST_PENDING) ?: false
         enableEdgeToEdge()
         setContent {
-            var cameraView by remember { mutableStateOf<CameraPreviewView?>(null) }
-            val inactiveTorch = remember { MutableStateFlow(false) }
-            val torchOn by (cameraView?.codeScanner?.getTorchStateStream() ?: inactiveTorch)
+            val camera = remember { CameraPreviewState(this@MainActivity, ::onDetectCode) }
+            DisposableEffect(camera) {
+                camera.initialize()
+                onDispose { camera.release() }
+            }
+            LaunchedEffect(camera, cameraEnabled) {
+                if (cameraEnabled) camera.start()
+            }
+            val torchOn by camera.codeScanner.getTorchStateStream()
                 .collectAsStateWithLifecycle(initialValue = false)
             val results by viewModel.getResultStream().collectAsStateWithLifecycle()
             AppTheme {
                 MainScreen(
                     results = results,
                     torchOn = torchOn,
-                    onToggleTorch = { cameraView?.codeScanner?.toggleTorch() },
+                    onToggleTorch = { camera.codeScanner.toggleTorch() },
                     onMenuAction = ::onMenuAction,
                     onOpen = {
                         if (!Launcher.openUri(this@MainActivity, it.value)) {
@@ -104,23 +107,7 @@ class MainActivity : AppCompatActivity() {
                         ReviewRequester.onAction()
                     },
                     cameraPreview = { modifier ->
-                        Box(modifier) {
-                            AndroidView(
-                                factory = {
-                                    CameraPreviewView(this@MainActivity, ::onDetectCode).also { cameraView = it }
-                                },
-                                modifier = Modifier.fillMaxSize(),
-                                update = { if (cameraEnabled) it.start() },
-                                onRelease = {
-                                    it.release()
-                                    if (cameraView === it) cameraView = null
-                                },
-                            )
-                            val detection = cameraView?.detection
-                            detection?.frame?.let { frame ->
-                                DetectionOverlay(frame, detection::finish, Modifier.fillMaxSize())
-                            }
-                        }
+                        CameraPreview(camera, modifier)
                     },
                 )
                 if (showPermissionDialog) {

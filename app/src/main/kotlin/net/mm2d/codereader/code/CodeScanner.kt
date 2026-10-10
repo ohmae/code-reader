@@ -13,11 +13,11 @@ import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import androidx.camera.core.Preview
+import androidx.camera.core.SurfaceRequest
 import androidx.camera.core.TorchState
 import androidx.camera.core.resolutionselector.AspectRatioStrategy
 import androidx.camera.core.resolutionselector.ResolutionSelector
 import androidx.camera.lifecycle.ProcessCameraProvider
-import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -28,13 +28,13 @@ import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.barcode.common.Barcode
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import timber.log.Timber
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 class CodeScanner(
     private val activity: ComponentActivity,
-    previewView: PreviewView,
     callback: (ImageProxy, List<Barcode>) -> Unit,
     private val providerFactory: () -> ListenableFuture<ProcessCameraProvider> = {
         ProcessCameraProvider.getInstance(activity)
@@ -44,6 +44,8 @@ class CodeScanner(
     private val scanner: BarcodeScanner = BarcodeScanning.getClient()
     private val analyzer: CodeAnalyzer = CodeAnalyzer(scanner, callback)
     private var camera: Camera? = null
+    private val surfaceRequestFlow = MutableStateFlow<SurfaceRequest?>(null)
+    val surfaceRequest = surfaceRequestFlow.asStateFlow()
     private val preview: Preview
     private val analysis: ImageAnalysis
     private var processCameraProvider: ProcessCameraProvider? = null
@@ -66,7 +68,13 @@ class CodeScanner(
         preview = Preview.Builder()
             .setResolutionSelector(resolutionSelector)
             .build()
-        preview.surfaceProvider = previewView.surfaceProvider
+        preview.setSurfaceProvider { request ->
+            if (destroyed) {
+                request.willNotProvideSurface()
+            } else {
+                surfaceRequestFlow.value = request
+            }
+        }
         analysis = ImageAnalysis.Builder()
             .setResolutionSelector(resolutionSelector)
             .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
@@ -84,7 +92,7 @@ class CodeScanner(
         startRequested = true
         val future = providerFactory()
         future.addListener({
-            // AndroidView の解放後に provider が届いても再接続しない。
+            // プレビューの解放後に provider が届いても再接続しない。
             if (destroyed) return@addListener
             try {
                 processCameraProvider = future.get()
@@ -130,6 +138,8 @@ class CodeScanner(
         camera?.detachTorchObserver()
         camera = null
         processCameraProvider?.unbind(preview, analysis)
+        surfaceRequestFlow.value?.willNotProvideSurface()
+        surfaceRequestFlow.value = null
         torchStateFlow.value = false
     }
 

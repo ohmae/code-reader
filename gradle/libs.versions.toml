@@ -56,7 +56,7 @@ androidxFragment = { group = "androidx.fragment", name = "fragment", version.ref
 androidxBrowser = { group = "androidx.browser", name = "browser", version.ref = "androidxBrowser" }
 androidxPreference = { group = "androidx.preference", name = "preference", version.ref = "androidxPreference" }
 androidxConstraintLayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "androidxConstraintLayout" }
-androidxCameraView = { group = "androidx.camera", name = "camera-view", version.ref = "androidxCamera" }
+androidxCameraCompose = { group = "androidx.camera", name = "camera-compose", version.ref = "androidxCamera" }
 androidxCameraCamera2 = { group = "androidx.camera", name = "camera-camera2", version.ref = "androidxCamera" }
 androidxCameraLifecycle = { group = "androidx.camera", name = "camera-lifecycle", version.ref = "androidxCamera" }
 mlkitBarcodeScanning = { group = "com.google.mlkit", name = "barcode-scanning", version.ref = "mlkitBarcodeScanning" }
@@ -80,7 +80,7 @@ versionCatalogUpdate = { id = "nl.littlerobots.version-catalog-update", version.
 
 [bundles]
 androidxCamera = [
-    "androidxCameraView",
+    "androidxCameraCompose",
     "androidxCameraCamera2",
     "androidxCameraLifecycle"
 ]

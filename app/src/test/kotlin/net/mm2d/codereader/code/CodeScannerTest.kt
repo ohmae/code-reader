@@ -2,7 +2,6 @@ package net.mm2d.codereader.code
 
 import android.content.pm.ProviderInfo
 import androidx.camera.lifecycle.ProcessCameraProvider
-import androidx.camera.view.PreviewView
 import androidx.lifecycle.LifecycleRegistry
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
@@ -61,7 +60,7 @@ class CodeScannerTest {
             scenario.onActivity {
                 val lifecycle = it.lifecycle as LifecycleRegistry
                 val initialObservers = lifecycle.observerCount
-                val scanner = CodeScanner(it, PreviewView(it), callback = { _, _ -> }, providerFactory = {
+                val scanner = CodeScanner(it, callback = { _, _ -> }, providerFactory = {
                     requests++
                     future
                 })

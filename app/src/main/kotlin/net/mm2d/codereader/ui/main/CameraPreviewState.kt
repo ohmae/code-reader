@@ -7,24 +7,18 @@
 
 package net.mm2d.codereader.ui.main
 
-import android.annotation.SuppressLint
-import android.widget.FrameLayout
 import androidx.activity.ComponentActivity
-import androidx.camera.view.PreviewView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import com.google.mlkit.vision.barcode.common.Barcode
 import net.mm2d.codereader.code.CodeScanner
 import timber.log.Timber
 
-// AndroidView の factory 専用で、Activity と検出コールバックが必要なため XML からは生成しない。
-@SuppressLint("ViewConstructor")
-class CameraPreviewView(
+class CameraPreviewState(
     private val activity: ComponentActivity,
     onDetect: (List<Barcode>) -> List<Barcode>,
-) : FrameLayout(activity) {
-    private val preview = PreviewView(activity).apply { scaleType = PreviewView.ScaleType.FILL_CENTER }
-    val codeScanner: CodeScanner = CodeScanner(activity, preview, callback = { image, codes ->
+) {
+    val codeScanner: CodeScanner = CodeScanner(activity, callback = { image, codes ->
         if (activity.lifecycle.currentState == Lifecycle.State.RESUMED) {
             val detected = onDetect(codes)
             if (detected.isNotEmpty()) {
@@ -41,8 +35,7 @@ class CameraPreviewView(
         if (event == Lifecycle.Event.ON_PAUSE) detection.clear()
     }
 
-    init {
-        addView(preview, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT))
+    fun initialize() {
         codeScanner.initialize()
         activity.lifecycle.addObserver(lifecycleObserver)
     }
