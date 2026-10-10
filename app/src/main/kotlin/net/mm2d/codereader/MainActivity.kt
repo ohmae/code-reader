@@ -38,10 +38,11 @@ import net.mm2d.codereader.permission.CameraPermission
 import net.mm2d.codereader.permission.PermissionDialog
 import net.mm2d.codereader.permission.registerForCameraPermissionRequest
 import net.mm2d.codereader.result.ScanResult
-import net.mm2d.codereader.result.ScanResultDialog
 import net.mm2d.codereader.setting.Settings
-import net.mm2d.codereader.ui.result.ScanResultList
+import net.mm2d.codereader.ui.result.ScanResultContent
 import net.mm2d.codereader.ui.theme.AppTheme
+import net.mm2d.codereader.util.ClipboardUtils
+import net.mm2d.codereader.util.Launcher
 import net.mm2d.codereader.util.ReviewRequester
 import net.mm2d.codereader.util.Updater
 import net.mm2d.codereader.util.observe
@@ -89,9 +90,22 @@ class MainActivity : AppCompatActivity() {
         binding.resultList.setContent {
             AppTheme {
                 val results by viewModel.getResultStream().collectAsStateWithLifecycle()
-                ScanResultList(
+                ScanResultContent(
                     results = results,
-                    onSelect = { ScanResultDialog.show(this@MainActivity, it) },
+                    onOpen = {
+                        if (!Launcher.openUri(this@MainActivity, it.value)) {
+                            Launcher.search(this@MainActivity, it.value)
+                        }
+                        ReviewRequester.onAction()
+                    },
+                    onCopy = {
+                        ClipboardUtils.copyToClipboard(this@MainActivity, it.type, it.value)
+                        ReviewRequester.onAction()
+                    },
+                    onShare = {
+                        Launcher.shareText(this@MainActivity, it.value)
+                        ReviewRequester.onAction()
+                    },
                 )
             }
         }

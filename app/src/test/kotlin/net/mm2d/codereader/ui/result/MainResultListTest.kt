@@ -1,5 +1,6 @@
 package net.mm2d.codereader.ui.result
 
+import android.content.ClipboardManager
 import android.content.pm.ProviderInfo
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasScrollAction
@@ -7,6 +8,7 @@ import androidx.compose.ui.test.junit4.v2.createEmptyComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollToIndex
+import androidx.core.content.getSystemService
 import androidx.lifecycle.ViewModelProvider
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
@@ -17,11 +19,9 @@ import net.mm2d.codereader.App
 import net.mm2d.codereader.BuildConfig
 import net.mm2d.codereader.MainActivity
 import net.mm2d.codereader.MainActivityViewModel
-import net.mm2d.codereader.R
 import net.mm2d.codereader.result.ScanResult
-import net.mm2d.codereader.result.ScanResultDialog
+import net.mm2d.codereader.setting.Settings
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -45,23 +45,36 @@ class MainResultListTest {
     }
 
     @Test
-    fun selectingResultOpensExistingDialog() {
+    fun restoresSelectedResultWithoutRepeatingActionAndCopiesOnce() {
+        val settings = Settings.get()
+        val initialCount = settings.detectValueActionCount
         ActivityScenario.launch(MainActivity::class.java).use { scenario ->
             scenario.onActivity {
                 ViewModelProvider(it)[MainActivityViewModel::class.java]
                     .add(ScanResult("selected result", "Text", "QR code", false))
             }
             composeRule.onNodeWithText("selected result").performClick()
-            composeRule.waitForIdle()
+            composeRule.onNodeWithText("copy").assertIsDisplayed()
+            scenario.recreate()
+            composeRule.onNodeWithText("copy").assertIsDisplayed()
+            assertEquals(initialCount, settings.detectValueActionCount)
+            composeRule.onNodeWithText("copy").performClick()
+            composeRule.onNodeWithText("copy").assertDoesNotExist()
             scenario.onActivity {
-                it.supportFragmentManager.executePendingTransactions()
-                val dialog = it.supportFragmentManager.fragments.filterIsInstance<ScanResultDialog>().single()
-                assertTrue(dialog.requireDialog().isShowing)
-                assertEquals(
-                    "selected result",
-                    dialog.requireDialog().findViewById<android.widget.TextView>(R.id.result_value).text.toString(),
-                )
+                val clip = it.getSystemService<ClipboardManager>()!!.primaryClip!!
+                assertEquals("Text", clip.description.label.toString())
+                assertEquals("selected result", clip.getItemAt(0).text.toString())
             }
+            assertEquals(initialCount + 1, settings.detectValueActionCount)
+            scenario.recreate()
+            composeRule.onNodeWithText("copy").assertDoesNotExist()
+            assertEquals(initialCount + 1, settings.detectValueActionCount)
+            scenario.onActivity {
+                ViewModelProvider(it)[MainActivityViewModel::class.java]
+                    .add(ScanResult("next result", "Text", "QR code", false))
+            }
+            composeRule.onNodeWithText("next result").performClick()
+            composeRule.onNodeWithText("copy").assertIsDisplayed()
         }
     }
 
