@@ -7,6 +7,7 @@
 
 package net.mm2d.codereader
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.os.VibrationEffect
@@ -17,23 +18,28 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.getSystemService
+import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.mlkit.vision.barcode.common.Barcode
 import kotlinx.coroutines.flow.MutableStateFlow
 import net.mm2d.codereader.extension.formatString
 import net.mm2d.codereader.extension.typeString
 import net.mm2d.codereader.permission.CameraPermission
-import net.mm2d.codereader.permission.PermissionDialog
 import net.mm2d.codereader.permission.registerForCameraPermissionRequest
 import net.mm2d.codereader.result.ScanResult
 import net.mm2d.codereader.setting.Settings
+import net.mm2d.codereader.ui.main.CameraPermissionDialog
 import net.mm2d.codereader.ui.main.CameraPreviewView
+import net.mm2d.codereader.ui.main.DetectionOverlay
 import net.mm2d.codereader.ui.main.MainScreen
 import net.mm2d.codereader.ui.theme.AppTheme
 import net.mm2d.codereader.util.ClipboardUtils
@@ -41,14 +47,18 @@ import net.mm2d.codereader.util.Launcher
 import net.mm2d.codereader.util.ReviewRequester
 import net.mm2d.codereader.util.Updater
 import net.mm2d.codereader.util.observe
+import android.provider.Settings as AndroidSettings
 
 class MainActivity : AppCompatActivity() {
     private var cameraEnabled by mutableStateOf(false)
+    private var showPermissionDialog by mutableStateOf(false)
+    private var permissionRequestPending = false
     private val launcher = registerForCameraPermissionRequest { granted, succeedToShowDialog ->
+        permissionRequestPending = false
         if (granted) {
             startCamera()
         } else if (!succeedToShowDialog) {
-            PermissionDialog.show(this, CAMERA_PERMISSION_REQUEST_KEY)
+            showPermissionDialog = true
         } else {
             finishByError()
         }
@@ -64,6 +74,8 @@ class MainActivity : AppCompatActivity() {
         savedInstanceState: Bundle?,
     ) {
         super.onCreate(savedInstanceState)
+        showPermissionDialog = savedInstanceState?.getBoolean(SHOW_PERMISSION_DIALOG) ?: false
+        permissionRequestPending = savedInstanceState?.getBoolean(PERMISSION_REQUEST_PENDING) ?: false
         enableEdgeToEdge()
         setContent {
             var cameraView by remember { mutableStateOf<CameraPreviewView?>(null) }
@@ -92,19 +104,42 @@ class MainActivity : AppCompatActivity() {
                         ReviewRequester.onAction()
                     },
                     cameraPreview = { modifier ->
-                        AndroidView(
-                            factory = {
-                                CameraPreviewView(this@MainActivity, ::onDetectCode).also { cameraView = it }
-                            },
-                            modifier = modifier,
-                            update = { if (cameraEnabled) it.start() },
-                            onRelease = {
-                                it.release()
-                                if (cameraView === it) cameraView = null
-                            },
-                        )
+                        Box(modifier) {
+                            AndroidView(
+                                factory = {
+                                    CameraPreviewView(this@MainActivity, ::onDetectCode).also { cameraView = it }
+                                },
+                                modifier = Modifier.fillMaxSize(),
+                                update = { if (cameraEnabled) it.start() },
+                                onRelease = {
+                                    it.release()
+                                    if (cameraView === it) cameraView = null
+                                },
+                            )
+                            val detection = cameraView?.detection
+                            detection?.frame?.let { frame ->
+                                DetectionOverlay(frame, detection::finish, Modifier.fillMaxSize())
+                            }
+                        }
                     },
                 )
+                if (showPermissionDialog) {
+                    CameraPermissionDialog(
+                        onOpenAppInfo = {
+                            showPermissionDialog = false
+                            startActivity(
+                                Intent(AndroidSettings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                                    data = "package:$packageName".toUri()
+                                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                },
+                            )
+                        },
+                        onCancel = {
+                            showPermissionDialog = false
+                            finishByError()
+                        },
+                    )
+                }
             }
         }
         vibrator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -117,23 +152,20 @@ class MainActivity : AppCompatActivity() {
         if (CameraPermission.hasPermission(this)) {
             startCamera()
             Updater.startIfAvailable(this)
-        } else {
+        } else if (!showPermissionDialog && !permissionRequestPending) {
+            permissionRequestPending = true
             launcher.launch()
-        }
-        PermissionDialog.registerListener(this, CAMERA_PERMISSION_REQUEST_KEY) {
-            finishByError()
         }
     }
 
     override fun onRestart() {
         super.onRestart()
-        if (!cameraEnabled) {
-            if (CameraPermission.hasPermission(this)) {
-                startCamera()
-            } else {
-                finishByError()
-                return
-            }
+        if (CameraPermission.hasPermission(this)) {
+            startCamera()
+        } else {
+            cameraEnabled = false
+            finishByError()
+            return
         }
         ReviewRequester.requestIfNecessary(this)
     }
@@ -166,6 +198,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startCamera() {
+        showPermissionDialog = false
         cameraEnabled = true
     }
 
@@ -199,7 +232,16 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
+    override fun onSaveInstanceState(
+        outState: Bundle,
+    ) {
+        outState.putBoolean(SHOW_PERMISSION_DIALOG, showPermissionDialog)
+        outState.putBoolean(PERMISSION_REQUEST_PENDING, permissionRequestPending)
+        super.onSaveInstanceState(outState)
+    }
+
     companion object {
-        private const val CAMERA_PERMISSION_REQUEST_KEY = "CAMERA_PERMISSION_REQUEST_KEY"
+        private const val SHOW_PERMISSION_DIALOG = "SHOW_PERMISSION_DIALOG"
+        private const val PERMISSION_REQUEST_PENDING = "PERMISSION_REQUEST_PENDING"
     }
 }
