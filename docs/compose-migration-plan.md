@@ -3,8 +3,8 @@
 作成日: 2026-10-06。Code Reader と `../orientation-faker-private` の現在の実装を比較した計画。
 このドキュメントは移行順序と完了条件を定める。
 
-進捗（2026-10-10）: 段階 1 の基盤導入、段階 2 の設定画面、段階 3 のライセンス画面、段階 4 の結果一覧、段階 5 の結果ダイアログを実装した。
-設定・ライセンス画面、メインの結果一覧と結果ダイアログは Compose。カメラとメインの操作部は Views のまま維持している。
+進捗（2026-10-10）: 段階 1 の基盤導入、段階 2 の設定画面、段階 3 のライセンス画面、段階 4 の結果一覧、段階 5 の結果ダイアログ、段階 6 のメイン画面を実装した。
+画面 UI と結果ダイアログは Compose。カメラ・検出演出は AndroidView 内の Views のまま維持している。
 設定の保存と画面操作は Robolectric で検証し、エミュレータでも表示を確認した。
 詳細は[設定画面の移行記録](compose-settings/README.md)を参照。
 IDE での Preview 描画は未確認。段階 0 の未確認項目は
@@ -149,6 +149,8 @@ Code Reader は単一モジュールの小さなアプリなので、既存 View
 確認後に旧 `ScanResultDialog` と `dialog_result.xml` を削除する。
 
 ## 段階 6: メイン画面の土台を Compose にする
+
+実装済み。検証内容と端末確認の制約は [メイン画面の移行記録](compose-main/README.md) を参照。
 
 対象: `MainActivity.kt`、`OptionsMenuPresenter.kt`、`CodeScanner.kt`、`ui/main/`。
 

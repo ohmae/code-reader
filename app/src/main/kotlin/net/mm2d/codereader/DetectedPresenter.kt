@@ -19,6 +19,7 @@ class DetectedPresenter(
     private val stillImage: ImageView,
 ) {
     private var animator: ValueAnimator? = null
+    private var destroyed: Boolean = false
     private val resumeRunnable = Runnable {
         detectedMarker.clearMarker()
         stillImage.setImageBitmap(null)
@@ -30,6 +31,7 @@ class DetectedPresenter(
         imageProxy: ImageProxy,
         detectedCodes: List<Barcode>,
     ) {
+        if (destroyed) return
         codeScanner.pause()
         animator?.cancel()
         detectedMarker.removeCallbacks(resumeRunnable)
@@ -56,11 +58,14 @@ class DetectedPresenter(
     }
 
     private fun onEnd() {
+        if (destroyed) return
         detectedMarker.removeCallbacks(resumeRunnable)
         detectedMarker.postDelayed(resumeRunnable, RESUME_INTERVAL)
     }
 
     fun destroy() {
+        if (destroyed) return
+        destroyed = true
         animator?.cancel()
         animator = null
         detectedMarker.removeCallbacks(resumeRunnable)

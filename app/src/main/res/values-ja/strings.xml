@@ -34,4 +34,7 @@
     <string name="preference_category_information">情報</string>
     <string name="preference_title_version">バージョン</string>
 
+    <string name="action_options_menu">メニュー</string>
+    <string name="action_turn_flash_on">フラッシュライトを点灯</string>
+    <string name="action_turn_flash_off">フラッシュライトを消灯</string>
 </resources>

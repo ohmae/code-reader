@@ -7,31 +7,25 @@
 
 package net.mm2d.codereader
 
-import android.animation.ValueAnimator
 import android.os.Build
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
-import android.view.ViewGroup.MarginLayoutParams
 import android.widget.Toast
+import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.camera.core.ImageProxy
-import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.platform.ViewCompositionStrategy
-import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.getSystemService
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.isGone
-import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.mlkit.vision.barcode.common.Barcode
-import net.mm2d.codereader.code.CodeScanner
-import net.mm2d.codereader.databinding.ActivityMainBinding
+import kotlinx.coroutines.flow.MutableStateFlow
 import net.mm2d.codereader.extension.formatString
 import net.mm2d.codereader.extension.typeString
 import net.mm2d.codereader.permission.CameraPermission
@@ -39,7 +33,8 @@ import net.mm2d.codereader.permission.PermissionDialog
 import net.mm2d.codereader.permission.registerForCameraPermissionRequest
 import net.mm2d.codereader.result.ScanResult
 import net.mm2d.codereader.setting.Settings
-import net.mm2d.codereader.ui.result.ScanResultContent
+import net.mm2d.codereader.ui.main.CameraPreviewView
+import net.mm2d.codereader.ui.main.MainScreen
 import net.mm2d.codereader.ui.theme.AppTheme
 import net.mm2d.codereader.util.ClipboardUtils
 import net.mm2d.codereader.util.Launcher
@@ -48,9 +43,7 @@ import net.mm2d.codereader.util.Updater
 import net.mm2d.codereader.util.observe
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityMainBinding
-    private lateinit var codeScanner: CodeScanner
-    private var started: Boolean = false
+    private var cameraEnabled by mutableStateOf(false)
     private val launcher = registerForCameraPermissionRequest { granted, succeedToShowDialog ->
         if (granted) {
             startCamera()
@@ -61,8 +54,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
     private var vibrator: Vibrator? = null
-    private lateinit var detectedPresenter: DetectedPresenter
-    private var expandAnimator: ValueAnimator? = null
     private val viewModel: MainActivityViewModel by viewModels()
     private val settings: Settings by lazy {
         Settings.get()
@@ -74,24 +65,18 @@ class MainActivity : AppCompatActivity() {
     ) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            view.setPadding(systemBars.left, 0, systemBars.right, systemBars.bottom)
-            binding.guideTop.updateLayoutParams<MarginLayoutParams> {
-                topMargin = systemBars.top
-            }
-            insets
-        }
-        binding.resultList.setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-        // Insets は親の View が適用するため、ComposeView では消費しない。
-        binding.resultList.consumeWindowInsets = false
-        binding.resultList.setContent {
+        setContent {
+            var cameraView by remember { mutableStateOf<CameraPreviewView?>(null) }
+            val inactiveTorch = remember { MutableStateFlow(false) }
+            val torchOn by (cameraView?.codeScanner?.getTorchStateStream() ?: inactiveTorch)
+                .collectAsStateWithLifecycle(initialValue = false)
+            val results by viewModel.getResultStream().collectAsStateWithLifecycle()
             AppTheme {
-                val results by viewModel.getResultStream().collectAsStateWithLifecycle()
-                ScanResultContent(
+                MainScreen(
                     results = results,
+                    torchOn = torchOn,
+                    onToggleTorch = { cameraView?.codeScanner?.toggleTorch() },
+                    onMenuAction = ::onMenuAction,
                     onOpen = {
                         if (!Launcher.openUri(this@MainActivity, it.value)) {
                             Launcher.search(this@MainActivity, it.value)
@@ -106,6 +91,19 @@ class MainActivity : AppCompatActivity() {
                         Launcher.shareText(this@MainActivity, it.value)
                         ReviewRequester.onAction()
                     },
+                    cameraPreview = { modifier ->
+                        AndroidView(
+                            factory = {
+                                CameraPreviewView(this@MainActivity, ::onDetectCode).also { cameraView = it }
+                            },
+                            modifier = modifier,
+                            update = { if (cameraEnabled) it.start() },
+                            onRelease = {
+                                it.release()
+                                if (cameraView === it) cameraView = null
+                            },
+                        )
+                    },
                 )
             }
         }
@@ -115,34 +113,7 @@ class MainActivity : AppCompatActivity() {
             @Suppress("DEPRECATION")
             getSystemService<Vibrator>()
         }
-        codeScanner = CodeScanner(this, binding.previewView, ::onDetectCode)
-        codeScanner.initialize()
-        binding.flash.setOnClickListener {
-            codeScanner.toggleTorch()
-        }
-        codeScanner.getTorchStateStream().observe(this) {
-            onFlashOn(it)
-        }
-        detectedPresenter = DetectedPresenter(
-            codeScanner = codeScanner,
-            detectedMarker = binding.detectedMarker,
-            stillImage = binding.stillImage,
-        )
-        val size = viewModel.getResultStream().value.size
-        if (size >= 2) {
-            binding.dummy.updateLayoutParams<ConstraintLayout.LayoutParams> {
-                height = 0
-            }
-        }
-        viewModel.getResultStream().observe(this) {
-            resultSet = it.toSet()
-            if (it.isNotEmpty()) {
-                binding.scanning.isGone = true
-            }
-            if (it.size == 2) {
-                expandList()
-            }
-        }
+        viewModel.getResultStream().observe(this) { resultSet = it.toSet() }
         if (CameraPermission.hasPermission(this)) {
             startCamera()
             Updater.startIfAvailable(this)
@@ -152,12 +123,11 @@ class MainActivity : AppCompatActivity() {
         PermissionDialog.registerListener(this, CAMERA_PERMISSION_REQUEST_KEY) {
             finishByError()
         }
-        OptionsMenuPresenter(this, binding.menu).setUp()
     }
 
     override fun onRestart() {
         super.onRestart()
-        if (!started) {
+        if (!cameraEnabled) {
             if (CameraPermission.hasPermission(this)) {
                 startCamera()
             } else {
@@ -173,13 +143,6 @@ class MainActivity : AppCompatActivity() {
         Updater.onResume(this)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        expandAnimator?.cancel()
-        expandAnimator = null
-        detectedPresenter.destroy()
-    }
-
     private fun finishByError() {
         toastPermissionError()
         super.finish()
@@ -189,27 +152,26 @@ class MainActivity : AppCompatActivity() {
         Toast.makeText(this, R.string.toast_permission_required, Toast.LENGTH_LONG).show()
     }
 
-    private fun onFlashOn(
-        on: Boolean,
+    private fun onMenuAction(
+        title: Int,
     ) {
-        val icon = if (on) {
-            R.drawable.ic_flash_on
-        } else {
-            R.drawable.ic_flash_off
+        when (title) {
+            R.string.options_menu_license -> LicenseActivity.start(this)
+            R.string.options_menu_source_code -> Launcher.openSourceCode(this)
+            R.string.options_menu_privacy_policy -> Launcher.openPrivacyPolicy(this)
+            R.string.options_menu_share_this_app -> Launcher.shareThisApp(this)
+            R.string.options_menu_play_store -> Launcher.openGooglePlay(this)
+            R.string.options_menu_settings -> SettingsActivity.start(this)
         }
-        binding.flash.setImageResource(icon)
     }
 
     private fun startCamera() {
-        if (started) return
-        started = true
-        codeScanner.start()
+        cameraEnabled = true
     }
 
     private fun onDetectCode(
-        imageProxy: ImageProxy,
         codes: List<Barcode>,
-    ) {
+    ): List<Barcode> {
         val detected = mutableListOf<Barcode>()
         codes.forEach {
             val value = it.rawValue ?: return@forEach
@@ -225,20 +187,7 @@ class MainActivity : AppCompatActivity() {
                 detected.add(it)
             }
         }
-        if (detected.isEmpty()) return
-        detectedPresenter.onDetected(imageProxy, detected)
-    }
-
-    private fun expandList() {
-        expandAnimator?.cancel()
-        val animator = ValueAnimator.ofInt(binding.dummy.height, 0)
-        animator.addUpdateListener {
-            binding.dummy.updateLayoutParams<ConstraintLayout.LayoutParams> {
-                height = it.animatedValue as Int
-            }
-        }
-        animator.start()
-        expandAnimator = animator
+        return detected
     }
 
     private fun vibrate() {
