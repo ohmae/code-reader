@@ -19,13 +19,16 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.ImageProxy
+import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.getSystemService
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isGone
 import androidx.core.view.updateLayoutParams
-import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.mlkit.vision.barcode.common.Barcode
 import net.mm2d.codereader.code.CodeScanner
 import net.mm2d.codereader.databinding.ActivityMainBinding
@@ -35,9 +38,10 @@ import net.mm2d.codereader.permission.CameraPermission
 import net.mm2d.codereader.permission.PermissionDialog
 import net.mm2d.codereader.permission.registerForCameraPermissionRequest
 import net.mm2d.codereader.result.ScanResult
-import net.mm2d.codereader.result.ScanResultAdapter
 import net.mm2d.codereader.result.ScanResultDialog
 import net.mm2d.codereader.setting.Settings
+import net.mm2d.codereader.ui.result.ScanResultList
+import net.mm2d.codereader.ui.theme.AppTheme
 import net.mm2d.codereader.util.ReviewRequester
 import net.mm2d.codereader.util.Updater
 import net.mm2d.codereader.util.observe
@@ -55,7 +59,6 @@ class MainActivity : AppCompatActivity() {
             finishByError()
         }
     }
-    private lateinit var adapter: ScanResultAdapter
     private var vibrator: Vibrator? = null
     private lateinit var detectedPresenter: DetectedPresenter
     private var expandAnimator: ValueAnimator? = null
@@ -80,13 +83,18 @@ class MainActivity : AppCompatActivity() {
             }
             insets
         }
-        adapter = ScanResultAdapter(this) {
-            ScanResultDialog.show(this, it)
+        binding.resultList.setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+        // Insets は親の View が適用するため、ComposeView では消費しない。
+        binding.resultList.consumeWindowInsets = false
+        binding.resultList.setContent {
+            AppTheme {
+                val results by viewModel.getResultStream().collectAsStateWithLifecycle()
+                ScanResultList(
+                    results = results,
+                    onSelect = { ScanResultDialog.show(this@MainActivity, it) },
+                )
+            }
         }
-        binding.resultList.adapter = adapter
-        binding.resultList.addItemDecoration(
-            DividerItemDecoration(this, DividerItemDecoration.VERTICAL),
-        )
         vibrator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             getSystemService<VibratorManager>()?.defaultVibrator
         } else {
@@ -114,8 +122,6 @@ class MainActivity : AppCompatActivity() {
         }
         viewModel.getResultStream().observe(this) {
             resultSet = it.toSet()
-            adapter.onChanged(it)
-            binding.resultList.scrollToPosition(adapter.itemCount - 1)
             if (it.isNotEmpty()) {
                 binding.scanning.isGone = true
             }

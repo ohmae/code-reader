@@ -48,12 +48,11 @@
         app:layout_constraintTop_toTopOf="@id/preview_view"
         />
 
-    <androidx.recyclerview.widget.RecyclerView
+    <androidx.compose.ui.platform.ComposeView
         android:id="@+id/result_list"
         android:layout_width="0dp"
         android:layout_height="@dimen/list_height"
         android:background="?attr/background"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="@id/dummy"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -3,8 +3,8 @@
 作成日: 2026-10-06。Code Reader と `../orientation-faker-private` の現在の実装を比較した計画。
 このドキュメントは移行順序と完了条件を定める。
 
-進捗（2026-10-07）: 段階 1 の基盤導入、段階 2 の設定画面、段階 3 のライセンス画面を実装した。
-設定・ライセンス画面は Compose、メイン画面は Views のまま維持している。
+進捗（2026-10-07）: 段階 1 の基盤導入、段階 2 の設定画面、段階 3 のライセンス画面、段階 4 の結果一覧を実装した。
+設定・ライセンス画面とメインの結果一覧は Compose。カメラとメインの操作部は Views のまま維持している。
 設定の保存と画面操作は Robolectric で検証し、エミュレータでも表示を確認した。
 詳細は[設定画面の移行記録](compose-settings/README.md)を参照。
 IDE での Preview 描画は未確認。段階 0 の未確認項目は
@@ -111,6 +111,8 @@ Code Reader は単一モジュールの小さなアプリなので、既存 View
 確認後に `activity_license.xml` と不要になった旧 WebView 実装を削除する。
 
 ## 段階 4: メインの結果一覧だけを移行する
+
+実装済み。検証内容と端末確認の制約は [結果一覧の移行記録](compose-results/README.md) を参照。
 
 対象: `activity_main.xml`、`MainActivity.kt`、`MainActivityViewModel.kt`、`ui/result/`。
 
