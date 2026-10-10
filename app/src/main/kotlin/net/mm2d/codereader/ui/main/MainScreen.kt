@@ -36,6 +36,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
@@ -104,6 +105,7 @@ fun MainScreen(
                     .align(Alignment.BottomEnd)
                     .padding(end = 16.dp, bottom = visibleListHeight + 24.dp)
                     .size(56.dp)
+                    .alpha(0.8f)
                     .testTag("torch"),
             ) {
                 Icon(
@@ -129,7 +131,11 @@ private fun MainOptionsMenu(
 ) {
     var expanded by remember { mutableStateOf(false) }
     Box(modifier = modifier) {
-        FilledIconButton(onClick = { expanded = true }, modifier = Modifier.size(56.dp)) {
+        FilledIconButton(
+            onClick = { expanded = true },
+            modifier = Modifier.size(56.dp)
+                .alpha(0.8f),
+        ) {
             Icon(painterResource(R.drawable.ic_more), contentDescription = stringResource(R.string.action_options_menu))
         }
         DropdownMenu(

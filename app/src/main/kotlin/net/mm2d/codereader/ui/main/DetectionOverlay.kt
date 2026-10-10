@@ -36,6 +36,7 @@ import kotlinx.coroutines.delay
 import net.mm2d.codereader.R
 import net.mm2d.codereader.ui.theme.AppTheme
 import kotlin.math.pow
+import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun DetectionOverlay(
@@ -48,7 +49,7 @@ fun DetectionOverlay(
     LaunchedEffect(frame) {
         try {
             scale.animateTo(1.2f, tween(1000, easing = Easing { 1f - (1f - it).pow(6) }))
-            delay(500)
+            delay(500.milliseconds)
         } finally {
             finish.value(frame)
         }
