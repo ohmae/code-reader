@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">CodeReader</string>
     <string name="cancel">Cancel</string>
+    <string name="navigate_back">Navigate back</string>
     <string name="app_info">App info</string>
 
     <string name="dialog_title_permission">Please allow permission</string>
@@ -33,4 +34,7 @@
     <string name="preference_category_information">Information</string>
     <string name="preference_title_version">Version</string>
 
+    <string name="action_options_menu">Options menu</string>
+    <string name="action_turn_flash_on">Turn flashlight on</string>
+    <string name="action_turn_flash_off">Turn flashlight off</string>
 </resources>

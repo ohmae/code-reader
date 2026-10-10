@@ -22,6 +22,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.Observer
+import com.google.common.util.concurrent.ListenableFuture
 import com.google.mlkit.vision.barcode.BarcodeScanner
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.barcode.common.Barcode
@@ -35,6 +36,9 @@ class CodeScanner(
     private val activity: ComponentActivity,
     previewView: PreviewView,
     callback: (ImageProxy, List<Barcode>) -> Unit,
+    private val providerFactory: () -> ListenableFuture<ProcessCameraProvider> = {
+        ProcessCameraProvider.getInstance(activity)
+    },
 ) {
     private val workerExecutor: ExecutorService = Executors.newSingleThreadExecutor()
     private val scanner: BarcodeScanner = BarcodeScanning.getClient()
@@ -44,6 +48,16 @@ class CodeScanner(
     private val analysis: ImageAnalysis
     private var processCameraProvider: ProcessCameraProvider? = null
     private var isInitialized: Boolean = false
+    private var startRequested: Boolean = false
+    private var destroyed: Boolean = false
+    private val lifecycleObserver = LifecycleEventObserver { _, event ->
+        when (event) {
+            Lifecycle.Event.ON_RESUME -> bind()
+            Lifecycle.Event.ON_PAUSE -> unbind()
+            Lifecycle.Event.ON_DESTROY -> destroy()
+            else -> Unit
+        }
+    }
 
     init {
         val resolutionSelector = ResolutionSelector.Builder()
@@ -60,40 +74,43 @@ class CodeScanner(
     }
 
     fun initialize() {
-        if (isInitialized) return
+        if (isInitialized || destroyed) return
         isInitialized = true
-        activity.lifecycle.addObserver(
-            LifecycleEventObserver { _, event ->
-                when (event) {
-                    Lifecycle.Event.ON_RESUME -> bind()
-
-                    Lifecycle.Event.ON_PAUSE -> unbind()
-
-                    Lifecycle.Event.ON_DESTROY -> {
-                        workerExecutor.shutdown()
-                        scanner.close()
-                    }
-
-                    else -> Unit
-                }
-            },
-        )
+        activity.lifecycle.addObserver(lifecycleObserver)
     }
 
     fun start() {
-        val future = ProcessCameraProvider.getInstance(activity)
+        if (startRequested || destroyed) return
+        startRequested = true
+        val future = providerFactory()
         future.addListener({
-            processCameraProvider = future.get()
-            bind()
+            // AndroidView の解放後に provider が届いても再接続しない。
+            if (destroyed) return@addListener
+            try {
+                processCameraProvider = future.get()
+                bind()
+            } catch (e: Exception) {
+                Timber.e(e)
+            }
         }, ContextCompat.getMainExecutor(activity))
     }
 
+    fun destroy() {
+        if (destroyed) return
+        destroyed = true
+        activity.lifecycle.removeObserver(lifecycleObserver)
+        unbind()
+        preview.surfaceProvider = null
+        processCameraProvider = null
+        analyzer.close()
+        workerExecutor.shutdown()
+    }
+
     private fun bind() {
-        if (activity.lifecycle.currentState != Lifecycle.State.RESUMED) return
+        if (destroyed || camera != null || activity.lifecycle.currentState != Lifecycle.State.RESUMED) return
         val provider = processCameraProvider ?: return
         analysis.setAnalyzer(workerExecutor, analyzer)
         try {
-            provider.unbindAll()
             val camera = provider.bindToLifecycle(
                 activity,
                 CameraSelector.DEFAULT_BACK_CAMERA,
@@ -103,16 +120,17 @@ class CodeScanner(
             camera.attachTorchObserver()
             this.camera = camera
         } catch (e: Exception) {
+            analysis.clearAnalyzer()
             Timber.e(e)
         }
     }
 
     private fun unbind() {
-        val provider = processCameraProvider ?: return
-        provider.unbindAll()
         analysis.clearAnalyzer()
         camera?.detachTorchObserver()
         camera = null
+        processCameraProvider?.unbind(preview, analysis)
+        torchStateFlow.value = false
     }
 
     fun toggleTorch() {

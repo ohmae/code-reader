@@ -3,7 +3,8 @@
 ## プロジェクト概要
 
 - Code Reader は CameraX と ML Kit を使うバーコード読み取り用 Android アプリ。モジュールは `:app` のみ。
-- Kotlin、Android Views、View Binding を使用する。パッケージ名と名前空間は `net.mm2d.codereader`。
+- Kotlin を使用し、Android Views、View Binding から Jetpack Compose へ段階的に移行している。
+  画面 UI・ダイアログ・検出演出は Compose、カメラプレビューは AndroidView 内の PreviewView。パッケージ名と名前空間は `net.mm2d.codereader`。
 - アプリの概要は `README.md` を参照する。SDK の設定と依存関係のバージョンは、変更時に `app/build.gradle.kts` と `gradle/libs.versions.toml` で確認する。
 
 ## 基本方針
@@ -24,7 +25,10 @@
 - 周辺の Kotlin と XML の書き方に合わせる。`.editorconfig` は UTF-8、LF、スペース 4 個のインデント、1 行 120 文字を指定している。Kotlin にはリポジトリの ktlint 設定を適用する。
 - 読み取り処理を変更する際は、カメラのバインドと解除、Executor の終了処理、`ImageProxy.close()` のタイミングを保つ。`CodeAnalyzer` は ML Kit の処理完了後に各フレームを閉じる。
 - 新しいフレームワークや抽象化を加える前に、既存の View Binding、設定、権限処理の実装を確認する。
-- デバイスなしで検証できるロジックには、対象を絞ったテストを追加する。現時点では `src/test` と `src/androidTest` にテストソースはない。
+- デバイスなしで検証できるロジックには、対象を絞ったテストを追加する。
+  `src/test` に Robolectric の設定保存・Compose UI テストがある。`src/androidTest` にテストソースはない。
+- テストのランナーと API は `androidx.test` を優先する。`AndroidJUnit4`、`ApplicationProvider`、
+  `ActivityScenario` に対応する機能がない場合に限り、Robolectric 固有の API を使用する。
 
 ## 検証
 

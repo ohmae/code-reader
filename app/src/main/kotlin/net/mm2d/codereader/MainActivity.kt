@@ -7,58 +7,63 @@
 
 package net.mm2d.codereader
 
-import android.animation.ValueAnimator
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
-import android.view.ViewGroup.MarginLayoutParams
 import android.widget.Toast
+import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.camera.core.ImageProxy
-import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.getSystemService
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.isGone
-import androidx.core.view.updateLayoutParams
-import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.core.net.toUri
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.mlkit.vision.barcode.common.Barcode
-import net.mm2d.codereader.code.CodeScanner
-import net.mm2d.codereader.databinding.ActivityMainBinding
+import kotlinx.coroutines.flow.MutableStateFlow
 import net.mm2d.codereader.extension.formatString
 import net.mm2d.codereader.extension.typeString
 import net.mm2d.codereader.permission.CameraPermission
-import net.mm2d.codereader.permission.PermissionDialog
 import net.mm2d.codereader.permission.registerForCameraPermissionRequest
 import net.mm2d.codereader.result.ScanResult
-import net.mm2d.codereader.result.ScanResultAdapter
-import net.mm2d.codereader.result.ScanResultDialog
 import net.mm2d.codereader.setting.Settings
+import net.mm2d.codereader.ui.main.CameraPermissionDialog
+import net.mm2d.codereader.ui.main.CameraPreviewView
+import net.mm2d.codereader.ui.main.DetectionOverlay
+import net.mm2d.codereader.ui.main.MainScreen
+import net.mm2d.codereader.ui.theme.AppTheme
+import net.mm2d.codereader.util.ClipboardUtils
+import net.mm2d.codereader.util.Launcher
 import net.mm2d.codereader.util.ReviewRequester
 import net.mm2d.codereader.util.Updater
 import net.mm2d.codereader.util.observe
+import android.provider.Settings as AndroidSettings
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityMainBinding
-    private lateinit var codeScanner: CodeScanner
-    private var started: Boolean = false
+    private var cameraEnabled by mutableStateOf(false)
+    private var showPermissionDialog by mutableStateOf(false)
+    private var permissionRequestPending = false
     private val launcher = registerForCameraPermissionRequest { granted, succeedToShowDialog ->
+        permissionRequestPending = false
         if (granted) {
             startCamera()
         } else if (!succeedToShowDialog) {
-            PermissionDialog.show(this, CAMERA_PERMISSION_REQUEST_KEY)
+            showPermissionDialog = true
         } else {
             finishByError()
         }
     }
-    private lateinit var adapter: ScanResultAdapter
     private var vibrator: Vibrator? = null
-    private lateinit var detectedPresenter: DetectedPresenter
-    private var expandAnimator: ValueAnimator? = null
     private val viewModel: MainActivityViewModel by viewModels()
     private val settings: Settings by lazy {
         Settings.get()
@@ -69,81 +74,98 @@ class MainActivity : AppCompatActivity() {
         savedInstanceState: Bundle?,
     ) {
         super.onCreate(savedInstanceState)
+        showPermissionDialog = savedInstanceState?.getBoolean(SHOW_PERMISSION_DIALOG) ?: false
+        permissionRequestPending = savedInstanceState?.getBoolean(PERMISSION_REQUEST_PENDING) ?: false
         enableEdgeToEdge()
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            view.setPadding(systemBars.left, 0, systemBars.right, systemBars.bottom)
-            binding.guideTop.updateLayoutParams<MarginLayoutParams> {
-                topMargin = systemBars.top
+        setContent {
+            var cameraView by remember { mutableStateOf<CameraPreviewView?>(null) }
+            val inactiveTorch = remember { MutableStateFlow(false) }
+            val torchOn by (cameraView?.codeScanner?.getTorchStateStream() ?: inactiveTorch)
+                .collectAsStateWithLifecycle(initialValue = false)
+            val results by viewModel.getResultStream().collectAsStateWithLifecycle()
+            AppTheme {
+                MainScreen(
+                    results = results,
+                    torchOn = torchOn,
+                    onToggleTorch = { cameraView?.codeScanner?.toggleTorch() },
+                    onMenuAction = ::onMenuAction,
+                    onOpen = {
+                        if (!Launcher.openUri(this@MainActivity, it.value)) {
+                            Launcher.search(this@MainActivity, it.value)
+                        }
+                        ReviewRequester.onAction()
+                    },
+                    onCopy = {
+                        ClipboardUtils.copyToClipboard(this@MainActivity, it.type, it.value)
+                        ReviewRequester.onAction()
+                    },
+                    onShare = {
+                        Launcher.shareText(this@MainActivity, it.value)
+                        ReviewRequester.onAction()
+                    },
+                    cameraPreview = { modifier ->
+                        Box(modifier) {
+                            AndroidView(
+                                factory = {
+                                    CameraPreviewView(this@MainActivity, ::onDetectCode).also { cameraView = it }
+                                },
+                                modifier = Modifier.fillMaxSize(),
+                                update = { if (cameraEnabled) it.start() },
+                                onRelease = {
+                                    it.release()
+                                    if (cameraView === it) cameraView = null
+                                },
+                            )
+                            val detection = cameraView?.detection
+                            detection?.frame?.let { frame ->
+                                DetectionOverlay(frame, detection::finish, Modifier.fillMaxSize())
+                            }
+                        }
+                    },
+                )
+                if (showPermissionDialog) {
+                    CameraPermissionDialog(
+                        onOpenAppInfo = {
+                            showPermissionDialog = false
+                            startActivity(
+                                Intent(AndroidSettings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                                    data = "package:$packageName".toUri()
+                                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                },
+                            )
+                        },
+                        onCancel = {
+                            showPermissionDialog = false
+                            finishByError()
+                        },
+                    )
+                }
             }
-            insets
         }
-        adapter = ScanResultAdapter(this) {
-            ScanResultDialog.show(this, it)
-        }
-        binding.resultList.adapter = adapter
-        binding.resultList.addItemDecoration(
-            DividerItemDecoration(this, DividerItemDecoration.VERTICAL),
-        )
         vibrator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             getSystemService<VibratorManager>()?.defaultVibrator
         } else {
             @Suppress("DEPRECATION")
             getSystemService<Vibrator>()
         }
-        codeScanner = CodeScanner(this, binding.previewView, ::onDetectCode)
-        codeScanner.initialize()
-        binding.flash.setOnClickListener {
-            codeScanner.toggleTorch()
-        }
-        codeScanner.getTorchStateStream().observe(this) {
-            onFlashOn(it)
-        }
-        detectedPresenter = DetectedPresenter(
-            codeScanner = codeScanner,
-            detectedMarker = binding.detectedMarker,
-            stillImage = binding.stillImage,
-        )
-        val size = viewModel.getResultStream().value.size
-        if (size >= 2) {
-            binding.dummy.updateLayoutParams<ConstraintLayout.LayoutParams> {
-                height = 0
-            }
-        }
-        viewModel.getResultStream().observe(this) {
-            resultSet = it.toSet()
-            adapter.onChanged(it)
-            binding.resultList.scrollToPosition(adapter.itemCount - 1)
-            if (it.isNotEmpty()) {
-                binding.scanning.isGone = true
-            }
-            if (it.size == 2) {
-                expandList()
-            }
-        }
+        viewModel.getResultStream().observe(this) { resultSet = it.toSet() }
         if (CameraPermission.hasPermission(this)) {
             startCamera()
             Updater.startIfAvailable(this)
-        } else {
+        } else if (!showPermissionDialog && !permissionRequestPending) {
+            permissionRequestPending = true
             launcher.launch()
         }
-        PermissionDialog.registerListener(this, CAMERA_PERMISSION_REQUEST_KEY) {
-            finishByError()
-        }
-        OptionsMenuPresenter(this, binding.menu).setUp()
     }
 
     override fun onRestart() {
         super.onRestart()
-        if (!started) {
-            if (CameraPermission.hasPermission(this)) {
-                startCamera()
-            } else {
-                finishByError()
-                return
-            }
+        if (CameraPermission.hasPermission(this)) {
+            startCamera()
+        } else {
+            cameraEnabled = false
+            finishByError()
+            return
         }
         ReviewRequester.requestIfNecessary(this)
     }
@@ -151,13 +173,6 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         Updater.onResume(this)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        expandAnimator?.cancel()
-        expandAnimator = null
-        detectedPresenter.destroy()
     }
 
     private fun finishByError() {
@@ -169,27 +184,27 @@ class MainActivity : AppCompatActivity() {
         Toast.makeText(this, R.string.toast_permission_required, Toast.LENGTH_LONG).show()
     }
 
-    private fun onFlashOn(
-        on: Boolean,
+    private fun onMenuAction(
+        title: Int,
     ) {
-        val icon = if (on) {
-            R.drawable.ic_flash_on
-        } else {
-            R.drawable.ic_flash_off
+        when (title) {
+            R.string.options_menu_license -> LicenseActivity.start(this)
+            R.string.options_menu_source_code -> Launcher.openSourceCode(this)
+            R.string.options_menu_privacy_policy -> Launcher.openPrivacyPolicy(this)
+            R.string.options_menu_share_this_app -> Launcher.shareThisApp(this)
+            R.string.options_menu_play_store -> Launcher.openGooglePlay(this)
+            R.string.options_menu_settings -> SettingsActivity.start(this)
         }
-        binding.flash.setImageResource(icon)
     }
 
     private fun startCamera() {
-        if (started) return
-        started = true
-        codeScanner.start()
+        showPermissionDialog = false
+        cameraEnabled = true
     }
 
     private fun onDetectCode(
-        imageProxy: ImageProxy,
         codes: List<Barcode>,
-    ) {
+    ): List<Barcode> {
         val detected = mutableListOf<Barcode>()
         codes.forEach {
             val value = it.rawValue ?: return@forEach
@@ -205,20 +220,7 @@ class MainActivity : AppCompatActivity() {
                 detected.add(it)
             }
         }
-        if (detected.isEmpty()) return
-        detectedPresenter.onDetected(imageProxy, detected)
-    }
-
-    private fun expandList() {
-        expandAnimator?.cancel()
-        val animator = ValueAnimator.ofInt(binding.dummy.height, 0)
-        animator.addUpdateListener {
-            binding.dummy.updateLayoutParams<ConstraintLayout.LayoutParams> {
-                height = it.animatedValue as Int
-            }
-        }
-        animator.start()
-        expandAnimator = animator
+        return detected
     }
 
     private fun vibrate() {
@@ -230,7 +232,16 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
+    override fun onSaveInstanceState(
+        outState: Bundle,
+    ) {
+        outState.putBoolean(SHOW_PERMISSION_DIALOG, showPermissionDialog)
+        outState.putBoolean(PERMISSION_REQUEST_PENDING, permissionRequestPending)
+        super.onSaveInstanceState(outState)
+    }
+
     companion object {
-        private const val CAMERA_PERMISSION_REQUEST_KEY = "CAMERA_PERMISSION_REQUEST_KEY"
+        private const val SHOW_PERMISSION_DIALOG = "SHOW_PERMISSION_DIALOG"
+        private const val PERMISSION_REQUEST_PENDING = "PERMISSION_REQUEST_PENDING"
     }
 }
