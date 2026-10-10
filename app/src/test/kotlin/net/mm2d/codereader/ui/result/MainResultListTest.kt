@@ -5,6 +5,7 @@ import android.content.pm.ProviderInfo
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasScrollAction
 import androidx.compose.ui.test.junit4.v2.createEmptyComposeRule
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollToIndex
@@ -19,6 +20,7 @@ import net.mm2d.codereader.App
 import net.mm2d.codereader.BuildConfig
 import net.mm2d.codereader.MainActivity
 import net.mm2d.codereader.MainActivityViewModel
+import net.mm2d.codereader.R
 import net.mm2d.codereader.result.ScanResult
 import net.mm2d.codereader.setting.Settings
 import org.junit.Assert.assertEquals
@@ -93,6 +95,24 @@ class MainResultListTest {
             scenario.onActivity {
                 assertEquals(10, ViewModelProvider(it)[MainActivityViewModel::class.java].getResultStream().value.size)
             }
+        }
+    }
+
+    @Test
+    fun settingsNavigationAndRecreationRetainScanResultsInSingleActivity() {
+        ActivityScenario.launch(MainActivity::class.java).use { scenario ->
+            val context = ApplicationProvider.getApplicationContext<App>()
+            scenario.onActivity {
+                ViewModelProvider(it)[MainActivityViewModel::class.java]
+                    .add(ScanResult("retained result", "Text", "QR code", false))
+            }
+            composeRule.onNodeWithContentDescription(context.getString(R.string.action_options_menu)).performClick()
+            composeRule.onNodeWithText(context.getString(R.string.options_menu_settings)).performClick()
+            composeRule.onNodeWithText(context.getString(R.string.preference_title_vibration)).assertExists()
+            scenario.recreate()
+            composeRule.onNodeWithText(context.getString(R.string.preference_title_vibration)).assertExists()
+            composeRule.onNodeWithContentDescription(context.getString(R.string.navigate_back)).performClick()
+            composeRule.onNodeWithText("retained result").assertIsDisplayed()
         }
     }
 }

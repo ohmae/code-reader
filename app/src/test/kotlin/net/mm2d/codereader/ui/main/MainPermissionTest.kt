@@ -10,6 +10,8 @@ import androidx.compose.ui.test.junit4.v2.createEmptyComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LifecycleRegistry
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -18,7 +20,8 @@ import com.google.mlkit.common.sdkinternal.MlKitContext
 import net.mm2d.codereader.App
 import net.mm2d.codereader.BuildConfig
 import net.mm2d.codereader.MainActivity
-import net.mm2d.codereader.SettingsActivity
+import net.mm2d.codereader.launchSettingsTestActivity
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Before
@@ -58,7 +61,7 @@ class MainPermissionTest {
     @Test
     fun previewWithoutSurfaceStillDisplaysDetectionOverlay() {
         composeRule.mainClock.autoAdvance = false
-        ActivityScenario.launch(SettingsActivity::class.java).use { scenario ->
+        launchSettingsTestActivity().use { scenario ->
             lateinit var camera: CameraPreviewState
             scenario.onActivity {
                 camera = CameraPreviewState(it) { emptyList() }
@@ -79,7 +82,7 @@ class MainPermissionTest {
 
     @Test
     fun pausingCameraOwnerClearsDetectionAndAllowsNextEffect() {
-        ActivityScenario.launch(SettingsActivity::class.java).use { scenario ->
+        launchSettingsTestActivity().use { scenario ->
             lateinit var camera: CameraPreviewState
             scenario.onActivity {
                 camera = CameraPreviewState(it) { emptyList() }
@@ -105,6 +108,35 @@ class MainPermissionTest {
                 camera.release()
                 camera.release()
                 assertNull(camera.detection.frame)
+            }
+        }
+    }
+
+    @Test
+    fun pausingNavigationEntryClearsDetectionWhileActivityRemainsResumed() {
+        launchSettingsTestActivity().use { scenario ->
+            scenario.onActivity { activity ->
+                val owner = object : LifecycleOwner {
+                    override val lifecycle = LifecycleRegistry(this)
+                }
+                owner.lifecycle.currentState = Lifecycle.State.RESUMED
+                val camera = CameraPreviewState(activity, owner) { emptyList() }
+                camera.initialize()
+                assertEquals(2, owner.lifecycle.observerCount)
+                camera.detection.show(
+                    DetectedFrame(Bitmap.createBitmap(20, 40, Bitmap.Config.ARGB_8888), emptyList(), 20, 40, 0),
+                )
+                assertNotNull(camera.detection.frame)
+                owner.lifecycle.currentState = Lifecycle.State.STARTED
+                assertEquals(Lifecycle.State.RESUMED, activity.lifecycle.currentState)
+                assertNull(camera.detection.frame)
+                owner.lifecycle.currentState = Lifecycle.State.RESUMED
+                camera.detection.show(
+                    DetectedFrame(Bitmap.createBitmap(20, 40, Bitmap.Config.ARGB_8888), emptyList(), 20, 40, 0),
+                )
+                assertNotNull(camera.detection.frame)
+                camera.release()
+                assertEquals(0, owner.lifecycle.observerCount)
             }
         }
     }

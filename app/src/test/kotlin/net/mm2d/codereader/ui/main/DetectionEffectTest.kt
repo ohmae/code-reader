@@ -11,10 +11,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.junit4.v2.createEmptyComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.unit.dp
-import androidx.test.core.app.ActivityScenario
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import net.mm2d.codereader.App
-import net.mm2d.codereader.SettingsActivity
+import net.mm2d.codereader.launchSettingsTestActivity
 import net.mm2d.codereader.ui.theme.AppTheme
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -74,7 +73,7 @@ class DetectionEffectTest {
         var resumed = 0
         val state = DetectionEffectState({}, { resumed++ })
         composeRule.mainClock.autoAdvance = false
-        ActivityScenario.launch(SettingsActivity::class.java).use { scenario ->
+        launchSettingsTestActivity().use { scenario ->
             scenario.onActivity {
                 state.show(frame())
                 it.setContent {
@@ -99,7 +98,7 @@ class DetectionEffectTest {
         var visible by mutableStateOf(true)
         var resumed = 0
         val state = DetectionEffectState({}, { resumed++ })
-        ActivityScenario.launch(SettingsActivity::class.java).use { scenario ->
+        launchSettingsTestActivity().use { scenario ->
             scenario.onActivity {
                 state.show(frame())
                 it.setContent {

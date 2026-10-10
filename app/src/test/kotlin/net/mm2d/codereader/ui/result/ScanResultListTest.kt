@@ -13,10 +13,9 @@ import androidx.compose.ui.test.junit4.v2.createEmptyComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.unit.dp
-import androidx.test.core.app.ActivityScenario
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import net.mm2d.codereader.App
-import net.mm2d.codereader.SettingsActivity
+import net.mm2d.codereader.launchSettingsTestActivity
 import net.mm2d.codereader.result.ScanResult
 import net.mm2d.codereader.ui.theme.AppTheme
 import org.junit.Assert.assertEquals
@@ -38,7 +37,7 @@ class ScanResultListTest {
         val second = first.copy(format = "Code 128")
         val long = first.copy(value = "long value ".repeat(100))
         var selected: ScanResult? = null
-        ActivityScenario.launch(SettingsActivity::class.java).use { scenario ->
+        launchSettingsTestActivity().use { scenario ->
             scenario.onActivity {
                 it.setContent {
                     AppTheme { ScanResultList(listOf(first, second, long), onSelect = { selected = it }) }
@@ -54,7 +53,7 @@ class ScanResultListTest {
     fun scrollsOnlyWhenResultsAreAdded() {
         var results by mutableStateOf(emptyList<ScanResult>())
         lateinit var listState: LazyListState
-        ActivityScenario.launch(SettingsActivity::class.java).use { scenario ->
+        launchSettingsTestActivity().use { scenario ->
             scenario.onActivity {
                 it.setContent {
                     AppTheme {

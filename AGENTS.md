@@ -5,6 +5,7 @@
 - Code Reader は CameraX と ML Kit を使うバーコード読み取り用 Android アプリ。モジュールは `:app` のみ。
 - Kotlin を使用し、Android Views、View Binding から Jetpack Compose へ段階的に移行している。
   画面 UI・ダイアログ・検出演出は Compose、カメラプレビューは camera-compose の CameraXViewfinder。パッケージ名と名前空間は `net.mm2d.codereader`。
+- `MainActivity` の SingleActivity 構成で、読み取り・設定・ライセンスの画面遷移は Navigation3 を使用する。
 - アプリの概要は `README.md` を参照する。SDK の設定と依存関係のバージョンは、変更時に `app/build.gradle.kts` と `gradle/libs.versions.toml` で確認する。
 
 ## 基本方針
@@ -16,6 +17,7 @@
 
 - `app/src/main/kotlin/net/mm2d/codereader/`: Activity、UI ロジック、ViewModel。
 - `code/CodeScanner.kt` と `code/CodeAnalyzer.kt`: CameraX のライフサイクル管理と ML Kit による画像解析。
+- `ui/navigation/`: 保存可能な画面キー、バックスタック、予測型戻るを含む画面遷移。
 - `result/`: 読み取り結果とその UI。`permission/`: カメラ権限の処理。`setting/`: 設定。`util/` と `extension/`: 共通処理。
 - `app/src/main/res/`: XML レイアウト、テーマ、文字列。画面に表示する文言はリソースに置き、翻訳対象の文言を追加・変更する場合は `values/strings.xml` と `values-ja/strings.xml` の両方を更新する。
 - `app/src/main/AndroidManifest.xml`: アプリのコンポーネントと権限。`app/src/debug/` にはデバッグ専用の実装がある。
@@ -24,6 +26,7 @@
 
 - 周辺の Kotlin と XML の書き方に合わせる。`.editorconfig` は UTF-8、LF、スペース 4 個のインデント、1 行 120 文字を指定している。Kotlin にはリポジトリの ktlint 設定を適用する。
 - 読み取り処理を変更する際は、カメラのバインドと解除、Executor の終了処理、`ImageProxy.close()` のタイミングを保つ。`CodeAnalyzer` は ML Kit の処理完了後に各フレームを閉じる。
+  カメラは Activity ではなく読み取り画面の LifecycleOwner に接続し、他の画面では停止させる。
 - 新しいフレームワークや抽象化を加える前に、既存の View Binding、設定、権限処理の実装を確認する。
 - デバイスなしで検証できるロジックには、対象を絞ったテストを追加する。
   `src/test` に Robolectric の設定保存・Compose UI テストがある。`src/androidTest` にテストソースはない。

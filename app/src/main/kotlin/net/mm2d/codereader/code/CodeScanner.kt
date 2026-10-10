@@ -21,6 +21,7 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.mlkit.vision.barcode.BarcodeScanner
@@ -36,6 +37,7 @@ import java.util.concurrent.Executors
 class CodeScanner(
     private val activity: ComponentActivity,
     callback: (ImageProxy, List<Barcode>) -> Unit,
+    private val lifecycleOwner: LifecycleOwner = activity,
     private val providerFactory: () -> ListenableFuture<ProcessCameraProvider> = {
         ProcessCameraProvider.getInstance(activity)
     },
@@ -84,7 +86,7 @@ class CodeScanner(
     fun initialize() {
         if (isInitialized || destroyed) return
         isInitialized = true
-        activity.lifecycle.addObserver(lifecycleObserver)
+        lifecycleOwner.lifecycle.addObserver(lifecycleObserver)
     }
 
     fun start() {
@@ -106,7 +108,7 @@ class CodeScanner(
     fun destroy() {
         if (destroyed) return
         destroyed = true
-        activity.lifecycle.removeObserver(lifecycleObserver)
+        lifecycleOwner.lifecycle.removeObserver(lifecycleObserver)
         unbind()
         preview.surfaceProvider = null
         processCameraProvider = null
@@ -115,12 +117,12 @@ class CodeScanner(
     }
 
     private fun bind() {
-        if (destroyed || camera != null || activity.lifecycle.currentState != Lifecycle.State.RESUMED) return
+        if (destroyed || camera != null || lifecycleOwner.lifecycle.currentState != Lifecycle.State.RESUMED) return
         val provider = processCameraProvider ?: return
         analysis.setAnalyzer(workerExecutor, analyzer)
         try {
             val camera = provider.bindToLifecycle(
-                activity,
+                lifecycleOwner,
                 CameraSelector.DEFAULT_BACK_CAMERA,
                 preview,
                 analysis,
@@ -156,7 +158,7 @@ class CodeScanner(
     fun getTorchStateStream(): Flow<Boolean> = torchStateFlow
 
     private fun Camera.attachTorchObserver() {
-        cameraInfo.torchState.observe(activity, torchStateObserver)
+        cameraInfo.torchState.observe(lifecycleOwner, torchStateObserver)
     }
 
     private fun Camera.detachTorchObserver() {

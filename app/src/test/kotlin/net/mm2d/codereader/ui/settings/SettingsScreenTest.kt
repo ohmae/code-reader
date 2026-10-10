@@ -11,13 +11,12 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
 import androidx.lifecycle.Lifecycle
-import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import net.mm2d.codereader.App
 import net.mm2d.codereader.BuildConfig
 import net.mm2d.codereader.R
-import net.mm2d.codereader.SettingsActivity
+import net.mm2d.codereader.launchSettingsTestActivity
 import net.mm2d.codereader.setting.Settings
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -36,7 +35,7 @@ class SettingsScreenTest {
     @Test
     fun togglesAndRestoresVibrationAcrossActivityRecreation() {
         Settings.get().vibrate = true
-        ActivityScenario.launch(SettingsActivity::class.java).use { scenario ->
+        launchSettingsTestActivity().use { scenario ->
             val title = ApplicationProvider.getApplicationContext<App>().getString(R.string.preference_title_vibration)
             composeRule.onNodeWithText(title).assertIsOn().performClick()
             composeRule.onNodeWithText(title).assertIsOff()
@@ -51,7 +50,7 @@ class SettingsScreenTest {
 
     @Test
     fun copiesVersionSummaryAndReturnsFromToolbar() {
-        ActivityScenario.launch(SettingsActivity::class.java).use { scenario ->
+        launchSettingsTestActivity().use { scenario ->
             val context = ApplicationProvider.getApplicationContext<App>()
             composeRule.onNodeWithText(context.getString(R.string.preference_title_version))
                 .performTouchInput { longClick() }
@@ -70,7 +69,7 @@ class SettingsScreenTest {
     @Config(qualifiers = "ja")
     fun copiesCurrentVibrationSummaryInJapaneseWithoutToggling() {
         Settings.get().vibrate = false
-        ActivityScenario.launch(SettingsActivity::class.java).use {
+        launchSettingsTestActivity().use {
             val context = ApplicationProvider.getApplicationContext<App>()
             composeRule.onNodeWithText(context.getString(R.string.preference_title_vibration))
                 .performTouchInput { longClick() }
@@ -89,7 +88,7 @@ class SettingsScreenTest {
     @Test
     fun refreshesVibrationSettingWhenActivityStartsAgain() {
         Settings.get().vibrate = true
-        ActivityScenario.launch(SettingsActivity::class.java).use { scenario ->
+        launchSettingsTestActivity().use { scenario ->
             val title = ApplicationProvider.getApplicationContext<App>().getString(R.string.preference_title_vibration)
             composeRule.onNodeWithText(title).assertIsOn()
             scenario.moveToState(Lifecycle.State.CREATED)

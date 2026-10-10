@@ -10,16 +10,18 @@ package net.mm2d.codereader.ui.main
 import androidx.activity.ComponentActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
 import com.google.mlkit.vision.barcode.common.Barcode
 import net.mm2d.codereader.code.CodeScanner
 import timber.log.Timber
 
 class CameraPreviewState(
-    private val activity: ComponentActivity,
+    activity: ComponentActivity,
+    private val lifecycleOwner: LifecycleOwner = activity,
     onDetect: (List<Barcode>) -> List<Barcode>,
 ) {
-    val codeScanner: CodeScanner = CodeScanner(activity, callback = { image, codes ->
-        if (activity.lifecycle.currentState == Lifecycle.State.RESUMED) {
+    val codeScanner: CodeScanner = CodeScanner(activity, lifecycleOwner = lifecycleOwner, callback = { image, codes ->
+        if (lifecycleOwner.lifecycle.currentState == Lifecycle.State.RESUMED) {
             val detected = onDetect(codes)
             if (detected.isNotEmpty()) {
                 try {
@@ -37,7 +39,7 @@ class CameraPreviewState(
 
     fun initialize() {
         codeScanner.initialize()
-        activity.lifecycle.addObserver(lifecycleObserver)
+        lifecycleOwner.lifecycle.addObserver(lifecycleObserver)
     }
 
     fun start() {
@@ -45,7 +47,7 @@ class CameraPreviewState(
     }
 
     fun release() {
-        activity.lifecycle.removeObserver(lifecycleObserver)
+        lifecycleOwner.lifecycle.removeObserver(lifecycleObserver)
         codeScanner.destroy()
         detection.clear()
     }

@@ -4,6 +4,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.kotlinCompose)
+    alias(libs.plugins.kotlinxSerialization)
     alias(libs.plugins.kotlinParcelize)
     alias(libs.plugins.dependencyGuard)
 
@@ -98,6 +99,10 @@ dependencies {
     implementation(libs.androidxComposeMaterial3)
     implementation(libs.androidxActivityCompose)
     implementation(libs.androidxLifecycleRuntimeCompose)
+    implementation(libs.androidxLifecycleViewModelNavigation3)
+    implementation(libs.androidxNavigation3Runtime)
+    implementation(libs.androidxNavigation3Ui)
+    implementation(libs.kotlinxSerializationCore)
     implementation(libs.androidxComposeUiToolingPreview)
     debugImplementation(libs.androidxComposeUiTooling)
 

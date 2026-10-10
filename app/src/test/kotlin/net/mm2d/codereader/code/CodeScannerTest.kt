@@ -3,7 +3,6 @@ package net.mm2d.codereader.code
 import android.content.pm.ProviderInfo
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.lifecycle.LifecycleRegistry
-import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.util.concurrent.ListenableFuture
@@ -11,7 +10,7 @@ import com.google.mlkit.common.internal.MlKitInitProvider
 import com.google.mlkit.common.sdkinternal.MlKitContext
 import net.mm2d.codereader.App
 import net.mm2d.codereader.BuildConfig
-import net.mm2d.codereader.SettingsActivity
+import net.mm2d.codereader.launchSettingsTestActivity
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -56,7 +55,7 @@ class CodeScannerTest {
                 else -> null
             }
         } as ListenableFuture<ProcessCameraProvider>
-        ActivityScenario.launch(SettingsActivity::class.java).use { scenario ->
+        launchSettingsTestActivity().use { scenario ->
             scenario.onActivity {
                 val lifecycle = it.lifecycle as LifecycleRegistry
                 val initialObservers = lifecycle.observerCount

@@ -10,10 +10,9 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipeUp
-import androidx.test.core.app.ActivityScenario
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import net.mm2d.codereader.App
-import net.mm2d.codereader.SettingsActivity
+import net.mm2d.codereader.launchSettingsTestActivity
 import net.mm2d.codereader.result.ScanResult
 import net.mm2d.codereader.ui.theme.AppTheme
 import org.junit.Assert.assertEquals
@@ -32,7 +31,7 @@ class ScanResultContentTest {
     fun eachActionRunsOnceAndClosesTheDialog() {
         val result = ScanResult("selected", "Text", "QR code", false)
         val actions = mutableListOf<Pair<String, ScanResult>>()
-        ActivityScenario.launch(SettingsActivity::class.java).use { scenario ->
+        launchSettingsTestActivity().use { scenario ->
             scenario.onActivity {
                 it.setContent {
                     AppTheme {
@@ -58,7 +57,7 @@ class ScanResultContentTest {
     fun longValueCanScrollWhileActionsRemainVisible() {
         val result = ScanResult("long value\n".repeat(200), "Text", "QR code", false)
         var actions = 0
-        ActivityScenario.launch(SettingsActivity::class.java).use { scenario ->
+        launchSettingsTestActivity().use { scenario ->
             scenario.onActivity {
                 it.setContent {
                     AppTheme {

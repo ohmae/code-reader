@@ -26,6 +26,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.core.content.getSystemService
 import androidx.core.net.toUri
+import androidx.lifecycle.compose.LifecycleResumeEffect
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.mlkit.vision.barcode.common.Barcode
 import net.mm2d.codereader.extension.formatString
@@ -38,6 +40,7 @@ import net.mm2d.codereader.ui.main.CameraPermissionDialog
 import net.mm2d.codereader.ui.main.CameraPreview
 import net.mm2d.codereader.ui.main.CameraPreviewState
 import net.mm2d.codereader.ui.main.MainScreen
+import net.mm2d.codereader.ui.navigation.NavigationRoot
 import net.mm2d.codereader.ui.theme.AppTheme
 import net.mm2d.codereader.util.ClipboardUtils
 import net.mm2d.codereader.util.Launcher
@@ -75,41 +78,56 @@ class MainActivity : AppCompatActivity() {
         permissionRequestPending = savedInstanceState?.getBoolean(PERMISSION_REQUEST_PENDING) ?: false
         enableEdgeToEdge()
         setContent {
-            val camera = remember { CameraPreviewState(this@MainActivity, ::onDetectCode) }
-            DisposableEffect(camera) {
-                camera.initialize()
-                onDispose { camera.release() }
-            }
-            LaunchedEffect(camera, cameraEnabled) {
-                if (cameraEnabled) camera.start()
-            }
-            val torchOn by camera.codeScanner.getTorchStateStream()
-                .collectAsStateWithLifecycle(initialValue = false)
-            val results by viewModel.getResultStream().collectAsStateWithLifecycle()
             AppTheme {
-                MainScreen(
-                    results = results,
-                    torchOn = torchOn,
-                    onToggleTorch = { camera.codeScanner.toggleTorch() },
-                    onMenuAction = ::onMenuAction,
-                    onOpen = {
-                        if (!Launcher.openUri(this@MainActivity, it.value)) {
-                            Launcher.search(this@MainActivity, it.value)
-                        }
-                        ReviewRequester.onAction()
-                    },
-                    onCopy = {
-                        ClipboardUtils.copyToClipboard(this@MainActivity, it.type, it.value)
-                        ReviewRequester.onAction()
-                    },
-                    onShare = {
-                        Launcher.shareText(this@MainActivity, it.value)
-                        ReviewRequester.onAction()
-                    },
-                    cameraPreview = { modifier ->
-                        CameraPreview(camera, modifier)
-                    },
-                )
+                NavigationRoot { navigateToSettings, navigateToLicense ->
+                    val lifecycleOwner = LocalLifecycleOwner.current
+                    val camera = remember(lifecycleOwner) {
+                        CameraPreviewState(this@MainActivity, lifecycleOwner, ::onDetectCode)
+                    }
+                    DisposableEffect(camera) {
+                        camera.initialize()
+                        onDispose { camera.release() }
+                    }
+                    LaunchedEffect(camera, cameraEnabled) {
+                        if (cameraEnabled) camera.start()
+                    }
+                    val torchOn by camera.codeScanner.getTorchStateStream()
+                        .collectAsStateWithLifecycle(initialValue = false)
+                    val results by viewModel.getResultStream().collectAsStateWithLifecycle()
+                    LifecycleResumeEffect(Unit) {
+                        ReviewRequester.requestIfNecessary(this@MainActivity)
+                        onPauseOrDispose {}
+                    }
+                    MainScreen(
+                        results = results,
+                        torchOn = torchOn,
+                        onToggleTorch = { camera.codeScanner.toggleTorch() },
+                        onMenuAction = { title ->
+                            when (title) {
+                                R.string.options_menu_settings -> navigateToSettings()
+                                R.string.options_menu_license -> navigateToLicense()
+                                else -> onMenuAction(title)
+                            }
+                        },
+                        onOpen = {
+                            if (!Launcher.openUri(this@MainActivity, it.value)) {
+                                Launcher.search(this@MainActivity, it.value)
+                            }
+                            ReviewRequester.onAction()
+                        },
+                        onCopy = {
+                            ClipboardUtils.copyToClipboard(this@MainActivity, it.type, it.value)
+                            ReviewRequester.onAction()
+                        },
+                        onShare = {
+                            Launcher.shareText(this@MainActivity, it.value)
+                            ReviewRequester.onAction()
+                        },
+                        cameraPreview = { modifier ->
+                            CameraPreview(camera, modifier)
+                        },
+                    )
+                }
                 if (showPermissionDialog) {
                     CameraPermissionDialog(
                         onOpenAppInfo = {
@@ -154,7 +172,6 @@ class MainActivity : AppCompatActivity() {
             finishByError()
             return
         }
-        ReviewRequester.requestIfNecessary(this)
     }
 
     override fun onResume() {
@@ -175,12 +192,10 @@ class MainActivity : AppCompatActivity() {
         title: Int,
     ) {
         when (title) {
-            R.string.options_menu_license -> LicenseActivity.start(this)
             R.string.options_menu_source_code -> Launcher.openSourceCode(this)
             R.string.options_menu_privacy_policy -> Launcher.openPrivacyPolicy(this)
             R.string.options_menu_share_this_app -> Launcher.shareThisApp(this)
             R.string.options_menu_play_store -> Launcher.openGooglePlay(this)
-            R.string.options_menu_settings -> SettingsActivity.start(this)
         }
     }
 

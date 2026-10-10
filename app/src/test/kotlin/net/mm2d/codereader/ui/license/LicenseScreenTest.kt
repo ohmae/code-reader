@@ -8,12 +8,11 @@ import androidx.compose.ui.test.junit4.v2.createEmptyComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import net.mm2d.codereader.App
-import net.mm2d.codereader.LicenseActivity
 import net.mm2d.codereader.R
+import net.mm2d.codereader.launchLicenseTestActivity
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotSame
@@ -31,7 +30,7 @@ class LicenseScreenTest {
 
     @Test
     fun showsLicenseAndReturnsFromToolbar() {
-        ActivityScenario.launch(LicenseActivity::class.java).use { scenario ->
+        launchLicenseTestActivity().use { scenario ->
             val context = ApplicationProvider.getApplicationContext<App>()
             composeRule.onNodeWithText(context.getString(R.string.options_menu_license)).assertExists()
             scenario.onActivity {
@@ -47,7 +46,7 @@ class LicenseScreenTest {
 
     @Test
     fun recreatesWebViewWithLicenseLoaded() {
-        ActivityScenario.launch(LicenseActivity::class.java).use { scenario ->
+        launchLicenseTestActivity().use { scenario ->
             composeRule.waitForIdle()
             lateinit var previous: WebView
             scenario.onActivity { previous = findWebView(it.window.decorView)!! }
@@ -63,7 +62,7 @@ class LicenseScreenTest {
 
     @Test
     fun replacesWebViewWhenRendererExitsRepeatedly() {
-        ActivityScenario.launch(LicenseActivity::class.java).use { scenario ->
+        launchLicenseTestActivity().use { scenario ->
             repeat(2) { attempt ->
                 composeRule.waitForIdle()
                 lateinit var previous: WebView
