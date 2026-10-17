@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.kotlinCompose)
     alias(libs.plugins.kotlinxSerialization)
     alias(libs.plugins.kotlinParcelize)
+    alias(libs.plugins.baselineProfile)
     alias(libs.plugins.dependencyGuard)
 
     // for release
@@ -111,6 +112,9 @@ dependencies {
     testImplementation(libs.androidxTestCore)
     testImplementation(libs.androidxJunit)
     testImplementation(libs.androidxComposeUiTestJunit4)
+
+    implementation(libs.profileInstaller)
+    baselineProfile(projects.baselineProfile)
 
     // for release
 }

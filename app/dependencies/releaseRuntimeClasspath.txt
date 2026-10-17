@@ -113,7 +113,7 @@ androidx.navigationevent:navigationevent-compose-android:1.1.1
 androidx.navigationevent:navigationevent-compose:1.1.1
 androidx.navigationevent:navigationevent:1.1.1
 androidx.preference:preference:1.2.1
-androidx.profileinstaller:profileinstaller:1.4.0
+androidx.profileinstaller:profileinstaller:1.4.1
 androidx.recyclerview:recyclerview:1.2.1
 androidx.resourceinspection:resourceinspection-annotation:1.0.1
 androidx.savedstate:savedstate-android:1.4.0
