@@ -31,17 +31,17 @@ fun NavigationRoot(
     NavigationDisplay(
         navigator = navigator,
         entryProvider = entryProvider {
-            entry<MainNavKey.Main> {
+            entry<MainNavKey.Main> { navKey ->
                 mainContent(
-                    { navigator.navigate(MainNavKey.Settings) },
-                    { navigator.navigate(MainNavKey.License) },
+                    { navigator.navigate(from = navKey, to = MainNavKey.Settings) },
+                    { navigator.navigate(from = navKey, to = MainNavKey.License) },
                 )
             }
-            entry<MainNavKey.Settings> { key ->
-                SettingsScreen(onBack = { navigator.goBack(key) })
+            entry<MainNavKey.Settings> { navKey ->
+                SettingsScreen(onBack = { navigator.goBack(navKey) })
             }
-            entry<MainNavKey.License> { key ->
-                LicenseScreen(onBack = { navigator.goBack(key) })
+            entry<MainNavKey.License> { navKey ->
+                LicenseScreen(onBack = { navigator.goBack(navKey) })
             }
         },
     )

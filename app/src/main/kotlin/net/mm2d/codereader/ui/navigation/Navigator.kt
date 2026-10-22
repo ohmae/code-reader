@@ -182,6 +182,18 @@ class Navigator<T : NavKey>(
         to: T,
     ) {
         val from = backStack.lastOrNull() ?: return
+        navigate(from, to)
+    }
+
+    fun navigate(
+        from: T,
+        to: T,
+    ) {
+        val current = backStack.lastOrNull() ?: return
+        if (current != from) {
+            Log.v("Navigator", "navigate from $from was ignored: current top is $current")
+            return
+        }
         if (from == to) {
             Log.v("Navigator", "from: $from, to: $to is same.")
             return // 連打無効
@@ -191,7 +203,7 @@ class Navigator<T : NavKey>(
             return
         }
         if (!isNavigationReady) {
-            enqueueNavigation { navigate(to) }
+            enqueueNavigation { navigate(from, to) }
             return
         }
         mutableBackStack.add(to)

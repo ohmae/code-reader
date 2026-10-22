@@ -16,6 +16,77 @@ import org.robolectric.annotation.Config
 @Config(sdk = [35], application = App::class)
 class NavigatorTest {
     @Test
+    fun navigationFromCurrentScreenAddsDestination() {
+        val stack = NavBackStack<MainNavKey>(MainNavKey.Main)
+        val navigator = navigator(stack)
+        navigator.attachLifecycle(MainNavKey.Main, lifecycle(Lifecycle.State.RESUMED))
+        navigator.navigate(from = MainNavKey.Main, to = MainNavKey.Settings)
+        assertEquals(listOf(MainNavKey.Main, MainNavKey.Settings), stack.toList())
+    }
+
+    @Test
+    fun navigationFromDifferentScreenIsIgnored() {
+        val stack = NavBackStack<MainNavKey>(MainNavKey.Main, MainNavKey.Settings)
+        val navigator = navigator(stack)
+        navigator.attachLifecycle(MainNavKey.Settings, lifecycle(Lifecycle.State.RESUMED))
+        navigator.navigate(from = MainNavKey.Main, to = MainNavKey.License)
+        assertEquals(listOf(MainNavKey.Main, MainNavKey.Settings), stack.toList())
+    }
+
+    @Test
+    fun navigationFromDifferentScreenDoesNotBlockPendingBack() {
+        val stack = NavBackStack<MainNavKey>(MainNavKey.Main, MainNavKey.Settings)
+        val navigator = navigator(stack)
+        navigator.attachLifecycle(MainNavKey.Settings, lifecycle(Lifecycle.State.STARTED))
+        navigator.navigate(from = MainNavKey.Main, to = MainNavKey.License)
+        navigator.goBack(MainNavKey.Settings)
+        navigator.attachLifecycle(MainNavKey.Settings, lifecycle(Lifecycle.State.RESUMED))
+        assertEquals(listOf(MainNavKey.Main), stack.toList())
+    }
+
+    @Test
+    fun navigationFromCurrentScreenWaitsUntilResumed() {
+        val stack = NavBackStack<MainNavKey>(MainNavKey.Main)
+        val navigator = navigator(stack)
+        navigator.attachLifecycle(MainNavKey.Main, lifecycle(Lifecycle.State.STARTED))
+        navigator.navigate(from = MainNavKey.Main, to = MainNavKey.Settings)
+        assertEquals(listOf(MainNavKey.Main), stack.toList())
+        navigator.attachLifecycle(MainNavKey.Main, lifecycle(Lifecycle.State.RESUMED))
+        assertEquals(listOf(MainNavKey.Main, MainNavKey.Settings), stack.toList())
+    }
+
+    @Test
+    fun pendingNavigationRechecksExplicitSource() {
+        val stack = NavBackStack<MainNavKey>(MainNavKey.Main)
+        val navigator = navigator(stack)
+        navigator.attachLifecycle(MainNavKey.Main, lifecycle(Lifecycle.State.STARTED))
+        navigator.navigate(from = MainNavKey.Main, to = MainNavKey.License)
+        // 保留中に先頭画面が変わった状態を再現する。
+        stack.add(MainNavKey.Settings)
+        navigator.attachLifecycle(MainNavKey.Settings, lifecycle(Lifecycle.State.RESUMED))
+        assertEquals(listOf(MainNavKey.Main, MainNavKey.Settings), stack.toList())
+    }
+
+    @Test
+    fun pendingNavigationWithoutExplicitSourceKeepsOriginalSource() {
+        val stack = NavBackStack<MainNavKey>(MainNavKey.Main)
+        val navigator = Navigator(
+            backStack = stack,
+            navGraph = navGraph {
+                from<MainNavKey.Main> { to<MainNavKey.License>() }
+                from<MainNavKey.Settings> { to<MainNavKey.License>() }
+            },
+            onExit = {},
+        )
+        navigator.attachLifecycle(MainNavKey.Main, lifecycle(Lifecycle.State.STARTED))
+        navigator.navigate(MainNavKey.License)
+        // 変更後の画面からも遷移可能にし、遷移元の保持だけを検証する。
+        stack.add(MainNavKey.Settings)
+        navigator.attachLifecycle(MainNavKey.Settings, lifecycle(Lifecycle.State.RESUMED))
+        assertEquals(listOf(MainNavKey.Main, MainNavKey.Settings), stack.toList())
+    }
+
+    @Test
     fun duplicateAndInvalidNavigationDoNotAddEntries() {
         val stack = NavBackStack<MainNavKey>(MainNavKey.Main)
         val navigator = navigator(stack)
