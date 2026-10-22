@@ -9,17 +9,10 @@ package net.mm2d.codereader
 
 import android.os.Build
 import android.os.StrictMode
-import timber.log.Timber
-import timber.log.Timber.DebugTree
 
 class DebugApp : App() {
     override fun initializeOverrideWhenDebug() {
-        setUpTimber()
         setUpStrictMode()
-    }
-
-    private fun setUpTimber() {
-        Timber.plant(DebugTree())
     }
 
     private fun setUpStrictMode() {

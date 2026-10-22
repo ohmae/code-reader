@@ -7,6 +7,7 @@
 
 package net.mm2d.codereader.code
 
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.camera.core.Camera
 import androidx.camera.core.CameraSelector
@@ -30,7 +31,6 @@ import com.google.mlkit.vision.barcode.common.Barcode
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import timber.log.Timber
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -100,7 +100,7 @@ class CodeScanner(
                 processCameraProvider = future.get()
                 bind()
             } catch (e: Exception) {
-                Timber.e(e)
+                Log.w(TAG, e)
             }
         }, ContextCompat.getMainExecutor(activity))
     }
@@ -131,7 +131,7 @@ class CodeScanner(
             this.camera = camera
         } catch (e: Exception) {
             analysis.clearAnalyzer()
-            Timber.e(e)
+            Log.w(TAG, e)
         }
     }
 
@@ -171,5 +171,9 @@ class CodeScanner(
 
     fun pause() {
         analyzer.pause()
+    }
+
+    companion object {
+        private val TAG = CodeScanner::class.java.simpleName
     }
 }

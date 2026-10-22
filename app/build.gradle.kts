@@ -93,7 +93,6 @@ dependencies {
     implementation(libs.material)
     implementation(libs.playReview)
     implementation(libs.playAppUpdate)
-    implementation(libs.timber)
 
     implementation(platform(libs.androidxComposeBom))
     implementation(libs.androidxComposeUi)

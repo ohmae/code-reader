@@ -7,13 +7,13 @@
 
 package net.mm2d.codereader.ui.main
 
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import com.google.mlkit.vision.barcode.common.Barcode
 import net.mm2d.codereader.code.CodeScanner
-import timber.log.Timber
 
 class CameraPreviewState(
     activity: ComponentActivity,
@@ -27,7 +27,7 @@ class CameraPreviewState(
                 try {
                     detection.show(DetectedFrame.capture(image, detected))
                 } catch (e: Exception) {
-                    Timber.e(e)
+                    Log.w(TAG, e)
                 }
             }
         }
@@ -50,5 +50,9 @@ class CameraPreviewState(
         lifecycleOwner.lifecycle.removeObserver(lifecycleObserver)
         codeScanner.destroy()
         detection.clear()
+    }
+
+    companion object {
+        private val TAG = CameraPreviewState::class.java.simpleName
     }
 }

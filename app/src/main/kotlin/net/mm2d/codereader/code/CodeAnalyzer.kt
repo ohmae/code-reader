@@ -8,13 +8,13 @@
 package net.mm2d.codereader.code
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.camera.core.ImageAnalysis.Analyzer
 import androidx.camera.core.ImageProxy
 import com.google.android.gms.tasks.Task
 import com.google.mlkit.vision.barcode.BarcodeScanner
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.common.InputImage
-import timber.log.Timber
 
 @SuppressLint("UnsafeOptInUsageError")
 class CodeAnalyzer(
@@ -45,7 +45,7 @@ class CodeAnalyzer(
         val task = try {
             processFrame(imageProxy)
         } catch (e: Exception) {
-            Timber.e(e)
+            Log.w(TAG, e)
             null
         }
         if (task == null) {
@@ -56,7 +56,7 @@ class CodeAnalyzer(
             .addOnSuccessListener { codes ->
                 synchronized(lock) { if (!closed) callback?.invoke(imageProxy, codes) }
             }
-            .addOnFailureListener { Timber.e(it) }
+            .addOnFailureListener { Log.w(TAG, it) }
             .addOnCompleteListener { completeFrame(imageProxy) }
     }
 
@@ -89,5 +89,9 @@ class CodeAnalyzer(
 
     fun pause() {
         synchronized(lock) { paused = true }
+    }
+
+    companion object {
+        private val TAG = CodeAnalyzer::class.java.simpleName
     }
 }
