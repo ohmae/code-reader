@@ -69,6 +69,11 @@ androidComponents {
             (it as VariantOutputImpl).outputFileName.set("$applicationName-${it.versionName.get()}.apk")
         }
     }
+    androidComponents {
+        beforeVariants { variantBuilder ->
+            (variantBuilder as? com.android.build.api.variant.HasUnitTestBuilder)?.enableUnitTest = true
+        }
+    }
 }
 
 kotlin {
