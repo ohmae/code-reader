@@ -1,5 +1,5 @@
 [versions]
-androidGradlePlugin = "9.5.0"
+androidGradlePlugin = "9.5.1"
 desugarJdkLibs = "2.1.5"
 kotlin = "2.4.21"
 kotlinxCoroutines = "1.11.0"
@@ -11,7 +11,7 @@ androidxCore = "1.19.1"
 androidxAppCompat = "1.8.0"
 androidxActivity = "1.13.0"
 androidxLifecycle = "2.11.0"
-androidxNavigation3 = "1.2.0"
+androidxNavigation3 = "1.2.1"
 androidxComposeBom = "2026.09.00"
 androidxFragment = "1.9.1"
 androidxBrowser = "1.10.0"
@@ -33,7 +33,7 @@ benchmarkMacroJunit4 = "1.5.0"
 baselineProfile = "1.5.0"
 profileInstaller = "1.4.1"
 testRule = "1.7.0"
-uiAutomator = "2.4.0"
+uiAutomator = "2.4.1"
 
 # for release
 
